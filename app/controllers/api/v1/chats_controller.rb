@@ -1,13 +1,10 @@
 class Api::V1::ChatsController < ApplicationController
+  include ChatFinder
   def find_or_create
-    receiver = User.find_by(uuid: chat_params[:receiver_uuid])
-    return render json: { error: "Receiver not found" }, status: :not_found unless receiver
+    receiver = find_receiver(chat_params[:receiver_uuid])
+    return unless receiver
 
-    chat = Chat.joins(:users)
-        .where(users: { id: [ current_user.id, receiver.id ] })
-        .group("chats.id")
-        .having("COUNT(DISTINCT users.id) = 2")
-        .first
+    chat = find_chat(current_user.id, receiver.id)
 
     unless chat
       chat = Chat.new(users: [ current_user, receiver ])

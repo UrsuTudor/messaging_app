@@ -8,6 +8,16 @@ describe "ChatsController", type: :request do
     }
   end
 
+  it "doesn't create a chat if receiver uuid is missing" do
+    user1 = create(:user)
+    sign_in(user1)
+
+    post "/api/v1/chats/open", params: { chat: { receiver_uuid: nil } }
+
+    # receiver is not being found
+    expect(response).to have_http_status(:not_found)
+  end
+
   it "creates a chat if it doesn't exist already" do
     user1 = create(:user)
     sign_in(user1)
