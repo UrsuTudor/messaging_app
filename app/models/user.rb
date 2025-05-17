@@ -2,8 +2,11 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   before_create :assign_uuid
-  has_one_attached :avatar
   validates :name, presence: true
+
+  has_one_attached :avatar
+  has_many :chat_memberships
+  has_many :chats, through: :chat_memberships
 
   private
 

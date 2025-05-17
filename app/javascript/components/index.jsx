@@ -11,29 +11,6 @@ document.addEventListener("turbo:load", () => {
   }
 });
 
-// Backend:
-  // User model
-    // associations:
-      // has many ChatUsers
-      // has many chats through ^
-  // Message model
-    // has a body and timestamp field 
-    // associations:
-      // belongs to chat
-      // belongs to user
-  // Chat model
-    // facilitates relationship between Messages and User
-    // associations:
-      // has many ChatUsers
-      // has many users through ^
-      // has many messages
-    // actions
-      // queries for messages and sends them to frontend 
-  // ChatUser table
-    // references:
-      // user
-      // chat
-
 // Frontend:
   // Home component
     // parent
@@ -50,5 +27,3 @@ document.addEventListener("turbo:load", () => {
     // displays a list of users
     // has a chat state
     // when a user is clicked, update state with new uuid and fetch the new chat to display it
-
-
