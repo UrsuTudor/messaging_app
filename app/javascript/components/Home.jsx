@@ -1,7 +1,10 @@
-import React from "react"
+import React, { useState } from "react"
 import UserList from "./UserList";
+import Chat from "./Chat";
 
 export default function Home(){
+  const [receiver, setReceiver] = useState({})
+
   async function signOut(){
     const res = await fetch("/users/sign_out", {
       method: "DELETE",
@@ -12,8 +15,7 @@ export default function Home(){
     })
 
     if (res.ok) {
-    // Redirect to the sign-in page or root path
-    window.location.href = "/users/sign_in"; // or "/"
+      window.location.href = "/users/sign_in";
     } else {
       console.error("Failed to sign out.");
     }
@@ -21,9 +23,9 @@ export default function Home(){
 
   return (
     <div>
-      <h1>Hi</h1>
-      <UserList />
       <button onClick={signOut}>Sign out</button>
+      <Chat receiver={receiver} />
+      <UserList setReceiver={setReceiver}/>
     </div>
   )
 }
