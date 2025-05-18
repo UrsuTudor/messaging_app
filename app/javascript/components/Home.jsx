@@ -1,4 +1,5 @@
 import React from "react"
+import UserList from "./UserList";
 
 export default function Home(){
   async function signOut(){
@@ -21,6 +22,7 @@ export default function Home(){
   return (
     <div>
       <h1>Hi</h1>
+      <UserList />
       <button onClick={signOut}>Sign out</button>
     </div>
   )

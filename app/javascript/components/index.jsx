@@ -27,3 +27,5 @@ document.addEventListener("turbo:load", () => {
     // displays a list of users
     // has a chat state
     // when a user is clicked, update state with new uuid and fetch the new chat to display it
+  // ChatList component
+    // shows a list of chats the current user already has

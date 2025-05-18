@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       post "chats/open", to: "chats#find_or_create"
       post "messages/send", to: "messages#create"
+      get "users/list", to: "users#index"
     end
   end
 
