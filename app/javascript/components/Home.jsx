@@ -49,7 +49,7 @@ export default function Home(){
     <div>
       {loggedUser && <button onClick={ () => setProfileDisplay(true) }>{loggedUser.name}</button>}
       <button onClick={ signOut }>Sign out</button>
-      {profileDisplay ? <Profile user = {loggedUser}/> : <Chat receiver={receiver} />}
+      {profileDisplay ? <Profile loggedUser = {loggedUser} user = {loggedUser}/> : <Chat receiver={receiver} />}
       <UserList setReceiver={setReceiver}/>
     </div>
   )

@@ -13,7 +13,10 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def current_user_info
-    render json: { name: current_user.name, avatar: current_user.avatar, uuid: current_user.uuid, description: current_user.description }
+    render json: {
+      name: current_user.name,
+      avatar: current_user.avatar.attached? ? url_for(current_user.avatar) : nil,
+      uuid: current_user.uuid, description: current_user.description }
   end
 
   private
@@ -22,11 +25,11 @@ class Api::V1::UsersController < ApplicationController
     {
       name: user.name,
       uuid: user.uuid,
-      avatar: user.avatar
+      avatar: user.avatar.attached? ? url_for(user.avatar) : nil
     }
   end
 
   def user_params
-    params.require(:user).permit(:description)
+    params.require(:user).permit(:description, :avatar)
   end
 end
