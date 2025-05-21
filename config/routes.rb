@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       post "chats/open", to: "chats#find_or_create"
       post "messages/send", to: "messages#create"
       get "users/list", to: "users#index"
+      get "users/current", to: "users#current_user_info"
     end
   end
 
