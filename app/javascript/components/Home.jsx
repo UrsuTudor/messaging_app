@@ -4,6 +4,7 @@ import Chat from "./Chat";
 
 export default function Home(){
   const [receiver, setReceiver] = useState({})
+  const [profileDisplay, setProfileDisplay] = useState(false)
 
   async function signOut(){
     const res = await fetch("/users/sign_out", {
@@ -24,7 +25,7 @@ export default function Home(){
   return (
     <div>
       <button onClick={signOut}>Sign out</button>
-      <Chat receiver={receiver} />
+      {profileDisplay ? <Profile /> : <Chat receiver={receiver} />}
       <UserList setReceiver={setReceiver}/>
     </div>
   )
