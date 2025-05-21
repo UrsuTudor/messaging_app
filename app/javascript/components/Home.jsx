@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import Profile from "./Profile";
 import UserList from "./UserList";
 import Chat from "./Chat";
 
@@ -8,7 +9,7 @@ export default function Home(){
   const [profileDisplay, setProfileDisplay] = useState(false)
 
   useEffect(() => {
-    async function getCurrentUser(){
+    async function getLoggedUser(){
       try {
         const res = await fetch('api/v1/users/current', {
           method: 'GET'
@@ -25,7 +26,7 @@ export default function Home(){
       }
     }
 
-    getCurrentUser()
+    getLoggedUser()
   }, [])
 
   async function signOut(){
@@ -46,9 +47,9 @@ export default function Home(){
 
   return (
     <div>
-
-      <button onClick={signOut}>Sign out</button>
-      {profileDisplay ? <Profile /> : <Chat receiver={receiver} />}
+      {loggedUser && <button onClick={ () => setProfileDisplay(true) }>{loggedUser.name}</button>}
+      <button onClick={ signOut }>Sign out</button>
+      {profileDisplay ? <Profile user = {loggedUser}/> : <Chat receiver={receiver} />}
       <UserList setReceiver={setReceiver}/>
     </div>
   )

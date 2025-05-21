@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       post "messages/send", to: "messages#create"
       get "users/list", to: "users#index"
       get "users/current", to: "users#current_user_info"
+      post "users/update", to: "users#update"
     end
   end
 
