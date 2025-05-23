@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Profile from "./Profile";
 import UserList from "./UserList";
+import ChatList from "./ChatList";
 import Chat from "./Chat";
 
 export default function Home() {
@@ -54,6 +55,8 @@ export default function Home() {
       )}
       <button onClick={signOut}>Sign out</button>
 
+      <ChatList setReceiver={setReceiver} />
+
       {profileDisplay ? (
         <Profile
           loggedUser={loggedUser}
@@ -64,7 +67,7 @@ export default function Home() {
       ) : (
         <Chat receiver={receiver} />
       )}
-      
+
       <UserList setReceiver={setReceiver} />
     </div>
   );
