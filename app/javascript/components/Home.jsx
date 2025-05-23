@@ -9,25 +9,25 @@ export default function Home(){
   const [profileDisplay, setProfileDisplay] = useState(false)
 
   useEffect(() => {
-    async function getLoggedUser(){
-      try {
-        const res = await fetch('api/v1/users/current', {
-          method: 'GET'
-        })
-
-        if (!res.ok) {
-          throw new Error(`Your data could not be retrieved.`);
-        }
-
-        const data = await res.json()
-        setLoggedUser(data)
-      } catch(error){
-        console.error(error.message)
-      }
-    }
-
     getLoggedUser()
   }, [])
+
+  async function getLoggedUser(){
+    try {
+      const res = await fetch('api/v1/users/current', {
+        method: 'GET'
+      })
+
+      if (!res.ok) {
+        throw new Error(`Your data could not be retrieved.`);
+      }
+
+      const data = await res.json()
+      setLoggedUser(data)
+    } catch(error){
+      console.error(error.message)
+    }
+  }
 
   async function signOut(){
     const res = await fetch("/users/sign_out", {
@@ -49,7 +49,7 @@ export default function Home(){
     <div>
       {loggedUser && <button onClick={ () => setProfileDisplay(true) }>{loggedUser.name}</button>}
       <button onClick={ signOut }>Sign out</button>
-      {profileDisplay ? <Profile loggedUser = {loggedUser} user = {loggedUser}/> : <Chat receiver={receiver} />}
+      {profileDisplay ? <Profile loggedUser = {loggedUser} user = {loggedUser} getLoggedUser={getLoggedUser} setProfileDisplay={setProfileDisplay} /> : <Chat receiver={receiver} />}
       <UserList setReceiver={setReceiver}/>
     </div>
   )

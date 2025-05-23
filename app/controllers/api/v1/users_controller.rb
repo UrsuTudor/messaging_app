@@ -1,7 +1,7 @@
 class Api::V1::UsersController < ApplicationController
   def index
     users = User.all
-    render json: users.map { |user| user_data(user) }
+    render json: users.select { |user| user.uuid != current_user.uuid }.map { |user| user_data(user) }
   end
 
   def update

@@ -15,8 +15,6 @@ document.addEventListener("turbo:load", () => {
   // Home component
     // displays Profile, UserList on the side and opened chats 
     // displays a placeholder chat on load
-  // Profile component
-    // fetches user data, such as username, profile picture, user description
   // Chat component
     // displays a loading state until the fetch is done
   // ChatList component

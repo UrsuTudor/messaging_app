@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function Profile({ loggedUser, user }) {
+export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, user }) {
   const [renderDescriptionForm, setRenderDescriptionForm] = useState(false);
   const [description, setDescription] = useState(user.description);
 
@@ -45,6 +45,8 @@ export default function Profile({ loggedUser, user }) {
       });
 
       setFeedback("Your profile picture has been updated successfully!");
+      getLoggedUser()
+
     } catch (error) {
       console.error(error.message);
     }
@@ -52,6 +54,8 @@ export default function Profile({ loggedUser, user }) {
 
   return (
     <div className="userProfile">
+      <button onClick={() => setProfileDisplay(false)}>Home</button>
+      
       <img src={user.avatar} alt={user.name + "'s profile picture"} />
       {feedback && <p>{feedback}</p>}
 
