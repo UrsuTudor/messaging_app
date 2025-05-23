@@ -4,6 +4,18 @@ class Api::V1::UsersController < ApplicationController
     render json: users.select { |user| user.uuid != current_user.uuid }.map { |user| user_data(user) }
   end
 
+  def users_with_chat
+    users_with_chat_array = current_user.chats.includes(:messages, :users).map do |chat|
+      receiver = chat.users.find { |user| user.uuid != current_user.uuid }
+      receiver_data = user_data(receiver)
+      receiver_data[:last_message] = chat.messages.last&.content
+
+      receiver_data
+    end
+
+    render json: { chat_users: users_with_chat_array }
+  end
+
   def update
     if current_user.update(user_params)
       render json: { message: "Profile updated successfully" }, status: :ok
