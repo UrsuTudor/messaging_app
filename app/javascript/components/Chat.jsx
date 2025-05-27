@@ -65,13 +65,22 @@ export default function Chat({receiver, loggedUser}) {
         <h1>{receiver.name}</h1>
       </div>
       <div className="msgContainer">
-        {chat.map((message) => {
-          return (
-            <div className="message" key={message.id}>
+        {chat.map((message, i) => {
+          if(message.user_uuid == receiver.uuid) {
+            return (
+            <div className="message" key={i}>
               <img className="smallAvatar" src={receiver.avatar} alt={receiver.name + "'s profile picture"} />
               <p>{message.content}</p>
             </div>
-          )
+            )
+          } else {
+            return (
+            <div className="message" key={i}>
+              <img className="smallAvatar" src={loggedUser.avatar} alt={loggedUser.name + "'s profile picture"} />
+              <p>{message.content}</p>
+            </div>
+            )
+          }
         })}
       </div>
       <form className="messageForm" onSubmit={(e) => sendMessage(e, message)}>

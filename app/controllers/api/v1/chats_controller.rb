@@ -11,7 +11,11 @@ class Api::V1::ChatsController < ApplicationController
       render json: chat.errors unless chat.save
     end
 
-    render json: chat.messages
+    message_data = chat.messages.map do |message|
+      { content: message.content, user_uuid: message.user.uuid }
+    end
+
+    render json: message_data
   end
 
   private
