@@ -3,6 +3,7 @@ import Profile from "./Profile";
 import UserList from "./UserList";
 import ChatList from "./ChatList";
 import Chat from "./Chat";
+import "../assets/stylesheets/home.css"
 
 export default function Home() {
   const [loggedUser, setLoggedUser] = useState(null);
@@ -47,28 +48,37 @@ export default function Home() {
   }
 
   return (
-    <div>
-      {loggedUser && (
-        <button onClick={() => setProfileDisplay(true)}>
-          {loggedUser.name}
-        </button>
-      )}
-      <button onClick={signOut}>Sign out</button>
+    <div className="appContainer" >
+      <nav>
+        { loggedUser && !profileDisplay ? (
+          <div onClick={() => setProfileDisplay(true)} className="userHeader">
+            <img className="smallAvatar" src={loggedUser.avatar} alt={loggedUser.name + "'s profile picture"} />
+            <h4 className="userName">
+              {loggedUser.name}
+            </h4>
+          </div>
+        ) : (
+          <button onClick={() => setProfileDisplay(false)}>Home</button>
+        )}
+        <button onClick={signOut}>Sign out</button>
+      </nav>
 
-      <ChatList setReceiver={setReceiver} />
+      <div className="mainBodyContainer">
+        <ChatList setReceiver={setReceiver} />
 
-      {profileDisplay ? (
-        <Profile
-          loggedUser={loggedUser}
-          user={loggedUser}
-          getLoggedUser={getLoggedUser}
-          setProfileDisplay={setProfileDisplay}
-        />
-      ) : (
-        <Chat receiver={receiver} />
-      )}
+        {profileDisplay ? (
+          <Profile
+            loggedUser={loggedUser}
+            user={loggedUser}
+            getLoggedUser={getLoggedUser}
+            setProfileDisplay={setProfileDisplay}
+          />
+        ) : (
+          <Chat receiver={receiver} loggedUser={loggedUser}/>
+        )}
 
-      <UserList setReceiver={setReceiver} />
+        <UserList setReceiver={setReceiver} />
+      </div>
     </div>
   );
 }

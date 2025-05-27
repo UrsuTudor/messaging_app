@@ -14,7 +14,6 @@ export default function ChatList({setReceiver}) {
         }
 
         const data = await res.json();
-        console.log(data)
         setChatList(data.chat_users);
       } catch (error) {
         console.error(error.message);
@@ -25,11 +24,13 @@ export default function ChatList({setReceiver}) {
   }, []);
 
   return (
-    <div>
+    <div className="chatListContainer">
       {chatList.map((user) => (
         <div key={user.uuid} className="userContainer" onClick={() => setReceiver({avatar: user.avatar, name: user.name, uuid: user.uuid})}>
-          <img src={user.avatar} alt={user.name + "'s profile picture"} />
-          <p>{user.name}</p>
+          <div className="userHeader">
+            <img className="smallAvatar" src={user.avatar} alt={user.name + "'s profile picture"} />
+            <h4 className="userName">{user.name}</h4>
+          </div>
           <p>{user.last_message}</p>
         </div>
       ))}

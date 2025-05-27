@@ -45,6 +45,7 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
       });
 
       setFeedback("Your profile picture has been updated successfully!");
+      setRenderAvatarForm(false)
       getLoggedUser()
 
     } catch (error) {
@@ -54,8 +55,6 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
 
   return (
     <div className="userProfile">
-      <button onClick={() => setProfileDisplay(false)}>Home</button>
-      
       <img src={user.avatar} alt={user.name + "'s profile picture"} />
       {feedback && <p>{feedback}</p>}
 

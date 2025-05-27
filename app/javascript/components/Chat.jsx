@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import "../assets/stylesheets/chat.css"
 
-export default function Chat({receiver}) {
+export default function Chat({receiver, loggedUser}) {
   const [chat, setChat] = useState(null)
   const [message, setMessage] = useState("")
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -29,8 +30,9 @@ export default function Chat({receiver}) {
       }
     }
     
-    getChat()
-    
+    if(receiver.uuid){
+      getChat()
+    }
   }, [receiver])
 
   async function sendMessage(e, message){
@@ -58,13 +60,15 @@ export default function Chat({receiver}) {
 
   return (
     chat && <div className="chatContainer">
-      <img src={receiver.avatar} alt={receiver.name + "'s profile picture"} />
-      <h1>{receiver.name}</h1>
+      <div className="userHeader">
+        <img className="smallAvatar" src={receiver.avatar} alt={receiver.name + "'s profile picture"} />
+        <h1>{receiver.name}</h1>
+      </div>
       <div className="msgContainer">
         {chat.map((message) => {
           return (
             <div className="message" key={message.id}>
-              <img src={receiver.avatar} alt={receiver.name + "'s profile picture"} />
+              <img className="smallAvatar" src={receiver.avatar} alt={receiver.name + "'s profile picture"} />
               <p>{message.content}</p>
             </div>
           )

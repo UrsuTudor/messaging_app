@@ -25,11 +25,13 @@ export default function UserList({setReceiver}) {
   }, []);
 
   return (
-    <div>
+    <div className="userListContainer">
       {userList.map((user) => (
         <div key={user.uuid} className="userContainer" onClick={() => setReceiver({avatar: user.avatar, name: user.name, uuid: user.uuid})}>
-          <img src={user.avatar} alt={user.name + "'s profile picture"} />
-          <p>{user.name}</p>
+          <div className="userHeader">
+            <img className="smallAvatar" src={user.avatar} alt={user.name + "'s profile picture"} />
+            <h4 className="userName">{user.name}</h4>
+          </div>
         </div>
       ))}
     </div>

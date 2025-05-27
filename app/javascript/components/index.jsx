@@ -21,5 +21,5 @@ document.addEventListener("turbo:load", () => {
     // shows a list of chats the current user already has
 
     // your create method in messages_controller is still exposing user ids, make sure you fix that
-    // ensure the current_user isn't being returned by your users_controller index
     // limit the amount of users and messages returned by your index methods for userslist, chatlist and chats
+    // add a way to see the profiles of other users
