@@ -11,7 +11,7 @@ class Api::V1::MessagesController < ApplicationController
     message = Message.new(chat: chat, user: current_user, content: message_params[:content])
 
     if message.save
-      render json: { chat_messages: chat.messages }
+      render json: "Message sent."
     else
       render json: message.errors, status: :unprocessable_entity
     end

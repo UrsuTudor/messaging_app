@@ -1,64 +1,35 @@
 import React, { useEffect, useState, useRef } from "react";
 import "../assets/stylesheets/userList.css";
-import useThrottle from "../helpers";
+import useThrottle from "../assets/hooks/useThrottle";
+import usePagination from "../assets/hooks/usePagination";
+import useScrolling from "../assets/hooks/useScrolling";
+import { setNewElements, updateListEndMessage, updateScrollBottom } from "../assets/helpers";
 
 export default function UserList({ setReceiver }) {
   const [userList, setUserList] = useState([]);
-  const [scrollBottom, setScrollBottom] = useState(0);
-  const [pagination, setPagination] = useState({
-    endMessage: null,
-    page: 1,
-    pages: 2,
-    loading: false,
-  });
+  const [scrollBottom, setScrollBottom] = useScrolling();
+  const [pagination, setPagination] = usePagination();
   const userListRef = useRef(null);
   const throttle = useThrottle();
 
   useEffect(() => {
     if (pagination.page > pagination.pages) {
-      setPagination((prev) => ({ ...prev, endMessage: "You have reached the end!" }));
+      updateListEndMessage(setPagination);
       return;
     }
 
-    async function getUsers() {
-      try {
-        setPagination(prev => ({...prev, loading: true}));
-        const res = await fetch(`/api/v1/users/list?page=${pagination.page}`, {
-          method: "GET",
-        });
-
-        if (!res.ok) {
-          throw new Error(`The list of users could not be retrieved.`);
-        }
-
-        const data = await res.json();
-        setUserList((prevUsers) => [...prevUsers, ...data.users]);
-        setPagination((prev) => ({ ...prev, page: prev.page + 1, pages: data.metadata.pages }));
-
-        return data;
-      } catch (error) {
-        console.error(error.message);
-      } finally {
-        setPagination(prev => ({...prev, loading: false}));
-      }
-    }
-
-    const scrollThreshold = userListRef.current.scrollHeight * 0.1
+    const scrollThreshold = userListRef.current.scrollHeight * 0.1;
 
     if (scrollBottom < scrollThreshold && !pagination.loading) {
-      getUsers();
+      setNewElements(`/api/v1/users/list?page=${pagination.page}`, "users", setUserList, setPagination);
     }
   }, [scrollBottom]);
 
   useEffect(() => {
-    const updatePosition = () => {
-      setScrollBottom(
-        userListRef.current.scrollHeight - userListRef.current.scrollTop - userListRef.current.clientHeight
-      );
-    };
-    userListRef.current.addEventListener("scroll", () => throttle(updatePosition, 50));
+    const throttledUpdateScrollBottom = () => throttle(() => updateScrollBottom(setScrollBottom, userListRef.current), 50)
+    userListRef.current.addEventListener("scroll", throttledUpdateScrollBottom)
 
-    return () => userListRef.current.removeEventListener("scroll", updatePosition());
+    return () => userListRef.current.removeEventListener("scroll", throttledUpdateScrollBottom);
   }, []);
 
   return (
