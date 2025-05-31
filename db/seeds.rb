@@ -12,3 +12,4 @@ require 'factory_bot_rails'
 include FactoryBot::Syntax::Methods
 
 100.times { create(:user) }
+100.times { create(:chat) }

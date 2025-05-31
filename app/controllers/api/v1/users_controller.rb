@@ -11,7 +11,16 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def users_with_chat
-    users_with_chat_array = current_user.chats.includes(:messages, :users).filter_map do |chat|
+    @pagy, @users_with_chat = pagy(
+      current_user.chats
+        .left_joins(:messages)
+        .includes(:messages, :users)
+        .group("chats.id")
+        .order("MAX(messages.created_at) DESC NULLS LAST"),
+      page: params[:page], limit: 20
+    )
+
+    users_with_chat_array = @users_with_chat.filter_map do |chat|
       next unless chat.messages.last&.content
 
       receiver = chat.users.find { |user| user.uuid != current_user.uuid }
@@ -21,7 +30,7 @@ class Api::V1::UsersController < ApplicationController
       receiver_data
     end
 
-    render json: { chat_users: users_with_chat_array }
+    render json: { chat_users: users_with_chat_array, metadata: pagy_metadata(@pagy) }
   end
 
   def update
