@@ -34,10 +34,9 @@ export default function ChatList({setReceiver}) {
 
   return (
     <div ref={chatListRef} className="chatListContainer">
-      {chatList.map((user, id) => (
+      {chatList.map((user) => (
         <div key={user.uuid} className="userContainer" onClick={() => setReceiver({avatar: user.avatar, name: user.name, uuid: user.uuid})}>
           <div className="userHeader">
-            <p>{id}</p>
             <img className="smallAvatar" src={user.avatar} alt={user.name + "'s profile picture"} />
             <h4 className="userName">{user.name}</h4>
           </div>

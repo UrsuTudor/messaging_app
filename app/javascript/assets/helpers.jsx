@@ -1,4 +1,4 @@
-function updateListEndMessage(setPagination){
+function updateListEndMessage(setPagination) {
   setPagination((prev) => ({
     ...prev,
     endMessage: "You have reached the end!",
@@ -6,7 +6,7 @@ function updateListEndMessage(setPagination){
   return;
 }
 
-function updatePagination(setPagination, totalPages){
+function updatePagination(setPagination, totalPages) {
   setPagination((prev) => ({
     ...prev,
     page: prev.page + 1,
@@ -14,7 +14,7 @@ function updatePagination(setPagination, totalPages){
   }));
 }
 
-async function setNewElements(fetchURL, dataKey, setElements, setPagination){
+async function setNewElements(fetchURL, dataKey, setElements, setPagination) {
   try {
     setPagination((prev) => ({ ...prev, loading: true }));
 
@@ -28,17 +28,17 @@ async function setNewElements(fetchURL, dataKey, setElements, setPagination){
     const data = await res.json();
     setElements((prevElements) => [...prevElements, ...data[dataKey]]);
 
-    updatePagination(setPagination, data.metadata.pages)
+    updatePagination(setPagination, data.metadata.pages);
     return data;
   } catch (error) {
     console.error(error.message);
-  } finally{
+  } finally {
     setPagination((prev) => ({ ...prev, loading: false }));
   }
 }
 
-function updateScrollBottom(setScrollBottom, element){
-  setScrollBottom(element.scrollHeight - element.scrollTop - element.clientHeight)
+function updateScrollBottom(setScrollBottom, element) {
+  setScrollBottom(element.scrollHeight - element.scrollTop - element.clientHeight);
 }
 
-export {setNewElements, updateListEndMessage, updatePagination, updateScrollBottom}
+export { setNewElements, updateListEndMessage, updatePagination, updateScrollBottom };

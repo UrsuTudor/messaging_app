@@ -1,4 +1,6 @@
 class Api::V1::ChatsController < ApplicationController
+  include Pagy::Backend
+
   include ChatFinder
   def find_or_create
     receiver = find_receiver(chat_params[:receiver_uuid])
@@ -11,11 +13,12 @@ class Api::V1::ChatsController < ApplicationController
       render json: chat.errors unless chat.save
     end
 
-    message_data = chat.messages.map do |message|
+    @pagy, @messages = pagy(chat.messages.order(created_at: :desc), page: params[:page], limit: 20)
+    message_data = @messages.map do |message|
       { content: message.content, user_uuid: message.user.uuid }
     end
 
-    render json: message_data
+    render json: { messages: message_data, metadata: pagy_metadata(@pagy) }
   end
 
   private
