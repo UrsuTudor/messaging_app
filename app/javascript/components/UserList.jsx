@@ -4,11 +4,13 @@ import useThrottle from "../assets/hooks/useThrottle";
 import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { setNewElements, updateListEndMessage, updateScrollBottom } from "../assets/helpers";
+import ProfileCard from "./ProfileCard";
 
 export default function UserList({ setReceiver }) {
   const [userList, setUserList] = useState([]);
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
+  const [cardDisplay, setCardDisplay] = useState(false)
   const userListRef = useRef(null);
   const throttle = useThrottle();
 
@@ -42,14 +44,18 @@ export default function UserList({ setReceiver }) {
             setReceiver({
               avatar: user.avatar,
               name: user.name,
+              description: user.description,
               uuid: user.uuid,
             })
           }
+          onMouseEnter={() => setCardDisplay(true)}
+          onMouseLeave={() => setCardDisplay(false)}
         >
           <div className="userHeader">
             <img className="smallAvatar" src={user.avatar} alt={user.name + "'s profile picture"} />
             <h4 className="userName">{user.name}</h4>
           </div>
+          {cardDisplay && <ProfileCard user={user} />}
         </div>
       ))}
       {pagination.endMessage && <p>{pagination.endMessage}</p>}
