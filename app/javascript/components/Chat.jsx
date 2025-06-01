@@ -54,7 +54,7 @@ export default function Chat({ receiver, loggedUser }) {
       }
     }
 
-    const scrollThreshold = scrollTop + (scrollTop * 0.1) - 0.1
+    const scrollThreshold = scrollTop + scrollTop * 0.1 - 0.1;
 
     if (receiver.uuid && scrollTop > scrollThreshold && !pagination.loading) {
       getChat();
@@ -84,10 +84,17 @@ export default function Chat({ receiver, loggedUser }) {
   }
 
   useEffect(() => {
-    const throttledupdateScrollTop = () => throttle(() => setScrollTop(chatRef.current.scrollTop), 50);
-    chatRef.current.addEventListener("scroll", throttledupdateScrollTop);
+    const handleScroll = () => {
+      throttle(() => {
+        setScrollTop(chatRef.current.scrollTop);
+      }, 50);
+    };
 
-    return () => chatRef.current.removeEventListener("scroll", throttledupdateScrollTop);
+    const ref = chatRef.current;
+    if (!ref) return;
+
+    ref.addEventListener("scroll", handleScroll);
+    return () => ref.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (

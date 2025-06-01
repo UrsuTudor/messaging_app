@@ -1,4 +1,6 @@
 describe "ChatsController", type: :request do
+  include ChatFinder
+
   def sign_in(user)
     post user_session_path, params: {
       user: {
@@ -38,13 +40,14 @@ describe "ChatsController", type: :request do
 
     # creating a chat and assigning a message to it for verification
     post "/api/v1/chats/open", params: { chat: { receiver_uuid: user2.uuid } }
-    chat = Chat.first
+    chat = find_chat(user1.id, user2.id)
     create(:message, chat: chat, content: "first message", user: user1)
     create(:message, chat: chat, content: "second message", user: user2)
 
     # finding the chat
     post "/api/v1/chats/open", params: { chat: { receiver_uuid: user2.uuid } }
-    expect(JSON.parse(response.body)[0]['content']).to include("first message")
-    expect(JSON.parse(response.body)[1]['content']).to include("second message")
+    # puts JSON.parse(response.body[0])
+    expect(JSON.parse(response.body)['messages'][1]['content']).to include("first message")
+    expect(JSON.parse(response.body)['messages'][0]['content']).to include("second message")
   end
 end

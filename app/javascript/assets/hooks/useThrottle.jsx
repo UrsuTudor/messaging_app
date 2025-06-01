@@ -1,18 +1,18 @@
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 
-const useThrottle = () => {
-  const throttleSeed = useRef(null)
+function useThrottle() {
+  const throttleSeed = useRef(null);
 
-  const throttleFunction = useRef((func, delay = 200) => {
-    if(!throttleSeed.current){
-      func()
+  const throttleFunction = useCallback((func, delay = 200) => {
+    if (!throttleSeed.current) {
+      func();
       throttleSeed.current = setTimeout(() => {
-        throttleSeed.current = null
-      }, delay)
+        throttleSeed.current = null;
+      }, delay);
     }
-  })
+  }, []);
 
-  return throttleFunction.current
+  return throttleFunction;
 }
 
-export default useThrottle
+export default useThrottle;
