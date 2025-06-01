@@ -15,8 +15,13 @@ export default function Chat({ receiver, loggedUser }) {
   const throttle = useThrottle();
 
   useEffect(() => {
+    setPagination((prev) => ({...prev, page: 1}))
+    setChat([])
+  }, [receiver])
+
+  useEffect(() => {
     if (pagination.page > pagination.pages) {
-      updateListEndMessage(setPagination);
+      updateListEndMessage(setPagination)
       return;
     }
 
@@ -59,7 +64,7 @@ export default function Chat({ receiver, loggedUser }) {
     if (receiver.uuid && scrollTop > scrollThreshold && !pagination.loading) {
       getChat();
     }
-  }, [receiver, scrollTop]);
+  }, [receiver, pagination.page ,scrollTop]);
 
   async function sendMessage(e, message) {
     e.preventDefault();
