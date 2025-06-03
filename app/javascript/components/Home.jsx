@@ -52,15 +52,21 @@ export default function Home() {
       <nav>
         { loggedUser && !profileDisplay ? (
           <div onClick={() => setProfileDisplay(true)} className="userHeader">
-            <img className="smallAvatar" src={loggedUser.avatar} alt={loggedUser.name + "'s profile picture"} />
+            <img className="bigAvatar" src={loggedUser.avatar} alt={loggedUser.name + "'s profile picture"} />
             <h4 className="userName">
               {loggedUser.name}
             </h4>
           </div>
         ) : (
-          <button onClick={() => setProfileDisplay(false)}>Home</button>
+          <div className="iconContainer" onClick={() => setProfileDisplay(false)}>
+            <p>Home</p>
+            <img className="icon" src="home.svg" alt="A home icon"/>
+          </div>
         )}
-        <button onClick={signOut}>Sign out</button>
+        <div className="iconContainer" onClick={signOut}>
+          <p>Log Out</p>
+          <img className="icon" src="log-out.svg" alt="A sign out icon"/>
+        </div>
       </nav>
 
       <div className="mainBodyContainer">

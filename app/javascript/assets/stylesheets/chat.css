@@ -3,12 +3,70 @@
   flex-direction: column;
 }
 
+.chatContainer > .userHeader {
+  background-color: #848871;
+  padding: 1vh 0 1vh 1vh;
+  border-bottom: #464b37 1px solid;
+}
+
 .msgContainer {
   overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-color: #464b37 #848871;
+
   display: flex;
   flex-direction: column-reverse;
+  height: 100%;
+  padding: 0 1vh 0 1vh;
+
+  background-color: #848871;
+
 }
 
 .messageForm {
+  display: flex;
+  align-items: center;
   margin-top: auto;
+  padding-top: 1vh;
+  border-top: #464b37 1px solid;
+  background-color: #848871;
+}
+
+.msgInput {
+  border-radius: 20px;
+  margin-bottom: 1vh ;
+  margin-left: 3vw;
+
+  border: none;
+  width: 30vw;
+  height: 3vh;
+  padding-left: 0.5vw;
+}
+
+.sendIconContainer {
+  display: flex;
+  align-items: center;
+  height: 3.5vh;
+  width: 3.5vh;
+  margin-bottom: 1vh ;
+  border-radius: 20px;
+}
+
+.sendIconContainer:hover {
+  background-color: #676b53;
+}
+
+.sendIconContainer:active {
+  background-color: #535743;
+}
+
+.message {
+  display: flex;
+  gap: 0.5vw;
+  align-items: center;
+  padding-bottom: 1vh;
+}
+
+.pushRight {
+  margin-left: auto
 }

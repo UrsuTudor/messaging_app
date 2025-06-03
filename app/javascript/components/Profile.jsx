@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../assets/stylesheets/profile"
 
 export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, user }) {
   const [renderDescriptionForm, setRenderDescriptionForm] = useState(false);
@@ -55,27 +56,31 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
 
   return (
     <div className="userProfile">
-      <img src={user.avatar} alt={user.name + "'s profile picture"} />
+      <div className="imageContainer">
+        <h1>{user.name}</h1>
+        <img className="profileImage" src={user.avatar} alt={user.name + "'s profile picture"} />
+
+        {renderAvatarForm ? (
+          <form onSubmit={updateProfilePicture} className="descriptionForm">
+            <label htmlFor="avatar">
+              <input
+                type="file"
+                id="avatar"
+                onChange={(e) => setAvatar(e.target.files[0])}
+              />
+            </label>
+            <button type="submit">Update profile picture</button>
+          </form>
+        ) : (
+          <div className="editContainer" onClick={() => setRenderAvatarForm(true)}>
+            <p>Change profile picture 
+                  <img className="icon" src="edit-3.svg" alt="An edit icon" />
+            </p>
+          </div>
+        )}
+      </div>
+
       {feedback && <p>{feedback}</p>}
-
-      {renderAvatarForm ? (
-        <form onSubmit={updateProfilePicture} className="descriptionForm">
-          <label htmlFor="avatar">
-            <input
-              type="file"
-              id="avatar"
-              onChange={(e) => setAvatar(e.target.files[0])}
-            />
-          </label>
-          <button type="submit">Update profile picture</button>
-        </form>
-      ) : (
-        <button onClick={() => setRenderAvatarForm(true)}>
-          Change profile picture
-        </button>
-      )}
-
-      <h1>{user.name}</h1>
 
       {renderDescriptionForm ? (
         <form onSubmit={updateDescription} className="descriptionForm">

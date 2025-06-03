@@ -1,3 +1,7 @@
 .chatListContainer {
   overflow: scroll;
+  overflow-x: hidden;
+  background-color: #848871;
+  scrollbar-color: #464b37 #848871;
+  border-right: #464b37 1px solid;
 }

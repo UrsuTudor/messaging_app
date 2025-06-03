@@ -82,6 +82,7 @@ export default function Chat({ receiver, loggedUser }) {
         throw new Error(`The message could not be sent.`);
       }
 
+      setChat((prevChat) => [{user_uuid: loggedUser.uuid, content: message}, ...prevChat])
       setMessage("");
     } catch (error) {
       console.error(error.message);
@@ -104,10 +105,12 @@ export default function Chat({ receiver, loggedUser }) {
 
   return (
     <div className="chatContainer">
-      <div className="userHeader">
-        <img className="smallAvatar" src={receiver.avatar} alt={receiver.name + "'s profile picture"} />
-        <h1>{receiver.name}</h1>
-      </div>
+      {receiver.uuid && 
+        <div className="userHeader">
+          <img className="bigAvatar" src={receiver.avatar} alt={receiver.name + "'s profile picture"} />
+          <h1>{receiver.name}</h1>
+        </div>
+      }
       <div ref={chatRef} className="msgContainer">
         {chat &&
           chat.map((message, i) => {
@@ -124,23 +127,27 @@ export default function Chat({ receiver, loggedUser }) {
               );
             } else {
               return (
-                <div className="message" key={i}>
+                <div className="message pushRight" key={i}>
+                  <p>{message.content}</p>
                   <img
                     className="smallAvatar"
                     src={loggedUser.avatar}
                     alt={loggedUser.name + "'s profile picture"}
                   />
-                  <p>{message.content}</p>
                 </div>
               );
             }
           })}
       </div>
-      <form className="messageForm" onSubmit={(e) => sendMessage(e, message)}>
-        <label htmlFor="message">
-          <input id="message" type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
-        </label>
-      </form>
+      { receiver.uuid && 
+        <form className="messageForm" autoComplete="off" onSubmit={(e) => sendMessage(e, message)}>
+          <input className="msgInput" id="message" type="text"  value={message} onChange={(e) => setMessage(e.target.value)} />
+          <div className="sendIconContainer">
+            <img className="icon" src="send.svg" alt="A send icon" onClick={(e) => sendMessage(e, message)}/>
+          </div>
+        </form>
+      }
+
     </div>
   );
 }

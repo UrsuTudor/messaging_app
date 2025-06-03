@@ -46,28 +46,77 @@ h1, h2, h3, h4, h5, h6 {
 nav {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px;
+  background-color: #262b15;
+  color: #afb4ad;
+  height: 8%
+}
+
+nav > .userHeader {
+  width: 10vw;
+  border-radius: 40px;
+}
+
+nav > .userHeader:hover {
+  background-color: #212512;
+  cursor: pointer;
+}
+
+nav > .userHeader:active {
+  background-color: #1b1f0f;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+
+  padding: 1vh;
+  height: 5vh;
+  border-radius: 20px;
+}
+
+.iconContainer:hover {
+  background-color: #212512;
+  cursor: pointer;
+}
+
+.iconContainer:active {
+  background-color: #1b1f0f;
 }
 
 .mainBodyContainer {
   display: flex;
-  height: 90%;
+  height: 92%;
 }
 
 /* layout of the children */
 .chatListContainer { flex: 1; }
 .chatContainer { flex: 3; }
+.userProfile { flex: 3}
 .userListContainer { flex: 1; }
 
 /* general rules needed in the child components */
 .smallAvatar {
-  width: 2vw;
+  height: 4vh;
   border-radius: 20px;
 }
 
-.userContainer:hover, 
-nav > .userHeader:hover {
+.bigAvatar {
+  height: 6vh;
+  border-radius: 30px;
+}
+
+.userContainer {
+  padding: 0.5vh;
+  border-bottom: #464b37 1px solid;
+}
+
+.userContainer:hover {
   filter: brightness(0.85);
+  background-color: #676b53;
+  cursor: pointer;
 }
 
 .userHeader {
@@ -79,4 +128,9 @@ nav > .userHeader:hover {
 .userName {
   display: flex;
   align-items: center;
+}
+
+.icon {
+  height: 2.5vh;
+  margin: auto;
 }
