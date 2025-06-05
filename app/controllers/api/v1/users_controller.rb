@@ -1,7 +1,7 @@
 class Api::V1::UsersController < ApplicationController
   include Pagy::Backend
   def index
-    @pagy, @users = pagy(User.all, page: params[:page], limit: 15)
+    @pagy, @users = pagy(User.all, page: params[:page], limit: 20)
     render json: {
       users: @users
               .reject { |user| user.uuid == current_user.uuid }
@@ -54,7 +54,8 @@ class Api::V1::UsersController < ApplicationController
     {
       name: user.name,
       uuid: user.uuid,
-      avatar: user.avatar.attached? ? url_for(user.avatar) : nil
+      avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
+      description: user.description
     }
   end
 

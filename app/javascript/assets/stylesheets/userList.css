@@ -5,3 +5,9 @@
   scrollbar-color: #464b37 #848871;
   border-left: #464b37 1px solid;
  }
+
+ .cardContainer {
+  position: absolute;
+  margin-right: -500px;
+  margin-top: -500px
+ }

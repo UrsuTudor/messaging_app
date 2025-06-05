@@ -3,6 +3,10 @@
   background-color: #848871;
 }
 
+h1 {
+  height: 5vh;
+}
+
 .imageContainer {
   display: flex;
   flex-direction: column;
@@ -15,24 +19,35 @@
   height: auto;
 }
 
-.editContainer {
-  color: white;
+.descriptionContainer{
   width: 60%;
-  border-radius: 20px;
-  padding: 0px 1vw 0px 1vw;
+  padding-left: 1vw;
 }
 
-.editContainer > p {
-  flex: 1;
-  display: flex;
-}
-
-.editContainer > .icon {
-  margin: 0 auto 0 0;
-  text-align: left;
-}
-
-.editContainer:hover {
+#profileIconContainer {
+  color: white;
   background-color: #676b53;
-  cursor: pointer;
+  padding: 0 1vh 0 1vh;
+  margin-top: 1vh;
+  max-height: 3vh;
+  width: fit-content;
+}
+
+#profileIconContainer:hover {
+  background-color: #565a45;
+}
+
+#profileIconContainer:active {
+  background-color: #4c503d;
+}
+
+.avatarForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+div[data-section="description"] {
+  justify-self: center;
+  align-self: center;
 }

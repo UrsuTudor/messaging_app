@@ -63,6 +63,7 @@ export default function Home() {
             <img className="icon" src="home.svg" alt="A home icon"/>
           </div>
         )}
+        <h1>Hiker's Hub</h1>
         <div className="iconContainer" onClick={signOut}>
           <p>Log Out</p>
           <img className="icon" src="log-out.svg" alt="A sign out icon"/>

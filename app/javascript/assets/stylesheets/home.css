@@ -111,12 +111,18 @@ nav > .userHeader:active {
 .userContainer {
   padding: 0.5vh;
   border-bottom: #464b37 1px solid;
+  
 }
 
 .userContainer:hover {
   filter: brightness(0.85);
   background-color: #676b53;
   cursor: pointer;
+}
+
+.userContainer:active {
+  filter: brightness(0.75);
+  background-color: #555845;
 }
 
 .userHeader {

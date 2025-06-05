@@ -61,49 +61,56 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
         <img className="profileImage" src={user.avatar} alt={user.name + "'s profile picture"} />
 
         {renderAvatarForm ? (
-          <form onSubmit={updateProfilePicture} className="descriptionForm">
-            <label htmlFor="avatar">
-              <input
-                type="file"
-                id="avatar"
-                onChange={(e) => setAvatar(e.target.files[0])}
-              />
-            </label>
-            <button type="submit">Update profile picture</button>
+          <form className="avatarForm">
+            <div className="iconContainer" id="profileIconContainer" onClick={updateProfilePicture}>
+              <input type="file" id="file" style={{display: "none"}} onChange={(e) => setAvatar(e.target.files[0])} />
+              <label htmlFor="file">Upload File</label>
+              <img className="icon" src="chevron-up.svg" alt="An icon of an arrow pointing up" />
+            </div>
+
+            <div className="iconContainer" id="profileIconContainer" onClick={updateProfilePicture}>
+              <p>Update profile picture </p>
+              <img className="icon" src="save.svg" alt="An icon of a save file" />
+            </div>
           </form>
         ) : (
-          <div className="editContainer" onClick={() => setRenderAvatarForm(true)}>
-            <p>Change profile picture 
-                  <img className="icon" src="edit-3.svg" alt="An edit icon" />
-            </p>
+          <div className="iconContainer" id="profileIconContainer" onClick={() => setRenderAvatarForm(true)}>
+            <p>Change profile picture </p>
+            <img className="icon" src="edit-3.svg" alt="An edit icon" />
           </div>
         )}
       </div>
 
-      {feedback && <p>{feedback}</p>}
-
-      {renderDescriptionForm ? (
-        <form onSubmit={updateDescription} className="descriptionForm">
-          <label htmlFor="description">
-            <input
-              type="text"
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </label>
-          <button type="submit">Update description</button>
-        </form>
-      ) : (
-        <div className="descriptionContainer">
-          <p>{description}</p>
-          {loggedUser.uuid == user.uuid && (
-            <button onClick={() => setRenderDescriptionForm(true)}>
-              Edit Description
-            </button>
-          )}
-        </div>
-      )}
+      <div className="descriptionContainer">
+        {renderDescriptionForm ? (
+          <form className="descriptionForm">
+            <h1></h1>
+            <label htmlFor="description">
+              <input
+                type="text"
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </label>
+            <div className="iconContainer" id="profileIconContainer" data-section="description" onClick={updateDescription}>
+              <p>Update description</p>
+              <img className="icon" src="edit-3.svg" alt="An edit icon" />
+            </div>
+          </form>
+        ) : (
+          <div>
+            <h1>{feedback && <span>{feedback}</span>}</h1>
+            <p>{description}</p>
+            {loggedUser.uuid == user.uuid && (
+              <div className="iconContainer" id="profileIconContainer" data-section="description" onClick={() => setRenderDescriptionForm(true)}>
+                <p>Change description</p>
+                <img className="icon" src="edit-3.svg" alt="An edit icon" />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
