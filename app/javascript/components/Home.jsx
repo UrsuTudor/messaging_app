@@ -9,6 +9,7 @@ export default function Home() {
   const [loggedUser, setLoggedUser] = useState(null);
   const [receiver, setReceiver] = useState({});
   const [profileDisplay, setProfileDisplay] = useState(false);
+  const [userForProfile, setUserForProfile] = useState(null)
 
   useEffect(() => {
     getLoggedUser();
@@ -58,7 +59,10 @@ export default function Home() {
             </h4>
           </div>
         ) : (
-          <div className="iconContainer" onClick={() => setProfileDisplay(false)}>
+          <div className="iconContainer" onClick={() => {
+            setUserForProfile(null)
+            setProfileDisplay(false)
+          }}>
             <p>Home</p>
             <img className="icon" src="home.svg" alt="A home icon"/>
           </div>
@@ -71,20 +75,20 @@ export default function Home() {
       </nav>
 
       <div className="mainBodyContainer">
-        <ChatList setReceiver={setReceiver} />
+        <ChatList setReceiver={setReceiver} setProfileDisplay={setProfileDisplay} />
 
         {profileDisplay ? (
           <Profile
             loggedUser={loggedUser}
-            user={loggedUser}
+            user={userForProfile ? userForProfile : loggedUser}
             getLoggedUser={getLoggedUser}
             setProfileDisplay={setProfileDisplay}
           />
         ) : (
-          <Chat receiver={receiver} loggedUser={loggedUser}/>
+          <Chat receiver={receiver} loggedUser={loggedUser} setProfileDisplay={setProfileDisplay} setUserForProfile={setUserForProfile}/>
         )}
 
-        <UserList setReceiver={setReceiver} />
+        <UserList setReceiver={setReceiver} setProfileDisplay={setProfileDisplay} setUserForProfile={setUserForProfile}/>
       </div>
     </div>
   );

@@ -25,6 +25,7 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
       });
 
       setFeedback("Your description has been updated successfully!");
+      getLoggedUser()
       setRenderDescriptionForm(false);
     } catch (error) {
       console.error(error.message);
@@ -74,10 +75,12 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
             </div>
           </form>
         ) : (
-          <div className="iconContainer" id="profileIconContainer" onClick={() => setRenderAvatarForm(true)}>
-            <p>Change profile picture </p>
-            <img className="icon" src="edit-3.svg" alt="An edit icon" />
-          </div>
+          loggedUser.uuid == user.uuid && (
+            <div className="iconContainer" id="profileIconContainer" onClick={() => setRenderAvatarForm(true)}>
+              <p>Change profile picture </p>
+              <img className="icon" src="edit-3.svg" alt="An edit icon" />
+            </div>
+          )
         )}
       </div>
 
@@ -101,7 +104,7 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
         ) : (
           <div>
             <h1>{feedback && <span>{feedback}</span>}</h1>
-            <p>{description}</p>
+            <p>{user.description}</p>
             {loggedUser.uuid == user.uuid && (
               <div className="iconContainer" id="profileIconContainer" data-section="description" onClick={() => setRenderDescriptionForm(true)}>
                 <p>Change description</p>

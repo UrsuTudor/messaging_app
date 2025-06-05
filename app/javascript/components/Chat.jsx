@@ -5,7 +5,7 @@ import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { updateListEndMessage, updatePagination } from "../assets/helpers";
 
-export default function Chat({ receiver, loggedUser }) {
+export default function Chat({ receiver, loggedUser, setProfileDisplay, setUserForProfile }) {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState("");
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
@@ -48,7 +48,7 @@ export default function Chat({ receiver, loggedUser }) {
         }
 
         const data = await res.json();
-        setChat((prevChat) => [...prevChat, ...data.messages]);
+        setChat(data.messages);
 
         updatePagination(setPagination, data.metadata.pages);
         return data;
@@ -103,10 +103,14 @@ export default function Chat({ receiver, loggedUser }) {
     return () => ref.removeEventListener("scroll", handleScroll);
   }, []);
 
+  console.log(chat)
   return (
     <div className="chatContainer">
       {receiver.uuid && 
-        <div className="userHeader">
+        <div className="userHeader" onClick={() => {
+          setProfileDisplay(true)
+          setUserForProfile(receiver)
+        }}>
           <img className="bigAvatar" src={receiver.avatar} alt={receiver.name + "'s profile picture"} />
           <h1>{receiver.name}</h1>
         </div>

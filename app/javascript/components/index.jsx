@@ -12,6 +12,4 @@ document.addEventListener("turbo:load", () => {
 });
 
 // Frontend:
-  // make clicking chat or a user open a chat even if the user is on the profile page (probably as easy as giving the 
-  // profileDisplay setter to them as a prop)
   // fail updating of profile picture if no picture was uploaded

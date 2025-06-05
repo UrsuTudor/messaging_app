@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import "../assets/stylesheets/chatList"
+import "../assets/stylesheets/chatList";
 import useThrottle from "../assets/hooks/useThrottle";
 import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { setNewElements, updateListEndMessage, updateScrollBottom } from "../assets/helpers";
 
-export default function ChatList({setReceiver}) {
+export default function ChatList({ setReceiver, setProfileDisplay }) {
   const [chatList, setChatList] = useState([]);
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
@@ -26,8 +26,9 @@ export default function ChatList({setReceiver}) {
   }, [scrollBottom]);
 
   useEffect(() => {
-    const throttledUpdateScrollBottom = () => throttle(() => updateScrollBottom(setScrollBottom, chatListRef.current), 50)
-    chatListRef.current.addEventListener("scroll", throttledUpdateScrollBottom)
+    const throttledUpdateScrollBottom = () =>
+      throttle(() => updateScrollBottom(setScrollBottom, chatListRef.current), 50);
+    chatListRef.current.addEventListener("scroll", throttledUpdateScrollBottom);
 
     return () => chatListRef.current.removeEventListener("scroll", throttledUpdateScrollBottom);
   }, []);
@@ -35,7 +36,14 @@ export default function ChatList({setReceiver}) {
   return (
     <div ref={chatListRef} className="chatListContainer">
       {chatList.map((user) => (
-        <div key={user.uuid} className="userContainer" onClick={() => setReceiver({avatar: user.avatar, name: user.name, uuid: user.uuid})}>
+        <div
+          key={user.uuid}
+          className="userContainer"
+          onClick={() => {
+            setProfileDisplay(false);
+            setReceiver({ avatar: user.avatar, name: user.name, uuid: user.uuid });
+          }}
+        >
           <div className="userHeader">
             <img className="smallAvatar" src={user.avatar} alt={user.name + "'s profile picture"} />
             <h4 className="userName">{user.name}</h4>

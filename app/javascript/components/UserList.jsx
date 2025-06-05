@@ -6,7 +6,7 @@ import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { setNewElements, updateListEndMessage, updateScrollBottom } from "../assets/helpers";
 
-export default function UserList({ setReceiver }) {
+export default function UserList({ setReceiver, setProfileDisplay, setUserForProfile }) {
   const [userList, setUserList] = useState([]);
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
@@ -39,14 +39,26 @@ export default function UserList({ setReceiver }) {
         <div
           key={user.uuid}
           className="userContainer"
-          onClick={() =>
+          onClick={() =>{
             setReceiver({
               avatar: user.avatar,
               name: user.name,
               description: user.description,
               uuid: user.uuid,
             })
-          }
+            setProfileDisplay(false)
+          }}
+          onMouseEnter={() => {
+            setProfileDisplay(true)
+            setUserForProfile(user)
+          }}
+
+          onMouseLeave={() => {
+            setProfileDisplay(false)
+            setUserForProfile(null)
+          }}
+
+          
         >
           <div className="userHeader">
             <img className="smallAvatar" src={user.avatar} alt={user.name + "'s profile picture"} />
