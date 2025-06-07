@@ -103,7 +103,6 @@ export default function Chat({ receiver, loggedUser, setProfileDisplay, setUserF
     return () => ref.removeEventListener("scroll", handleScroll);
   }, []);
 
-  console.log(chat)
   return (
     <div className="chatContainer">
       {receiver.uuid && 

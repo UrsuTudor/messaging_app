@@ -61,7 +61,7 @@ export default function UserList({ setReceiver, setProfileDisplay, setUserForPro
           
         >
           <div className="userHeader">
-            <img className="smallAvatar" src={user.avatar} alt={user.name + "'s profile picture"} />
+            <img className="smallAvatar" src={user.avatar ? user.avatar : "user.svg"} alt={user.name + "'s profile picture"} />
             <h4 className="userName">{user.name}</h4>
           </div>
       </div>

@@ -11,5 +11,8 @@ document.addEventListener("turbo:load", () => {
   }
 });
 
-// Frontend:
-  // fail updating of profile picture if no picture was uploaded
+// fix feedback message
+// choose a font, font size and color
+// do mobile/tablet designs
+// write frontend tests and update backend tests to test pagy
+// update chat list when a message is sent to a new chat

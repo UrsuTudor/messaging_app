@@ -41,11 +41,11 @@ export default function ChatList({ setReceiver, setProfileDisplay }) {
           className="userContainer"
           onClick={() => {
             setProfileDisplay(false);
-            setReceiver({ avatar: user.avatar, name: user.name, uuid: user.uuid });
+            setReceiver({ avatar: user.avatar, name: user.name, uuid: user.uuid, description: user.description });
           }}
         >
           <div className="userHeader">
-            <img className="smallAvatar" src={user.avatar} alt={user.name + "'s profile picture"} />
+            <img className="smallAvatar" src={user.avatar ? user.avatar : "user.svg"} alt={user.name + "'s profile picture"} />
             <h4 className="userName">{user.name}</h4>
           </div>
           <p>{user.last_message}</p>
