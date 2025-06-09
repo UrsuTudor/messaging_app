@@ -13,6 +13,7 @@ export default function Chat({ receiver, loggedUser, setProfileDisplay, setUserF
   const chatRef = useRef(null);
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
   useEffect(() => {
     setPagination((prev) => ({...prev, page: 1}))
@@ -33,7 +34,6 @@ export default function Chat({ receiver, loggedUser, setProfileDisplay, setUserF
 
       try {
         setPagination((prev) => ({ ...prev, loading: true }));
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
         const res = await fetch(`/api/v1/chats/open?page=${pagination.page}`, {
           method: "POST",

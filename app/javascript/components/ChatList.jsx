@@ -29,7 +29,7 @@ export default function ChatList({
     const scrollThreshold = chatListRef.current.scrollHeight * 0.1;
 
     if (scrollBottom < scrollThreshold && !pagination.loading) {
-      setNewElements(`/api/v1/users/chats?page=${pagination.page}`, "chat_users", setChatList, setPagination);
+      setNewElements(`/api/v1/users/chats?page=${pagination.page}`, "chat_users", setChatList, setPagination, pagination.page);
     }
   }, [scrollBottom]);
 

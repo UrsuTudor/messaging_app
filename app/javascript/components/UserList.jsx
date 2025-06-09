@@ -5,7 +5,13 @@ import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { setNewElements, updateListEndMessage, updateScrollBottom } from "../assets/helpers";
 
-export default function UserList({ setReceiver, setProfileDisplay, setUserForProfile, setDisplayChat, setDisplayChatList }) {
+export default function UserList({
+  setReceiver,
+  setProfileDisplay,
+  setUserForProfile,
+  setDisplayChat,
+  setDisplayChatList,
+}) {
   const [userList, setUserList] = useState([]);
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
@@ -22,7 +28,7 @@ export default function UserList({ setReceiver, setProfileDisplay, setUserForPro
     const scrollThreshold = userListRef.current.scrollHeight * 0.1;
 
     if (scrollBottom < scrollThreshold && !pagination.loading) {
-      setNewElements(`/api/v1/users/list?page=${pagination.page}`, "users", setUserList, setPagination);
+      setNewElements(`/api/v1/users/list?page=${pagination.page}`, "users", setUserList, setPagination, pagination.page)
     }
   }, [scrollBottom]);
 

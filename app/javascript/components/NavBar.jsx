@@ -7,7 +7,6 @@ export default function NavBar({
   setUserForProfile,
   signOut,
 }) {
-  const isMobile = window.innerWidth < 700;
 
   return (
     <nav>
