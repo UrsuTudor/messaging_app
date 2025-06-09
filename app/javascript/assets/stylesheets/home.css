@@ -45,7 +45,6 @@ h1, h2, h3, h4, h5, h6 {
 
 nav {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 10px;
   background-color: #262b15;
@@ -54,8 +53,9 @@ nav {
 }
 
 nav > .userHeader {
-  width: 10vw;
+  width: fit-content;
   border-radius: 40px;
+  padding-right: 2vw;
 }
 
 nav > .userHeader:hover {
@@ -65,6 +65,11 @@ nav > .userHeader:hover {
 
 nav > .userHeader:active {
   background-color: #1b1f0f;
+}
+
+nav > h1 {
+  flex: 2;
+  text-align: center;
 }
 
 .iconContainer {
@@ -92,7 +97,8 @@ nav > .userHeader:active {
 }
 
 /* layout of the children */
-.chatListContainer { flex: 1; }
+.mobileChatListContainer { flex: 1; }
+.chatListContainer {flex: 1}
 .chatContainer { flex: 3; }
 .userProfile { flex: 3}
 .userListContainer { flex: 1; }
@@ -111,7 +117,8 @@ nav > .userHeader:active {
 .userContainer {
   padding: 0.5vh;
   border-bottom: #464b37 1px solid;
-  
+  max-height: 7vh;
+  overflow: hidden;
 }
 
 .userContainer:hover {
@@ -128,6 +135,7 @@ nav > .userHeader:active {
 .userHeader {
   display: flex;
   text-align: center;
+  align-items: center;
   gap: 5px;
 }
 

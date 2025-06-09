@@ -5,14 +5,14 @@ import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { updateListEndMessage, updatePagination } from "../assets/helpers";
 
-export default function Chat({ receiver, loggedUser, setProfileDisplay, setUserForProfile }) {
+export default function Chat({ receiver, loggedUser, setProfileDisplay, setUserForProfile, setDisplayChat, setDisplayChatList }) {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState("");
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
   const [scrollTop, setScrollTop] = useScrolling();
   const [pagination, setPagination] = usePagination();
   const chatRef = useRef(null);
   const throttle = useThrottle();
+  const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
     setPagination((prev) => ({...prev, page: 1}))
@@ -33,6 +33,7 @@ export default function Chat({ receiver, loggedUser, setProfileDisplay, setUserF
 
       try {
         setPagination((prev) => ({ ...prev, loading: true }));
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
         const res = await fetch(`/api/v1/chats/open?page=${pagination.page}`, {
           method: "POST",
@@ -106,12 +107,26 @@ export default function Chat({ receiver, loggedUser, setProfileDisplay, setUserF
   return (
     <div className="chatContainer">
       {receiver.uuid && 
-        <div className="userHeader" onClick={() => {
-          setProfileDisplay(true)
-          setUserForProfile(receiver)
-        }}>
-          <img className="bigAvatar" src={receiver.avatar} alt={receiver.name + "'s profile picture"} />
-          <h1>{receiver.name}</h1>
+        <div className="userHeader">
+          {isMobile && 
+            <div className="chatIconContainer" onClick={() => {
+              setDisplayChat(false)
+              setDisplayChatList(true)
+            }}>
+              <img className="icon" src="arrow-left.svg" />
+            </div>
+          }
+          <div className="userHeaderPortal" onClick={() => {
+            setUserForProfile(receiver)
+            setProfileDisplay(true)
+            if(isMobile) {
+              setDisplayChat(false)
+              setDisplayChatList(true)
+            }
+          }}>
+            <img className="bigAvatar" src={receiver.avatar ? receiver.avatar : "user.svg"} alt={receiver.name + "'s profile picture"} />
+            <h1>{receiver.name}</h1>
+          </div>
         </div>
       }
       <div ref={chatRef} className="msgContainer">
@@ -145,7 +160,7 @@ export default function Chat({ receiver, loggedUser, setProfileDisplay, setUserF
       { receiver.uuid && 
         <form className="messageForm" autoComplete="off" onSubmit={(e) => sendMessage(e, message)}>
           <input className="msgInput" id="message" type="text"  value={message} onChange={(e) => setMessage(e.target.value)} />
-          <div className="sendIconContainer">
+          <div className="chatIconContainer">
             <img className="icon" src="send.svg" alt="A send icon" onClick={(e) => sendMessage(e, message)}/>
           </div>
         </form>

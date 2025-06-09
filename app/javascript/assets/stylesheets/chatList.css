@@ -5,3 +5,18 @@
   scrollbar-color: #464b37 #848871;
   border-right: #464b37 1px solid;
 }
+
+.smallAvatar {
+  margin-bottom: auto;
+}
+
+.mobileChatListContainer{
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileChatListContainer > h1 {
+  filter: brightness(0.85);
+  background-color: #676b53;
+  padding-left: 10px;
+}

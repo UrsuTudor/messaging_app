@@ -1,6 +1,8 @@
 .userProfile {
   display: flex;
+  flex-wrap: wrap;
   background-color: #848871;
+  overflow: hidden;
 }
 
 h1 {
@@ -12,6 +14,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 40%;
+  height: fit-content;
 }
 
 .profileImage {
@@ -22,6 +25,7 @@ h1 {
 .descriptionContainer{
   width: 60%;
   padding-left: 1vw;
+  height: fit-content;
 }
 
 #profileIconContainer {
@@ -50,4 +54,13 @@ h1 {
 div[data-section="description"] {
   justify-self: center;
   align-self: center;
+}
+
+.feedbackMsg {
+  font-size: 2rem;
+  height: 100%;
+  width: 100%;
+  padding-top: 1vh;
+  margin-bottom: auto;
+  text-align: center;
 }

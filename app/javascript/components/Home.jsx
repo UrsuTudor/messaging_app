@@ -3,13 +3,16 @@ import Profile from "./Profile";
 import UserList from "./UserList";
 import ChatList from "./ChatList";
 import Chat from "./Chat";
-import "../assets/stylesheets/home.css"
+import "../assets/stylesheets/home.css";
+import MobileLayout from "./MobileLayout";
+import NavBar from "./NavBar";
 
 export default function Home() {
   const [loggedUser, setLoggedUser] = useState(null);
   const [receiver, setReceiver] = useState({});
   const [profileDisplay, setProfileDisplay] = useState(false);
-  const [userForProfile, setUserForProfile] = useState(null)
+  const [userForProfile, setUserForProfile] = useState(null);
+  const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
     getLoggedUser();
@@ -49,47 +52,56 @@ export default function Home() {
   }
 
   return (
-    <div className="appContainer" >
-      <nav>
-        { loggedUser && !profileDisplay ? (
-          <div onClick={() => setProfileDisplay(true)} className="userHeader">
-            <img className="bigAvatar" src={loggedUser.avatar} alt={loggedUser.name + "'s profile picture"} />
-            <h4 className="userName">
-              {loggedUser.name}
-            </h4>
-          </div>
-        ) : (
-          <div className="iconContainer" onClick={() => {
-            setUserForProfile(null)
-            setProfileDisplay(false)
-          }}>
-            <p>Home</p>
-            <img className="icon" src="home.svg" alt="A home icon"/>
-          </div>
-        )}
-        <h1>Hiker's Hub</h1>
-        <div className="iconContainer" onClick={signOut}>
-          <p>Log Out</p>
-          <img className="icon" src="log-out.svg" alt="A sign out icon"/>
-        </div>
-      </nav>
-
-      <div className="mainBodyContainer">
-        <ChatList setReceiver={setReceiver} setProfileDisplay={setProfileDisplay} />
-
-        {profileDisplay ? (
-          <Profile
+    <>
+      {isMobile ? (
+        <MobileLayout
+          loggedUser={loggedUser}
+          getLoggedUser={getLoggedUser}
+          userForProfile={userForProfile}
+          setUserForProfile={setUserForProfile}
+          receiver={receiver}
+          setReceiver={setReceiver}
+          profileDisplay={profileDisplay}
+          setProfileDisplay={setProfileDisplay}
+          signOut={signOut}
+        />
+      ) : (
+        <div className="appContainer">
+          <NavBar
             loggedUser={loggedUser}
-            user={userForProfile ? userForProfile : loggedUser}
-            getLoggedUser={getLoggedUser}
+            profileDisplay={profileDisplay}
             setProfileDisplay={setProfileDisplay}
+            setUserForProfile={setUserForProfile}
+            signOut={signOut}
           />
-        ) : (
-          <Chat receiver={receiver} loggedUser={loggedUser} setProfileDisplay={setProfileDisplay} setUserForProfile={setUserForProfile}/>
-        )}
 
-        <UserList setReceiver={setReceiver} setProfileDisplay={setProfileDisplay} setUserForProfile={setUserForProfile}/>
-      </div>
-    </div>
+          <div className="mainBodyContainer">
+            <ChatList setReceiver={setReceiver} setProfileDisplay={setProfileDisplay} />
+
+            {profileDisplay ? (
+              <Profile
+                loggedUser={loggedUser}
+                user={userForProfile ? userForProfile : loggedUser}
+                getLoggedUser={getLoggedUser}
+                setProfileDisplay={setProfileDisplay}
+              />
+            ) : (
+              <Chat
+                receiver={receiver}
+                loggedUser={loggedUser}
+                setProfileDisplay={setProfileDisplay}
+                setUserForProfile={setUserForProfile}
+              />
+            )}
+
+            <UserList
+              setReceiver={setReceiver}
+              setProfileDisplay={setProfileDisplay}
+              setUserForProfile={setUserForProfile}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

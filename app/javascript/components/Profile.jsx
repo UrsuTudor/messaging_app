@@ -81,7 +81,7 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
     <div className="userProfile">
       <div className="imageContainer">
         <h1>{user.name}</h1>
-        <img className="profileImage" src={user.avatar} alt={user.name + "'s profile picture"} />
+        <img className="profileImage" src={user.avatar ? user.avatar : "user.svg"} alt={user.name + "'s profile picture"} />
 
         {renderAvatarForm ? (
           <form className="avatarForm">
@@ -142,7 +142,7 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
           </form>
         ) : (
           <div>
-            <h1>{feedback && <span>{feedback}</span>}</h1>
+            <h1></h1>
             <p>{user.description}</p>
             {loggedUser.uuid == user.uuid && (
               <div
@@ -158,6 +158,7 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
           </div>
         )}
       </div>
+      {feedback && <p className="feedbackMsg">{feedback}</p>}
     </div>
   );
 }
