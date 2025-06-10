@@ -14,6 +14,7 @@ class Api::V1::ChatsController < ApplicationController
     end
 
     @pagy, @messages = pagy(chat.messages.order(created_at: :desc), page: params[:page], limit: 20)
+
     message_data = @messages.map do |message|
       { content: message.content, user_uuid: message.user.uuid }
     end

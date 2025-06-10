@@ -26,16 +26,8 @@ async function setNewElements(fetchURL, dataKey, setElements, setPagination, pag
     }
 
     const data = await res.json();
-    // userList/chatList would fire setNewElements twice on a remount, causing duplicates in the array; this if check
-    // prevents duplicates from appearing on remount if the two calls happen so fast that pagination.page can't set its
-    // new value
-    setElements((prevElements) => {
-      if (prevElements.length == data[dataKey].length && page == 1) {
-        return [...data[dataKey]];
-      } else {
-        return [...prevElements, ...data[dataKey]];
-      }
-    });
+
+    setElements((prevElements) => [...prevElements, ...data[dataKey]])
 
     updatePagination(setPagination, data.metadata.pages);
 

@@ -9,6 +9,6 @@ export default function App(){
   return(
     <StrictMode>
         <RouterProvider router={router} />
-    </StrictMode>
+    </StrictMode> 
   )
 }

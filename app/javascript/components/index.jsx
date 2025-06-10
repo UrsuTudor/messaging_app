@@ -12,6 +12,5 @@ document.addEventListener("turbo:load", () => {
 });
 
 // choose a font, font size and color
-// fix your backend chat method to return the latest messages
 // write frontend tests and update backend tests to test pagy
 // update chat list when a message is sent to a new chat
