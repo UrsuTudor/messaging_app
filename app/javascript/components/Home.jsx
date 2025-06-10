@@ -12,6 +12,7 @@ export default function Home() {
   const [receiver, setReceiver] = useState({});
   const [profileDisplay, setProfileDisplay] = useState(false);
   const [userForProfile, setUserForProfile] = useState(null);
+  const [refetchChatList, setRefetchChatList] = useState(false);
   const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
@@ -76,7 +77,12 @@ export default function Home() {
           />
 
           <div className="mainBodyContainer">
-            <ChatList setReceiver={setReceiver} setProfileDisplay={setProfileDisplay} />
+            <ChatList
+              setReceiver={setReceiver}
+              setProfileDisplay={setProfileDisplay}
+              refetchChatList={refetchChatList}
+              setRefetchChatList={setRefetchChatList}
+            />
 
             {profileDisplay ? (
               <Profile
@@ -91,6 +97,7 @@ export default function Home() {
                 loggedUser={loggedUser}
                 setProfileDisplay={setProfileDisplay}
                 setUserForProfile={setUserForProfile}
+                setRefetchChatList={setRefetchChatList}
               />
             )}
 

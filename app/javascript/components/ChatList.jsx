@@ -12,6 +12,8 @@ export default function ChatList({
   setDisplayChat,
   setDisplayChatList,
   setUserForProfile,
+  refetchChatList,
+  setRefetchChatList
 }) {
   const [chatList, setChatList] = useState([]);
   const [scrollBottom, setScrollBottom] = useScrolling();
@@ -21,6 +23,15 @@ export default function ChatList({
   const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
+    setPagination((prevPagination) => ({...prevPagination, page: 1}))
+    setChatList([])
+    
+    if(refetchChatList == true) setNewElements(`/api/v1/users/chats?page=${1}`, "chat_users", setChatList, setPagination, pagination.page);
+    setRefetchChatList(false)
+  }, [refetchChatList])
+
+  useEffect(() => {
+    console.log(scrollBottom)
     if (pagination.page > pagination.pages) {
       updateListEndMessage(setPagination);
       return;
@@ -34,10 +45,11 @@ export default function ChatList({
   }, [scrollBottom]);
 
   useEffect(() => {
-    const throttledUpdateScrollBottom = throttle(
+    const throttledUpdateScrollBottom = () => throttle(
       () => updateScrollBottom(setScrollBottom, chatListRef.current),
       50
     );
+    console.log(chatListRef.current)
     chatListRef.current.addEventListener("scroll", throttledUpdateScrollBottom);
 
     return () => {
@@ -49,6 +61,7 @@ export default function ChatList({
 
   return (
     <div className="mobileChatListContainer">
+      {console.log(chatList.length)}
       <div ref={chatListRef} className="chatListContainer">
         {chatList.map((user) => (
           <div

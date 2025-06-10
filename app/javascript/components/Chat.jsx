@@ -12,6 +12,7 @@ export default function Chat({
   setUserForProfile,
   setDisplayChat,
   setDisplayChatList,
+  setRefetchChatList
 }) {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState("");
@@ -92,6 +93,10 @@ export default function Chat({
 
       setChat((prevChat) => [{ user_uuid: loggedUser.uuid, content: message }, ...prevChat]);
       setMessage("");
+      if(chat.length == 0) {
+        setRefetchChatList(true)
+        console.log('set')
+      }
     } catch (error) {
       console.error(error.message);
     }
