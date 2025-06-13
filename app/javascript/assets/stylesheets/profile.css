@@ -28,20 +28,21 @@ h1 {
   height: fit-content;
 }
 
-#profileIconContainer {
+.iconContainer.profileIconContainer {
   color: white;
   background-color: #676b53;
   padding: 0 1vh 0 1vh;
   margin-top: 1vh;
   max-height: 3vh;
   width: fit-content;
+  justify-self: center;
 }
 
-#profileIconContainer:hover {
+.iconContainer.profileIconContainer:hover {
   background-color: #565a45;
 }
 
-#profileIconContainer:active {
+.iconContainer.profileIconContainer:active {
   background-color: #4c503d;
 }
 

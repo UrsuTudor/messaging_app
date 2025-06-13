@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "../assets/stylesheets/profile";
+import "../assets/stylesheets/profile.css";
 
-export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, user }) {
+export default function Profile({ loggedUser, getLoggedUser, user }) {
   const [renderDescriptionForm, setRenderDescriptionForm] = useState(false);
   const [description, setDescription] = useState(user.description);
 
@@ -93,25 +93,23 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
                 style={{ display: "none" }}
                 onChange={(e) => setAvatar(e.target.files[0])}
               />
-              <label htmlFor="file" className="iconContainer" id="profileIconContainer">
+              <label htmlFor="file" className="iconContainer profileIconContainer">
                 <p>Upload File</p>
                 <img className="icon" src="chevron-up.svg" alt="An icon of an arrow pointing up" />
               </label>
-            </div>
-
-            <div className="iconContainer" id="profileIconContainer" onClick={updateProfilePicture}>
-              <p>Update profile picture </p>
-              <img className="icon" src="save.svg" alt="An icon of a save file" />
+              <div className="iconContainer profileIconContainer" onClick={updateProfilePicture}>
+                Update profile picture
+                <img className="icon" src="save.svg" alt="An icon of a save file" />
+              </div>
             </div>
           </form>
         ) : (
           loggedUser.uuid == user.uuid && (
             <div
-              className="iconContainer"
-              id="profileIconContainer"
+              className="iconContainer profileIconContainer"
               onClick={() => setRenderAvatarForm(true)}
             >
-              <p>Change profile picture </p>
+              Change profile picture
               <img className="icon" src="edit-3.svg" alt="An edit icon" />
             </div>
           )
@@ -129,16 +127,15 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
+              <div
+                className="iconContainer profileIconContainer"
+                data-section="description"
+                onClick={updateDescription}
+              >
+                Update description
+                <img className="icon" src="edit-3.svg" alt="An edit icon" />
+              </div>
             </label>
-            <div
-              className="iconContainer"
-              id="profileIconContainer"
-              data-section="description"
-              onClick={updateDescription}
-            >
-              <p>Update description</p>
-              <img className="icon" src="edit-3.svg" alt="An edit icon" />
-            </div>
           </form>
         ) : (
           <div>
@@ -146,8 +143,7 @@ export default function Profile({ loggedUser, getLoggedUser, setProfileDisplay, 
             <p>{user.description}</p>
             {loggedUser.uuid == user.uuid && (
               <div
-                className="iconContainer"
-                id="profileIconContainer"
+                className="iconContainer profileIconContainer"
                 data-section="description"
                 onClick={() => setRenderDescriptionForm(true)}
               >
