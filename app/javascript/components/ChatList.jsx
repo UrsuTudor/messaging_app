@@ -31,7 +31,6 @@ export default function ChatList({
   }, [refetchChatList])
 
   useEffect(() => {
-    console.log(scrollBottom)
     if (pagination.page > pagination.pages) {
       updateListEndMessage(setPagination);
       return;
@@ -49,7 +48,7 @@ export default function ChatList({
       () => updateScrollBottom(setScrollBottom, chatListRef.current),
       50
     );
-    console.log(chatListRef.current)
+
     chatListRef.current.addEventListener("scroll", throttledUpdateScrollBottom);
 
     return () => {
@@ -61,7 +60,6 @@ export default function ChatList({
 
   return (
     <div className="mobileChatListContainer">
-      {console.log(chatList.length)}
       <div ref={chatListRef} className="chatListContainer">
         {chatList.map((user) => (
           <div
