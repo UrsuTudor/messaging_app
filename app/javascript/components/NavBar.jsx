@@ -11,27 +11,28 @@ export default function NavBar({
   return (
     <nav>
       {loggedUser && !profileDisplay ? (
-        <div onClick={() => setProfileDisplay(true)} className="userHeader">
+        <button onClick={() => setProfileDisplay(true)} className="userHeader" data-testid="profileBtn">
           <img className="bigAvatar" src={loggedUser.avatar} alt={loggedUser.name + "'s profile picture"} />
           <h4 className="userName">{loggedUser.name}</h4>
-        </div>
+        </button>
       ) : (
-        <div
+        <button
           className="iconContainer"
           onClick={() => {
             setUserForProfile(null);
             setProfileDisplay(false);
           }}
+          data-testid="homeBtn"
         >
           <p>Home</p>
           <img className="icon" src="home.svg" alt="A home icon" />
-        </div>
+        </button>
       )}
       <h1>Hiker's Hub</h1>
-      <div className="iconContainer" onClick={signOut}>
+      <button className="iconContainer" onClick={signOut}>
         <p>Log Out</p>
         <img className="icon" src="log-out.svg" alt="A sign out icon" />
-      </div>
+      </button>
     </nav>
   );
 }

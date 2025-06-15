@@ -54,7 +54,10 @@ nav {
 
 nav > .userHeader {
   width: fit-content;
+  background-color: #262b15;
   border-radius: 40px;
+  border: none;
+  color: #afb4ad;
   padding-right: 2vw;
 }
 
@@ -76,6 +79,9 @@ nav > h1 {
   display: flex;
   align-items: center;
   gap: 1vw;
+  border: none;
+  background-color: #262b15;
+  color: #afb4ad;
 
   padding: 1vh;
   height: 5vh;
