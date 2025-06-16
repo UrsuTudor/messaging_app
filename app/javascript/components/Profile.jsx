@@ -81,7 +81,7 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
     <div className="userProfile">
       <div className="imageContainer">
         <h1>{user.name}</h1>
-        <img className="profileImage" src={user.avatar ? user.avatar : "user.svg"} alt={user.name + "'s profile picture"} />
+        <img className="profileImage" src={user.avatar ? user.avatar : "user.svg"} alt={user.name + "'s profile picture"} data-testid="userAvatar"/>
 
         {renderAvatarForm ? (
           <form className="avatarForm">
@@ -97,21 +97,21 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
                 <p>Upload File</p>
                 <img className="icon" src="chevron-up.svg" alt="An icon of an arrow pointing up" />
               </label>
-              <div className="iconContainer profileIconContainer" onClick={updateProfilePicture}>
+              <button type="button" className="iconContainer profileIconContainer" onClick={updateProfilePicture}>
                 Update profile picture
                 <img className="icon" src="save.svg" alt="An icon of a save file" />
-              </div>
+              </button>
             </div>
           </form>
         ) : (
           loggedUser.uuid == user.uuid && (
-            <div
+            <button
               className="iconContainer profileIconContainer"
               onClick={() => setRenderAvatarForm(true)}
             >
               Change profile picture
               <img className="icon" src="edit-3.svg" alt="An edit icon" />
-            </div>
+            </button>
           )
         )}
       </div>
@@ -127,14 +127,14 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
-              <div
+              <button
                 className="iconContainer profileIconContainer"
                 data-section="description"
                 onClick={updateDescription}
               >
                 Update description
                 <img className="icon" src="edit-3.svg" alt="An edit icon" />
-              </div>
+              </button>
             </label>
           </form>
         ) : (
@@ -142,19 +142,19 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
             <h1></h1>
             <p>{user.description}</p>
             {loggedUser.uuid == user.uuid && (
-              <div
+              <button
                 className="iconContainer profileIconContainer"
                 data-section="description"
                 onClick={() => setRenderDescriptionForm(true)}
               >
                 <p>Change description</p>
                 <img className="icon" src="edit-3.svg" alt="An edit icon" />
-              </div>
+              </button>
             )}
           </div>
         )}
       </div>
-      {feedback && <p className="feedbackMsg">{feedback}</p>}
+      {feedback && <p className="feedbackMsg" data-testid={"feedback"}>{feedback}</p>}
     </div>
   );
 }
