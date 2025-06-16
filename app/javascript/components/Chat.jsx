@@ -26,6 +26,7 @@ export default function Chat({
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
     setChat([]);
+    if(pagination.page > 1) getChat(1)
   }, [receiver]);
 
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function Chat({
     if (receiver.uuid && scrollTop > scrollThreshold && !pagination.loading) {
       getChat();
     }
+
   }, [receiver.uuid, scrollTop]);
 
   async function getChat(page = pagination.page) {
