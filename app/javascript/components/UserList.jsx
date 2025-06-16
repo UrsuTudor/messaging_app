@@ -45,9 +45,9 @@ export default function UserList({
   }, []);
 
   return (
-    <div ref={userListRef} className="userListContainer">
+    <div ref={userListRef} className="userListContainer" data-testid="userList">
       {userList.map((user) => (
-        <div
+        <button
           key={user.uuid}
           className="userContainer"
           onClick={() => {
@@ -74,6 +74,8 @@ export default function UserList({
             setProfileDisplay(false);
             setUserForProfile(null);
           }}
+
+          data-testid="userListBtn"
         >
           <div className="userHeader">
             <img
@@ -83,7 +85,7 @@ export default function UserList({
             />
             <h4 className="userName">{user.name}</h4>
           </div>
-        </div>
+        </button>
       ))}
       {pagination.endMessage && <p>{pagination.endMessage}</p>}
     </div>

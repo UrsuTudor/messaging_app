@@ -119,7 +119,7 @@ export default function Chat({
   }, []);
 
   return (
-    <div className="chatContainer">
+    <div className="chatContainer" data-testid="chatContainer">
       {receiver.uuid && (
         <div className="userHeader">
           {isMobile && (
@@ -149,7 +149,7 @@ export default function Chat({
               src={receiver.avatar ? receiver.avatar : "user.svg"}
               alt={receiver.name + "'s profile picture"}
             />
-            <h1>{receiver.name}</h1>
+            <h1 data-testid="chatUserName">{receiver.name}</h1>
           </div>
         </div>
       )}

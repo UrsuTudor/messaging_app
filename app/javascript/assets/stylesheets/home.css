@@ -122,7 +122,10 @@ nav > h1 {
 
 .userContainer {
   padding: 0.5vh;
+  background-color: #848871;
+  border: none;
   border-bottom: #464b37 1px solid;
+  min-height: 6vh;
   max-height: 7vh;
   overflow: hidden;
 }

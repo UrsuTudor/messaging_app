@@ -80,7 +80,7 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
   return (
     <div className="userProfile">
       <div className="imageContainer">
-        <h1>{user.name}</h1>
+        <h1 data-testid="profileUserName">{user.name}</h1>
         <img className="profileImage" src={user.avatar ? user.avatar : "user.svg"} alt={user.name + "'s profile picture"} data-testid="userAvatar"/>
 
         {renderAvatarForm ? (
