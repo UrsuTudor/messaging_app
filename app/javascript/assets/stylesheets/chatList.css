@@ -1,22 +1,31 @@
-.chatListContainer {
+.chatListContainer{
+  display: flex;
+  flex-direction: column;
+}
+
+.chatList {
+  display: flex;
+  flex-direction: column;
   overflow: scroll;
   overflow-x: hidden;
   background-color: #848871;
   scrollbar-color: #464b37 #848871;
   border-right: #464b37 1px solid;
+  flex: 1;
 }
 
 .smallAvatar {
   margin-bottom: auto;
 }
 
-.mobileChatListContainer{
-  display: flex;
-  flex-direction: column;
-}
-
-.mobileChatListContainer > h1 {
+.chatListContainer > h1 {
   filter: brightness(0.85);
   background-color: #676b53;
   padding-left: 10px;
+  height: fit-content;
+}
+
+.userContainer > p {
+  padding-left: 1vw;
+  text-align: left;
 }

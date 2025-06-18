@@ -15,6 +15,8 @@ export default function MobileLayout({
   profileDisplay,
   setProfileDisplay,
   signOut,
+  refetchChatList,
+  setRefetchChatList
 }) {
   const [displayChatList, setDisplayChatList] = useState(true);
   const [displayChat, setDisplayChat] = useState(false);
@@ -37,6 +39,8 @@ export default function MobileLayout({
             setDisplayChat={setDisplayChat}
             setDisplayChatList={setDisplayChatList}
             setUserForProfile={setUserForProfile}
+            refetchChatList={refetchChatList}
+            setRefetchChatList={setRefetchChatList}
           />
         )}
 
@@ -57,6 +61,7 @@ export default function MobileLayout({
             setUserForProfile={setUserForProfile}
             setDisplayChat={setDisplayChat}
             setDisplayChatList={setDisplayChatList}
+            setRefetchChatList={setRefetchChatList}
           />
         )}
       </div>

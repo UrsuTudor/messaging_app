@@ -65,6 +65,8 @@ export default function Home() {
           profileDisplay={profileDisplay}
           setProfileDisplay={setProfileDisplay}
           signOut={signOut}
+          refetchChatList={refetchChatList}
+          setRefetchChatList={setRefetchChatList}
         />
       ) : (
         <div className="appContainer">

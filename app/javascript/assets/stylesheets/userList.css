@@ -1,4 +1,9 @@
-.userListContainer { 
+.userListContainer{
+  display: flex;
+  flex-direction: column;
+}
+
+.userList { 
   display: flex;
   flex-direction: column;
   overflow: scroll;
@@ -6,10 +11,12 @@
   background-color: #848871;
   scrollbar-color: #464b37 #848871;
   border-left: #464b37 1px solid;
- }
+  flex: 1;
+}
 
- .cardContainer {
-  position: absolute;
-  margin-right: -500px;
-  margin-top: -500px
+ .userListContainer > h1 {
+  filter: brightness(0.85);
+  background-color: #676b53;
+  padding-left: 10px;
+  height: fit-content;
  }

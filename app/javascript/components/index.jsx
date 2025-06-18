@@ -14,3 +14,4 @@ document.addEventListener("turbo:load", () => {
 // choose a font, font size and color
 // write frontend tests and update backend tests to test pagy
 // add css to login page
+// only make userList show users that the current user doesn't have a chat with

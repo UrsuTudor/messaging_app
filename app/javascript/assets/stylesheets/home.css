@@ -17,6 +17,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
+
 img, picture, video, canvas, svg {
   display: block;
   max-width: 100%;
@@ -108,6 +109,7 @@ nav > h1 {
 .chatContainer { flex: 3; }
 .userProfile { flex: 3}
 .userListContainer { flex: 1; }
+.mobileList { height: 50% ;}
 
 /* general rules needed in the child components */
 .smallAvatar {
@@ -121,13 +123,11 @@ nav > h1 {
 }
 
 .userContainer {
-  padding: 0.5vh;
   background-color: #848871;
   border: none;
-  border-bottom: #464b37 1px solid;
-  min-height: 6vh;
-  max-height: 7vh;
-  overflow: hidden;
+  border-bottom: #464b37 1px solid; 
+  min-height: 50px;
+  height: 6vh;
 }
 
 .userContainer:hover {

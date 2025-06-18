@@ -28,7 +28,13 @@ export default function UserList({
     const scrollThreshold = userListRef.current.scrollHeight * 0.1;
 
     if (scrollBottom < scrollThreshold && !pagination.loading) {
-      setNewElements(`/api/v1/users/list?page=${pagination.page}`, "users", setUserList, setPagination, pagination.page)
+      setNewElements(
+        `/api/v1/users/list?page=${pagination.page}`,
+        "users",
+        setUserList,
+        setPagination,
+        pagination.page
+      );
     }
   }, [scrollBottom]);
 
@@ -45,49 +51,51 @@ export default function UserList({
   }, []);
 
   return (
-    <div ref={userListRef} className="userListContainer" data-testid="userList">
-      {userList.map((user) => (
-        <button
-          key={user.uuid}
-          className="userContainer"
-          onClick={() => {
-            setReceiver({
-              avatar: user.avatar,
-              name: user.name,
-              description: user.description,
-              uuid: user.uuid,
-            });
-            setProfileDisplay(false);
+    <div className={isMobile ? "userListContainer mobileList" : "userListContainer"}>
+      <h1>Users</h1>
+      <div className="userList" ref={userListRef} data-testid="userList">
+        {userList.map((user) => (
+          <button
+            key={user.uuid}
+            className="userContainer"
+            onClick={() => {
+              setReceiver({
+                avatar: user.avatar,
+                name: user.name,
+                description: user.description,
+                uuid: user.uuid,
+              });
+              setProfileDisplay(false);
 
-            if (isMobile) {
-              setDisplayChat(true);
-              setDisplayChatList(false);
-            }
-          }}
-          onMouseEnter={() => {
-            if (!isMobile) {
-              setProfileDisplay(true);
-              setUserForProfile(user);
-            }
-          }}
-          onMouseLeave={() => {
-            setProfileDisplay(false);
-            setUserForProfile(null);
-          }}
-
-          data-testid="userListBtn"
-        >
-          <div className="userHeader">
-            <img
-              className="smallAvatar"
-              src={user.avatar ? user.avatar : "user.svg"}
-              alt={user.name + "'s profile picture"}
-            />
-            <h4 className="userName">{user.name}</h4>
-          </div>
-        </button>
-      ))}
-      {pagination.endMessage && <p>{pagination.endMessage}</p>}
+              if (isMobile) {
+                setDisplayChat(true);
+                setDisplayChatList(false);
+              }
+            }}
+            onMouseEnter={() => {
+              if (!isMobile) {
+                setProfileDisplay(true);
+                setUserForProfile(user);
+              }
+            }}
+            onMouseLeave={() => {
+              setProfileDisplay(false);
+              setUserForProfile(null);
+            }}
+            data-testid="userListBtn"
+          >
+            <div className="userHeader">
+              <img
+                className="smallAvatar"
+                src={user.avatar ? user.avatar : "user.svg"}
+                alt={user.name + "'s profile picture"}
+              />
+              <h4 className="userName">{user.name}</h4>
+            </div>
+          </button>
+        ))}
+        {pagination.endMessage && <p>{pagination.endMessage}</p>}
+      </div>
     </div>
   );
 }

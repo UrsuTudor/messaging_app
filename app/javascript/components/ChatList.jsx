@@ -13,7 +13,7 @@ export default function ChatList({
   setDisplayChatList,
   setUserForProfile,
   refetchChatList,
-  setRefetchChatList
+  setRefetchChatList,
 }) {
   const [chatList, setChatList] = useState([]);
   const [scrollBottom, setScrollBottom] = useScrolling();
@@ -23,12 +23,19 @@ export default function ChatList({
   const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
-    setPagination((prevPagination) => ({...prevPagination, page: 1}))
-    setChatList([])
-    
-    if(refetchChatList == true) setNewElements(`/api/v1/users/chats?page=${1}`, "chat_users", setChatList, setPagination, pagination.page);
-    setRefetchChatList(false)
-  }, [refetchChatList])
+    setPagination((prevPagination) => ({ ...prevPagination, page: 1 }));
+    setChatList([]);
+
+    if (refetchChatList == true)
+      setNewElements(
+        `/api/v1/users/chats?page=${1}`,
+        "chat_users",
+        setChatList,
+        setPagination,
+        pagination.page
+      );
+    setRefetchChatList(false);
+  }, [refetchChatList]);
 
   useEffect(() => {
     if (pagination.page > pagination.pages) {
@@ -39,15 +46,19 @@ export default function ChatList({
     const scrollThreshold = chatListRef.current.scrollHeight * 0.1;
 
     if (scrollBottom < scrollThreshold && !pagination.loading) {
-      setNewElements(`/api/v1/users/chats?page=${pagination.page}`, "chat_users", setChatList, setPagination, pagination.page);
+      setNewElements(
+        `/api/v1/users/chats?page=${pagination.page}`,
+        "chat_users",
+        setChatList,
+        setPagination,
+        pagination.page
+      );
     }
   }, [scrollBottom]);
 
   useEffect(() => {
-    const throttledUpdateScrollBottom = () => throttle(
-      () => updateScrollBottom(setScrollBottom, chatListRef.current),
-      50
-    );
+    const throttledUpdateScrollBottom = () =>
+      throttle(() => updateScrollBottom(setScrollBottom, chatListRef.current), 50);
 
     chatListRef.current.addEventListener("scroll", throttledUpdateScrollBottom);
 
@@ -59,10 +70,11 @@ export default function ChatList({
   }, []);
 
   return (
-    <div className="mobileChatListContainer">
-      <div ref={chatListRef} className="chatListContainer">
+    <div className="chatListContainer">
+      <h1>Chats</h1>
+      <div ref={chatListRef} className={isMobile ? "chatList mobileList" : "chatList"} data-testid="chatList">
         {chatList.map((user) => (
-          <div
+          <button
             key={user.uuid}
             className="userContainer"
             onClick={() => {
@@ -78,6 +90,7 @@ export default function ChatList({
                 setDisplayChatList(false);
               }
             }}
+            data-testid="chatListBtn"
           >
             <div className="userHeader">
               <img
@@ -87,13 +100,11 @@ export default function ChatList({
               />
               <h4 className="userName">{user.name}</h4>
             </div>
-            <p>{user.last_message}</p>
-          </div>
+          </button>
         ))}
       </div>
       {isMobile && (
         <>
-          <h1>Other Users</h1>
           <UserList
             setReceiver={setReceiver}
             setProfileDisplay={setProfileDisplay}
@@ -103,6 +114,6 @@ export default function ChatList({
           />
         </>
       )}
-   </div>
+    </div>
   );
 }

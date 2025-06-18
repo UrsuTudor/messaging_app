@@ -20,7 +20,7 @@ test.describe("userList tests", () => {
 
       const userList = page.getByTestId("userList");
       await userList.evaluate(async (el) => {
-        el.scrollBy({ top: 200, behavior: "smooth" });
+        el.scrollBy({ top: 600, behavior: "smooth" });
       });
       await page.waitForTimeout(500);
 
