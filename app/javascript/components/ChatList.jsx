@@ -26,7 +26,7 @@ export default function ChatList({
     setPagination((prevPagination) => ({ ...prevPagination, page: 1 }));
     setChatList([]);
 
-    if (refetchChatList == true)
+    if (refetchChatList == true) {
       setNewElements(
         `/api/v1/users/chats?page=${1}`,
         "chat_users",
@@ -34,6 +34,8 @@ export default function ChatList({
         setPagination,
         pagination.page
       );
+    }
+    
     setRefetchChatList(false);
   }, [refetchChatList]);
 

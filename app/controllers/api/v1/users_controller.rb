@@ -1,11 +1,20 @@
 class Api::V1::UsersController < ApplicationController
   include Pagy::Backend
   def index
-    @pagy, @users = pagy(User.all, page: params[:page], limit: 20)
+    user_ids_with_chat = current_user.chats
+      .joins(:users)
+      .where.not(users: { id: current_user.id })
+      .pluck("users.id")
+      .uniq
+
+    @pagy, @users = pagy(
+      User.where.not(id: [ current_user.id ] + user_ids_with_chat),
+      page: params[:page],
+      limit: 20
+    )
+
     render json: {
-      users: @users
-              .reject { |user| user.uuid == current_user.uuid }
-              .map { |user| user_data(user) },
+      users: @users.map { |user| user_data(user) },
       metadata: pagy_metadata(@pagy)
     }
   end

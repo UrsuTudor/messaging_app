@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import userEvent from "@testing-library/user-event";
 
 test.describe("chat tests", () => {
   test.beforeEach(async ({ page }) => {
