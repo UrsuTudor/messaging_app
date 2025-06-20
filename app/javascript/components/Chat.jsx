@@ -148,17 +148,18 @@ export default function Chat({
               className="bigAvatar"
               src={receiver.avatar ? receiver.avatar : "user.svg"}
               alt={receiver.name + "'s profile picture"}
+              data-testid="chatAvatar"
             />
             <h1 data-testid="chatUserName">{receiver.name}</h1>
           </div>
         </div>
       )}
-      <div ref={chatRef} className="msgContainer">
+      <div ref={chatRef} className="msgContainer" data-testid="msgList">
         {chat &&
           chat.reverse().map((message, i) => {
             if (message.user_uuid == receiver.uuid) {
               return (
-                <div className="message" key={i}>
+                <div className="message" key={i} data-testid="msg">
                   <img
                     className="smallAvatar"
                     src={receiver.avatar}
@@ -169,7 +170,7 @@ export default function Chat({
               );
             } else {
               return (
-                <div className="message pushRight" key={i}>
+                <div className="message pushRight" key={i} data-testid="msg">
                   <p>{message.content}</p>
                   <img
                     className="smallAvatar"
@@ -189,10 +190,11 @@ export default function Chat({
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            data-testid="chatInput"
           />
-          <div className="chatIconContainer">
+          <button className="chatIconContainer sendButton" data-testid="sendButton">
             <img className="icon" src="send.svg" alt="A send icon" onClick={(e) => sendMessage(e, message)} />
-          </div>
+          </button>
         </form>
       )}
     </div>
