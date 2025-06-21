@@ -30,8 +30,6 @@ class Api::V1::UsersController < ApplicationController
     )
 
     users_with_chat_array = @users_with_chat.filter_map do |chat|
-      next unless chat.messages.last&.content
-
       receiver = chat.users.find { |user| user.uuid != current_user.uuid }
       receiver_data = user_data(receiver)
       receiver_data[:last_message] = chat.messages.last&.content

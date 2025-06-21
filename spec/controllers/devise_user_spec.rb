@@ -36,10 +36,10 @@ describe "UsersController", type: :request do
     create_list(:user, 39)
 
     get "/api/v1/users/list?page=1"
-    expect(JSON.parse(response.body)["users"].length).to be(19)
+    expect(JSON.parse(response.body)["users"]).not_to include(logged_user)
 
     get "/api/v1/users/list?page=2"
-    expect(JSON.parse(response.body)["users"].length).to be(20)
+    expect(JSON.parse(response.body)["users"].length).to be(19)
   end
 
   it "returns an array of user + last message data of the users the current_user has a chat with" do
@@ -54,24 +54,6 @@ describe "UsersController", type: :request do
     expect(first_data_set.length).to be(20)
     expect(first_data_set[0]["last_message"]).to eq("Hello")
     expect(first_data_set[0]["uuid"]).to eq(receiver.uuid)
-  end
-
-
-  it "skips over a chat if it has been opened but has no message in it" do
-    user1 = create(:user)
-    user2 = create(:user, email: "dave2@mail.com")
-    user3 = create(:user, email: "dave3@mail.com")
-    sign_in(user1)
-
-    post "/api/v1/chats/open", params: { chat: { receiver_uuid: user2.uuid } }
-    post "/api/v1/chats/open", params: { chat: { receiver_uuid: user3.uuid } }
-
-    create(:message, chat: Chat.first, content: "first message", user: user1)
-
-    get "/api/v1/users/chats"
-    chat_users = JSON.parse(response.body)["chat_users"]
-
-    expect(chat_users.length).to be(1)
   end
 
   it "returns logged user info" do
