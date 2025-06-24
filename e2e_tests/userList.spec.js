@@ -7,25 +7,26 @@ test.describe("userList tests", () => {
 
   test.describe("handles pagination", () => {
     test("requests a list of users on load", async ({ page }) => {
-      const request = await page.waitForRequest((request) => {
-        return request.url().includes("/api/v1/users/list?page=1") && request.method() === "GET";
-      });
-
-      expect(request.url()).toContain(`/api/v1/users/list?page=1`);
-      expect(request.method()).toBe("GET");
+      await expect(page.getByTestId("userListBtn").nth(0)).toBeVisible();
+      expect(await page.getByTestId("userListBtn").count()).toBeGreaterThan(10)
     });
 
     test("requests more users when the container is scrolled down", async ({ page }) => {
       await expect(page.getByTestId("userListBtn").nth(0)).toBeVisible();
 
       const userList = page.getByTestId("userList");
-      await userList.evaluate(async (el) => {
+      const initialCount = await page.getByTestId("userListBtn").count();
+
+      await userList.evaluate((el) => {
         el.scrollBy({ top: 600, behavior: "smooth" });
       });
-      await page.waitForTimeout(500);
 
-      const userCount = await page.getByTestId("userListBtn").count();
-      expect(userCount).toBeGreaterThan(20);
+      await expect
+        .poll(async () => await page.getByTestId("userListBtn").count(), {
+          timeout: 3000,
+          message: "Expected more users to load after scrolling",
+        })
+        .toBeGreaterThan(initialCount);
     });
   });
 

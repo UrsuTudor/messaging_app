@@ -14,4 +14,3 @@ document.addEventListener("turbo:load", () => {
 // choose a font, font size and color
 // add css to login page
 // try to see if you can smooth out the scrolling of your chat
-// fix flaky tests that fail when ran with the otherss
