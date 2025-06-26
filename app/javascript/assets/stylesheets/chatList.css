@@ -18,13 +18,6 @@
   margin-bottom: auto;
 }
 
-.chatListContainer > h1 {
-  filter: brightness(0.85);
-  background-color: #676b53;
-  padding-left: 10px;
-  height: fit-content;
-}
-
 .userContainer > p {
   padding-left: 1vw;
   text-align: left;

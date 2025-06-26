@@ -38,6 +38,11 @@ h1, h2, h3, h4, h5, h6 {
   isolation: isolate;
 }
 
+:root {
+  font-family: Inter, sans-serif;
+  font-feature-settings: 'liga' 1, 'calt' 1; 
+}
+
 .appContainer {
   display: flex;
   flex-direction: column;
@@ -49,7 +54,7 @@ nav {
   align-items: center;
   padding: 10px;
   background-color: #262b15;
-  color: #afb4ad;
+  color: white;
   height: 8%
 }
 
@@ -74,6 +79,7 @@ nav > .userHeader:active {
 nav > h1 {
   flex: 2;
   text-align: center;
+  align-content: center;
 }
 
 .iconContainer {
@@ -85,7 +91,7 @@ nav > h1 {
   color: #ffffff;
 
   padding: 1vh;
-  height: 5vh;
+  height: 100%;
   border-radius: 20px;
 }
 
@@ -100,7 +106,7 @@ nav > h1 {
 
 .mainBodyContainer {
   display: flex;
-  height: 92%;
+  height: 92%
 }
 
 /* layout of the children */
@@ -109,16 +115,18 @@ nav > h1 {
 .chatContainer { flex: 3; }
 .userProfile { flex: 3}
 .userListContainer { flex: 1; }
-.mobileList { height: 50% ;}
+.mobileList { height: 50%;}
 
 /* general rules needed in the child components */
 .smallAvatar {
-  height: 4vh;
+  height: 45px;
   border-radius: 20px;
 }
 
 .bigAvatar {
-  height: 6vh;
+  height: 60px;
+  width: 60px;
+  object-fit: cover;
   border-radius: 30px;
 }
 
@@ -154,6 +162,31 @@ nav > h1 {
 }
 
 .icon {
-  height: 2.5vh;
+  height: 100%;
+  max-height: 50px;
   margin: auto;
+}
+
+.listHeader {
+  color: white;
+  background-color: #676b53;
+  padding-left: 10px;
+  height: fit-content;
+}
+
+@media (max-width: 425px), (max-height: 900px) {
+  nav {
+    height: 15%;
+  }
+
+  .mainBodyContainer {
+    height: 85%;
+  }
+}
+
+@media (max-height: 400px) {
+  .bigAvatar {
+    height: 40px;
+    width: 40px;
+  }
 }

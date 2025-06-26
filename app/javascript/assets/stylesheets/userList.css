@@ -13,10 +13,3 @@
   border-left: #464b37 1px solid;
   flex: 1;
 }
-
- .userListContainer > h1 {
-  filter: brightness(0.85);
-  background-color: #676b53;
-  padding-left: 10px;
-  height: fit-content;
- }

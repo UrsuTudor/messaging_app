@@ -36,27 +36,27 @@
 .messageForm {
   display: flex;
   margin-top: auto;
-  padding-top: 1vh;
+  padding: 10px 0 10px 0;
+  align-items: center;
   border-top: #464b37 1px solid;
   background-color: #848871;
 }
 
 .msgInput {
   border-radius: 20px;
-  margin-bottom: 1vh ;
   margin-left: 3vw;
 
   border: none;
   width: 30vw;
-  height: 3vh;
+  height: 30px;
   padding-left: 0.5vw;
 }
 
 .chatIconContainer {
   display: flex;
   align-items: center;
-  height: 3.5vh;
-  width: 3.5vh;
+  height: 40px;
+  width: 40px;
   border-radius: 20px;
 }
 
@@ -100,4 +100,10 @@
   background-color: #848871;
   border: none;
   cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .msgInput {
+    width: 75%;
+  }
 }

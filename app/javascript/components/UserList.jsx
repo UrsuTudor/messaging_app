@@ -52,7 +52,7 @@ export default function UserList({
 
   return (
     <div className={isMobile ? "userListContainer mobileList" : "userListContainer"}>
-      <h1>Users</h1>
+      <h1 className="listHeader"> Users</h1>
       <div className="userList" ref={userListRef} data-testid="userList">
         {userList.map((user) => (
           <button

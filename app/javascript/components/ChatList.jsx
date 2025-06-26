@@ -73,7 +73,7 @@ export default function ChatList({
 
   return (
     <div className="chatListContainer">
-      <h1>Chats</h1>
+      <h1 className="listHeader">Chats</h1>
       <div ref={chatListRef} className={isMobile ? "chatList mobileList" : "chatList"} data-testid="chatList">
         {chatList.map((user) => (
           <button
