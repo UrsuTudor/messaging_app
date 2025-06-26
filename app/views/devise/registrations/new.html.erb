@@ -1,33 +1,43 @@
-<h2>Sign up</h2>
+<%= stylesheet_link_tag "login", media: "all" %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-  <div class="field">
-    <%= f.label :name %> <br />
-    <%= f.text_field :name %>
-  </div>
+<%= image_tag "forest.jpg", alt: "A background image of a forest drawn in a minimalistic style", class: "forestImg" %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+<div class="formContainer">
+  <h2>Sign up</h2>
 
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+    <div class="field">
+      <%= f.label :name %> <br />
+      <%= f.text_field :name %>
+    </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
+    <div class="field">
+      <%= f.label :email %><br />
+      <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    </div>
 
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
+    <div class="field passwordField">
+      <div>
+        <%= f.label :password %>
+        <% if @minimum_password_length %> 
+        <em class="minLengthMsg">(<%= @minimum_password_length %> characters minimum)</em> <br>
+        <% end %>
+      </div>
+      <%= f.password_field :password, autocomplete: "new-password", class: "minLengthMsg" %>
+    </div>
 
-<%= render "devise/shared/links" %>
+    <div class="field">
+      <%= f.label :password_confirmation %><br />
+      <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+    </div>
+
+    <div>
+      <%= f.submit "Sign up", class: "loginBtn" %>
+    </div>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+</div>
+
+<a class="attribution"  href="https://www.freepik.com/free-vector/silhouette-shadow-forest-scene_24785310.htm">Image by brgfx on Freepik</a>

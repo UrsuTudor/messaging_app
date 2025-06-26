@@ -1,0 +1,75 @@
+body, form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  color: white;
+}
+
+body {
+  height: 100vh;
+  justify-content: center;
+}  
+
+.formContainer {
+  background-color: #747c5c;
+  z-index: 1;
+
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border-radius: 20px;
+  padding-bottom: 1vh;
+}
+
+h1, h2, a {
+  color: white;
+  z-index: 1;
+}
+
+.forestImg {
+  position: absolute;
+  z-index: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+.loginBtn {
+  background-color: #5c6349;
+  border: none;
+  border-radius: 20px;
+  width: 5vw;
+  color: white;
+  height: 3.5vh;
+  margin: 2vh 0 2vh 0;
+}
+
+.loginBtn:hover {
+  background-color: rgb(73, 78, 57);
+  cursor: pointer;
+}
+
+.loginBtn:active {
+  background-color: rgb(57, 61, 45);
+}
+
+.new_user {
+  width: 400px;
+}
+.passwordField {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.attribution {
+  position: fixed;
+  bottom: 0;
+  background-color: #262b15;
+  width: 100%;
+  padding: 0.5% 0 0.5% 0;
+  text-align: center;
+}
