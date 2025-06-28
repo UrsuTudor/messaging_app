@@ -129,6 +129,7 @@ export default function Chat({
                 setDisplayChat(false);
                 setDisplayChatList(true);
               }}
+              data-testid="chatBackArrow"
             >
               <img className="icon" src="arrow-left.svg" />
             </div>
@@ -143,6 +144,8 @@ export default function Chat({
                 setDisplayChatList(true);
               }
             }}
+
+            data-testid="userChatHeader"
           >
             <img
               className="bigAvatar"

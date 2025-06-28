@@ -11,5 +11,4 @@ document.addEventListener("turbo:load", () => {
   }
 });
 
-// choose a font, font size and color
 // try to see if you can smooth out the scrolling of your chat
