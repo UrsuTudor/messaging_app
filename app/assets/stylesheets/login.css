@@ -8,6 +8,7 @@ body, form {
 
 body {
   height: 100vh;
+  width: 100vw;
   justify-content: center;
 }  
 
@@ -15,7 +16,7 @@ body {
   background-color: #747c5c;
   z-index: 1;
 
-  width: 30%;
+  width: 30vw;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,13 +35,14 @@ h1, h2, a {
   z-index: 0;
   height: 100vh;
   width: 100vw;
+  object-fit: cover;
 }
 
 .loginBtn {
   background-color: #5c6349;
   border: none;
   border-radius: 20px;
-  width: 5vw;
+  width: 80px;
   color: white;
   height: 3.5vh;
   margin: 2vh 0 2vh 0;
@@ -55,9 +57,6 @@ h1, h2, a {
   background-color: rgb(57, 61, 45);
 }
 
-.new_user {
-  width: 400px;
-}
 .passwordField {
   display: flex;
   flex-direction: column;
@@ -72,4 +71,16 @@ h1, h2, a {
   width: 100%;
   padding: 0.5% 0 0.5% 0;
   text-align: center;
+}
+
+@media (max-width: 900px) {
+  .formContainer {
+    width: 65vw;
+  }
+}
+
+@media (max-width: 450px) {
+  .formContainer {
+    width: 80vw;
+  }
 }
