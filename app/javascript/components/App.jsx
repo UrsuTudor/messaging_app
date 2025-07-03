@@ -7,8 +7,8 @@ export default function App(){
   const router = createBrowserRouter(routes)
 
   return(
-    <StrictMode>
+    // <StrictMode>
         <RouterProvider router={router} />
-    </StrictMode> 
+    // </StrictMode> 
   )
 }

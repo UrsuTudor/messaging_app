@@ -159,7 +159,7 @@ export default function Chat({
       )}
       <div ref={chatRef} className="msgContainer" data-testid="msgList">
         {chat &&
-          chat.reverse().map((message, i) => {
+          chat.map((message, i) => {
             if (message.user_uuid == receiver.uuid) {
               return (
                 <div className="message" key={i} data-testid="msg">
