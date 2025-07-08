@@ -35,5 +35,6 @@
       ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
     },
     "testEnvironment": "jsdom"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }

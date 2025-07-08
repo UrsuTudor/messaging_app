@@ -74,7 +74,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_16_194645) do
     t.datetime "remember_created_at"
     t.string "name", null: false
     t.string "description"
-    t.uuid "uuid", null: false
+    t.string "uuid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true

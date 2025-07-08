@@ -8,8 +8,8 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-require 'factory_bot_rails'
-include FactoryBot::Syntax::Methods
+# require 'factory_bot_rails'
+# include FactoryBot::Syntax::Methods
 
-100.times { create(:user) }
-100.times { create(:chat) }
+# 100.times { create(:user) }
+# 100.times { create(:chat) }

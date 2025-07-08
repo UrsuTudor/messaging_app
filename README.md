@@ -4,6 +4,8 @@ This is a full stack messaging app that, in concept, would be a messaging app fo
 
 Past the Devise login pages, this is an SPA.
 
+The webpage can be viewed here: https://hikers-hub.fly.dev. It uses posrgresql and fly volumes in production for ease of deployment.
+
 ## Tech Stack
  * Frontend: React
  * Backend: Ruby on Rails

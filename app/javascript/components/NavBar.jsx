@@ -12,7 +12,7 @@ export default function NavBar({
     <nav>
       {loggedUser && !profileDisplay ? (
         <button onClick={() => setProfileDisplay(true)} className="userHeader" data-testid="profileBtn">
-          <img className="bigAvatar" src={loggedUser.avatar} alt={loggedUser.name + "'s profile picture"} />
+          <img className="bigAvatar" src={loggedUser.avatar ? loggedUser.avatar : "user.svg"} alt={loggedUser.name + "'s profile picture"} />
           <h4 className="userName">{loggedUser.name}</h4>
         </button>
       ) : (
