@@ -80,6 +80,6 @@ test:
 #
 production:
   adapter: sqlite3
-  database: db/production.sqlite3
+  database: /data/production.sqlite3
   username: messaging_app
   password: <%= ENV["MESSAGING_APP_DATABASE_PASSWORD"] %>

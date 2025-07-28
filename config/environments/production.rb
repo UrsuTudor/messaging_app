@@ -1,6 +1,10 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  %w[/data/tmp /data/cache /data/storage].each do |path|
+    FileUtils.mkdir_p(path) unless Dir.exist?(path)
+  end
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -69,6 +73,8 @@ Rails.application.configure do
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
+  config.cache_store = :file_store, "/data/cache"
+  Dir.mktmpdir(nil, "/data/tmp")
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter = :resque
