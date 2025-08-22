@@ -10,8 +10,7 @@ import NavBar from "./NavBar";
 export default function Home() {
   const [loggedUser, setLoggedUser] = useState(null);
   const [receiver, setReceiver] = useState({});
-  const [profileDisplay, setProfileDisplay] = useState(false);
-  const [userForProfile, setUserForProfile] = useState(null);
+  const [profile, setProfile] = useState({display: false, user: null});
   const [refetchChatList, setRefetchChatList] = useState(false);
   const isMobile = window.innerWidth < 700;
 
@@ -58,12 +57,10 @@ export default function Home() {
         <MobileLayout
           loggedUser={loggedUser}
           getLoggedUser={getLoggedUser}
-          userForProfile={userForProfile}
-          setUserForProfile={setUserForProfile}
+          profile={profile}
+          setProfile={setProfile}
           receiver={receiver}
           setReceiver={setReceiver}
-          profileDisplay={profileDisplay}
-          setProfileDisplay={setProfileDisplay}
           signOut={signOut}
           refetchChatList={refetchChatList}
           setRefetchChatList={setRefetchChatList}
@@ -72,41 +69,37 @@ export default function Home() {
         <div className="appContainer">
           <NavBar
             loggedUser={loggedUser}
-            profileDisplay={profileDisplay}
-            setProfileDisplay={setProfileDisplay}
-            setUserForProfile={setUserForProfile}
+            profile={profile}
+            setProfile={setProfile}
             signOut={signOut}
           />
 
           <div className="mainBodyContainer">
             <ChatList
               setReceiver={setReceiver}
-              setProfileDisplay={setProfileDisplay}
+              setProfile={setProfile}
               refetchChatList={refetchChatList}
               setRefetchChatList={setRefetchChatList}
             />
 
-            {profileDisplay ? (
+            {profile["display"] ? (
               <Profile
                 loggedUser={loggedUser}
-                user={userForProfile ? userForProfile : loggedUser}
+                user={profile["user"] ? profile["user"] : loggedUser}
                 getLoggedUser={getLoggedUser}
-                setProfileDisplay={setProfileDisplay}
               />
             ) : (
               <Chat
                 receiver={receiver}
                 loggedUser={loggedUser}
-                setProfileDisplay={setProfileDisplay}
-                setUserForProfile={setUserForProfile}
+                setProfile={setProfile}
                 setRefetchChatList={setRefetchChatList}
               />
             )}
 
             <UserList
               setReceiver={setReceiver}
-              setProfileDisplay={setProfileDisplay}
-              setUserForProfile={setUserForProfile}
+              setProfile={setProfile}
             />
           </div>
         </div>

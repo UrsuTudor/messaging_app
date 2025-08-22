@@ -8,10 +8,8 @@ import UserList from "./UserList";
 
 export default function ChatList({
   setReceiver,
-  setProfileDisplay,
+  setProfile,
   setDisplayChat,
-  setDisplayChatList,
-  setUserForProfile,
   refetchChatList,
   setRefetchChatList,
 }) {
@@ -80,7 +78,7 @@ export default function ChatList({
             key={user.uuid}
             className="userContainer"
             onClick={() => {
-              setProfileDisplay(false);
+              setProfile({display: false, user: null});
               setReceiver({
                 avatar: user.avatar,
                 name: user.name,
@@ -88,8 +86,7 @@ export default function ChatList({
                 description: user.description,
               });
               if (isMobile) {
-                setDisplayChat(true);
-                setDisplayChatList(false);
+                setDisplayChat({chat: true, chatList: false});
               }
             }}
             data-testid="chatListBtn"
@@ -109,10 +106,8 @@ export default function ChatList({
         <>
           <UserList
             setReceiver={setReceiver}
-            setProfileDisplay={setProfileDisplay}
-            setUserForProfile={setUserForProfile}
+            setProfile={setProfile}
             setDisplayChat={setDisplayChat}
-            setDisplayChatList={setDisplayChatList}
           />
         </>
       )}

@@ -8,10 +8,8 @@ import { updateListEndMessage, updatePagination } from "../assets/helpers";
 export default function Chat({
   receiver,
   loggedUser,
-  setProfileDisplay,
-  setUserForProfile,
+  setProfile,
   setDisplayChat,
-  setDisplayChatList,
   setRefetchChatList
 }) {
   const [chat, setChat] = useState([]);
@@ -126,22 +124,20 @@ export default function Chat({
             <div
               className="chatIconContainer"
               onClick={() => {
-                setDisplayChat(false);
-                setDisplayChatList(true);
+                setDisplayChat({chat: false, chatList: true});
               }}
               data-testid="chatBackArrow"
             >
               <img className="icon" src="arrow-left.svg" />
             </div>
           )}
+
           <div
             className="userHeaderPortal"
             onClick={() => {
-              setUserForProfile(receiver);
-              setProfileDisplay(true);
+              setProfile({display: true, user: receiver})
               if (isMobile) {
-                setDisplayChat(false);
-                setDisplayChatList(true);
+                setDisplayChat({chat: false, chatList: true});
               }
             }}
 

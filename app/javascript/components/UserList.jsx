@@ -7,10 +7,8 @@ import { setNewElements, updateListEndMessage, updateScrollBottom } from "../ass
 
 export default function UserList({
   setReceiver,
-  setProfileDisplay,
-  setUserForProfile,
+  setProfile,
   setDisplayChat,
-  setDisplayChatList,
 }) {
   const [userList, setUserList] = useState([]);
   const [scrollBottom, setScrollBottom] = useScrolling();
@@ -65,22 +63,19 @@ export default function UserList({
                 description: user.description,
                 uuid: user.uuid,
               });
-              setProfileDisplay(false);
+              setProfile({display: false, user: null})
 
               if (isMobile) {
-                setDisplayChat(true);
-                setDisplayChatList(false);
+                setDisplayChat({chat: true, chatList: false});
               }
             }}
             onMouseEnter={() => {
               if (!isMobile) {
-                setProfileDisplay(true);
-                setUserForProfile(user);
+                setProfile({display: true, user: user})
               }
             }}
             onMouseLeave={() => {
-              setProfileDisplay(false);
-              setUserForProfile(null);
+              setProfile({display: false, user: null})
             }}
             data-testid="userListBtn"
           >

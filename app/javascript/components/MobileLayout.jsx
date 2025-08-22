@@ -8,59 +8,50 @@ import NavBar from "./NavBar";
 export default function MobileLayout({
   loggedUser,
   getLoggedUser,
-  userForProfile,
-  setUserForProfile,
   receiver,
   setReceiver,
-  profileDisplay,
-  setProfileDisplay,
   signOut,
   refetchChatList,
-  setRefetchChatList
+  setRefetchChatList,
+  profile,
+  setProfile
 }) {
-  const [displayChatList, setDisplayChatList] = useState(true);
-  const [displayChat, setDisplayChat] = useState(false);
+  const [displayChat, setDisplayChat] = useState({chat: false, chatList: true});
 
   return (
     <div className="appContainer">
       <NavBar
         loggedUser={loggedUser}
-        profileDisplay={profileDisplay}
-        setProfileDisplay={setProfileDisplay}
-        setUserForProfile={setUserForProfile}
+        profile={profile}
+        setProfile={setProfile}
         signOut={signOut}
       />
 
       <div className="mainBodyContainer">
-        {displayChatList && !profileDisplay && (
+        {displayChat["chatList"] && !profile["display"] && (
           <ChatList
             setReceiver={setReceiver}
-            setProfileDisplay={setProfileDisplay}
+            setProfile={setProfile}
             setDisplayChat={setDisplayChat}
-            setDisplayChatList={setDisplayChatList}
-            setUserForProfile={setUserForProfile}
             refetchChatList={refetchChatList}
             setRefetchChatList={setRefetchChatList}
           />
         )}
 
-        {profileDisplay && (
+        {profile["display"] && (
           <Profile
             loggedUser={loggedUser}
-            user={userForProfile ? userForProfile : loggedUser}
+            user={profile["user"] ? profile["user"] : loggedUser}
             getLoggedUser={getLoggedUser}
-            setProfileDisplay={setProfileDisplay}
           />
         )}
 
-        {displayChat && (
+        {displayChat["chat"] && (
           <Chat
             receiver={receiver}
             loggedUser={loggedUser}
-            setProfileDisplay={setProfileDisplay}
-            setUserForProfile={setUserForProfile}
+            setProfile={setProfile}
             setDisplayChat={setDisplayChat}
-            setDisplayChatList={setDisplayChatList}
             setRefetchChatList={setRefetchChatList}
           />
         )}

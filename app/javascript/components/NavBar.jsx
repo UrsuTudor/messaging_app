@@ -2,16 +2,15 @@ import React from "react";
 
 export default function NavBar({
   loggedUser,
-  profileDisplay,
-  setProfileDisplay,
-  setUserForProfile,
+  profile,
+  setProfile,
   signOut,
 }) {
 
   return (
     <nav>
-      {loggedUser && !profileDisplay ? (
-        <button onClick={() => setProfileDisplay(true)} className="userHeader" data-testid="profileBtn">
+      {loggedUser && !profile["display"] ? (
+        <button onClick={() => setProfile({display: true})} className="userHeader" data-testid="profileBtn">
           <img className="bigAvatar" src={loggedUser.avatar ? loggedUser.avatar : "user.svg"} alt={loggedUser.name + "'s profile picture"} />
           <h4 className="userName">{loggedUser.name}</h4>
         </button>
@@ -19,8 +18,7 @@ export default function NavBar({
         <button
           className="iconContainer"
           onClick={() => {
-            setUserForProfile(null);
-            setProfileDisplay(false);
+            setProfile({display: false, user: null})
           }}
           data-testid="homeBtn"
         >
