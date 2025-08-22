@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Profile from "./Profile";
-import UserList from "./UserList";
-import ChatList from "./ChatList";
-import Chat from "./Chat";
 import "../assets/stylesheets/home.css";
 import MobileLayout from "./MobileLayout";
-import NavBar from "./NavBar";
+import DesktopLayout from "./DesktopLayout";
 
 export default function Home() {
   const [loggedUser, setLoggedUser] = useState(null);
   const [receiver, setReceiver] = useState({});
-  const [profile, setProfile] = useState({display: false, user: null});
+  const [profile, setProfile] = useState({ display: false, user: null });
   const [refetchChatList, setRefetchChatList] = useState(false);
   const isMobile = window.innerWidth < 700;
 
@@ -66,43 +62,17 @@ export default function Home() {
           setRefetchChatList={setRefetchChatList}
         />
       ) : (
-        <div className="appContainer">
-          <NavBar
-            loggedUser={loggedUser}
-            profile={profile}
-            setProfile={setProfile}
-            signOut={signOut}
-          />
-
-          <div className="mainBodyContainer">
-            <ChatList
-              setReceiver={setReceiver}
-              setProfile={setProfile}
-              refetchChatList={refetchChatList}
-              setRefetchChatList={setRefetchChatList}
-            />
-
-            {profile["display"] ? (
-              <Profile
-                loggedUser={loggedUser}
-                user={profile["user"] ? profile["user"] : loggedUser}
-                getLoggedUser={getLoggedUser}
-              />
-            ) : (
-              <Chat
-                receiver={receiver}
-                loggedUser={loggedUser}
-                setProfile={setProfile}
-                setRefetchChatList={setRefetchChatList}
-              />
-            )}
-
-            <UserList
-              setReceiver={setReceiver}
-              setProfile={setProfile}
-            />
-          </div>
-        </div>
+        <DesktopLayout
+          loggedUser={loggedUser}
+          getLoggedUser={getLoggedUser}
+          profile={profile}
+          setProfile={setProfile}
+          receiver={receiver}
+          setReceiver={setReceiver}
+          signOut={signOut}
+          refetchChatList={refetchChatList}
+          setRefetchChatList={setRefetchChatList}
+        />
       )}
     </>
   );

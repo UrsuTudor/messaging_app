@@ -1,54 +1,49 @@
-import React, { useState } from "react";
+import React from "react";
 import ChatList from "./ChatList";
+import UserList from "./UserList";
 import Chat from "./Chat";
 import Profile from "./Profile";
 import NavBar from "./NavBar";
 
-export default function MobileLayout({
+export default function DesktopLayout({
   loggedUser,
   getLoggedUser,
+  profile,
+  setProfile,
   receiver,
   setReceiver,
   signOut,
   refetchChatList,
   setRefetchChatList,
-  profile,
-  setProfile,
 }) {
-  const [displayChat, setDisplayChat] = useState({ chat: false, chatList: true });
-
   return (
     <div className="appContainer">
       <NavBar loggedUser={loggedUser} profile={profile} setProfile={setProfile} signOut={signOut} />
 
       <div className="mainBodyContainer">
-        {displayChat["chatList"] && !profile["display"] && (
-          <ChatList
-            setReceiver={setReceiver}
-            setProfile={setProfile}
-            setDisplayChat={setDisplayChat}
-            refetchChatList={refetchChatList}
-            setRefetchChatList={setRefetchChatList}
-          />
-        )}
+        <ChatList
+          setReceiver={setReceiver}
+          setProfile={setProfile}
+          refetchChatList={refetchChatList}
+          setRefetchChatList={setRefetchChatList}
+        />
 
-        {profile["display"] && (
+        {profile["display"] ? (
           <Profile
             loggedUser={loggedUser}
             user={profile["user"] ? profile["user"] : loggedUser}
             getLoggedUser={getLoggedUser}
           />
-        )}
-
-        {displayChat["chat"] && (
+        ) : (
           <Chat
             receiver={receiver}
             loggedUser={loggedUser}
             setProfile={setProfile}
-            setDisplayChat={setDisplayChat}
             setRefetchChatList={setRefetchChatList}
           />
         )}
+
+        <UserList setReceiver={setReceiver} setProfile={setProfile} />
       </div>
     </div>
   );
