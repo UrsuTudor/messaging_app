@@ -165,7 +165,7 @@ export default function Chat({
                 <div className="message" key={i} data-testid="msg">
                   <img
                     className="smallAvatar"
-                    src={receiver.avatar}
+                     src={receiver.avatar ? receiver.avatar : "user.svg"}
                     alt={receiver.name + "'s profile picture"}
                   />
                   <p>{message.content}</p>
@@ -177,7 +177,7 @@ export default function Chat({
                   <p>{message.content}</p>
                   <img
                     className="smallAvatar"
-                    src={loggedUser.avatar}
+                    src={loggedUser.avatar ? loggedUser.avatar : "user.svg"}
                     alt={loggedUser.name + "'s profile picture"}
                   />
                 </div>
