@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Profile from "./Profile";
-import UserList from "./UserList";
-import ChatList from "./ChatList";
-import Chat from "./Chat";
 import "../assets/stylesheets/home.css";
 import MobileLayout from "./MobileLayout";
-import NavBar from "./NavBar";
+import DesktopLayout from "./DesktopLayout";
 
 export default function Home() {
   const [loggedUser, setLoggedUser] = useState(null);
   const [receiver, setReceiver] = useState({});
-  const [profileDisplay, setProfileDisplay] = useState(false);
-  const [userForProfile, setUserForProfile] = useState(null);
+  const [profile, setProfile] = useState({ display: false, user: null });
   const [refetchChatList, setRefetchChatList] = useState(false);
   const isMobile = window.innerWidth < 700;
 
@@ -58,58 +53,26 @@ export default function Home() {
         <MobileLayout
           loggedUser={loggedUser}
           getLoggedUser={getLoggedUser}
-          userForProfile={userForProfile}
-          setUserForProfile={setUserForProfile}
+          profile={profile}
+          setProfile={setProfile}
           receiver={receiver}
           setReceiver={setReceiver}
-          profileDisplay={profileDisplay}
-          setProfileDisplay={setProfileDisplay}
           signOut={signOut}
           refetchChatList={refetchChatList}
           setRefetchChatList={setRefetchChatList}
         />
       ) : (
-        <div className="appContainer">
-          <NavBar
-            loggedUser={loggedUser}
-            profileDisplay={profileDisplay}
-            setProfileDisplay={setProfileDisplay}
-            setUserForProfile={setUserForProfile}
-            signOut={signOut}
-          />
-
-          <div className="mainBodyContainer">
-            <ChatList
-              setReceiver={setReceiver}
-              setProfileDisplay={setProfileDisplay}
-              refetchChatList={refetchChatList}
-              setRefetchChatList={setRefetchChatList}
-            />
-
-            {profileDisplay ? (
-              <Profile
-                loggedUser={loggedUser}
-                user={userForProfile ? userForProfile : loggedUser}
-                getLoggedUser={getLoggedUser}
-                setProfileDisplay={setProfileDisplay}
-              />
-            ) : (
-              <Chat
-                receiver={receiver}
-                loggedUser={loggedUser}
-                setProfileDisplay={setProfileDisplay}
-                setUserForProfile={setUserForProfile}
-                setRefetchChatList={setRefetchChatList}
-              />
-            )}
-
-            <UserList
-              setReceiver={setReceiver}
-              setProfileDisplay={setProfileDisplay}
-              setUserForProfile={setUserForProfile}
-            />
-          </div>
-        </div>
+        <DesktopLayout
+          loggedUser={loggedUser}
+          getLoggedUser={getLoggedUser}
+          profile={profile}
+          setProfile={setProfile}
+          receiver={receiver}
+          setReceiver={setReceiver}
+          signOut={signOut}
+          refetchChatList={refetchChatList}
+          setRefetchChatList={setRefetchChatList}
+        />
       )}
     </>
   );
