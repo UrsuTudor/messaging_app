@@ -25,7 +25,7 @@ class Api::V1::UsersController < ApplicationController
         .left_joins(:messages)
         .includes(:messages, :users)
         .group("chats.id")
-        .order("MAX(messages.created_at) DESC NULLS LAST"),
+        .order(Arel.sql("MAX(messages.created_at) DESC NULLS LAST")),
       page: params[:page], limit: 20
     )
 
