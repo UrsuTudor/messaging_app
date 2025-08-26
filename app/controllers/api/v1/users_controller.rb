@@ -8,7 +8,8 @@ class Api::V1::UsersController < ApplicationController
       .uniq
 
     @pagy, @users = pagy(
-      User.where.not(id: [ current_user.id ] + user_ids_with_chat),
+      User.where.not(id: [ current_user.id ] + user_ids_with_chat)
+          .where("name ILIKE ?", "%#{params[:search]}%"),
       page: params[:page],
       limit: 20
     )

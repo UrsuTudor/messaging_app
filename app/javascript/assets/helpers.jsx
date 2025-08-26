@@ -14,7 +14,7 @@ function updatePagination(setPagination, totalPages) {
   }));
 }
 
-async function setNewElements(fetchURL, dataKey, setElements, setPagination, page) {
+async function setNewElements(fetchURL, dataKey, setElements, setPagination, reset = false) {
   try {
     setPagination((prev) => ({ ...prev, loading: true }));
 
@@ -27,7 +27,7 @@ async function setNewElements(fetchURL, dataKey, setElements, setPagination, pag
 
     const data = await res.json();
 
-    setElements((prevElements) => [...prevElements, ...data[dataKey]])
+    reset ? setElements(data[dataKey]) : setElements((prevElements) => [...prevElements, ...data[dataKey]])
 
     updatePagination(setPagination, data.metadata.pages);
 

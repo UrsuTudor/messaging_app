@@ -167,11 +167,34 @@ nav > h1 {
   margin: auto;
 }
 
+.searchBar {
+  background-color: #848871;
+  border: none;
+  border-radius: 20px;
+  height: 70%;
+  text-indent: 10px;
+  color: #212512;
+}
+
+.searchBar::placeholder {
+  color: #454738;
+  font-style: italic;
+}
+
+.searchBar:focus {
+  background-color: #bec49f;
+  outline: none;
+}
+
 .listHeader {
   color: white;
   background-color: #676b53;
-  padding-left: 10px;
+  padding: 0 10px 0 10px;
   height: fit-content;
+
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 @media (max-width: 425px), (max-height: 900px) {

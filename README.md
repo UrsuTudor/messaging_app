@@ -87,8 +87,6 @@ The webpage can be viewed here: https://hikers-hub.fly.dev. It uses posrgresql a
   * I would be more aware of the need for a mobile layout from the start and structure my components in a way that would make them less bloated with state. A fair amount of the state they share is state needed to display or hide child components during mobile rendering.
 
 ## To do
-
-  * Fix the bloated state of my components
   * Add a search bar for the Chat and User lists
   * Add the ability to no longer display certain chats in the chat list, but still make it possible for the user to find them
   * Make the chat update in real time
