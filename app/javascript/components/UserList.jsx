@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../assets/stylesheets/userList.css";
 import useThrottle from "../assets/hooks/useThrottle";
 import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { setNewElements, updateListEndMessage, updateScrollBottom } from "../assets/helpers";
-import debounce from "lodash.debounce";
+import SearchBar from "./SearchBar";
 
 export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
   const [userList, setUserList] = useState([]);
@@ -39,35 +39,11 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
     };
   }, []);
 
-  function searchUsers(search) {
-    setPagination((prev) => ({
-      ...prev,
-      page: 1,
-    }));
-
-    setNewElements(
-      `/api/v1/users/list?page=1&search=${search}`,
-      "users",
-      setUserList,
-      setPagination,
-      true
-    );
-  }
-
-  const debouncedSearch = useMemo(() => debounce((search) => searchUsers(search), 300));
-
   return (
     <div className={isMobile ? "userListContainer mobileList" : "userListContainer"}>
       <div className="listHeader">
         <h1> Users</h1>
-        <input
-          className="searchBar"
-          type="text"
-          placeholder="Search for a user"
-          onChange={(e) => {
-            debouncedSearch(e.target.value);
-          }}
-        />
+        <SearchBar route={`/api/v1/users/list?page=1`} dataKey={"users"} setPagination={setPagination} listSetter={setUserList} />
       </div>
 
       <div className="userList" ref={userListRef} data-testid="userList">

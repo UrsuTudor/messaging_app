@@ -5,6 +5,7 @@ import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { setNewElements, updateListEndMessage, updateScrollBottom } from "../assets/helpers";
 import UserList from "./UserList";
+import SearchBar from "./SearchBar";
 
 export default function ChatList({
   setReceiver,
@@ -71,7 +72,11 @@ export default function ChatList({
 
   return (
     <div className="chatListContainer">
-      <h1 className="listHeader">Chats</h1>
+      <div className="listHeader">
+        <h1>Chats</h1>
+        <SearchBar route={"api/v1/users/chats?page=1"} dataKey={"chat_users"} setPagination={setPagination} listSetter={setChatList} />
+      </div>
+      
       <div ref={chatListRef} className={isMobile ? "chatList mobileList" : "chatList"} data-testid="chatList">
         {chatList.map((user) => (
           <button

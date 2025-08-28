@@ -30,8 +30,14 @@ class Api::V1::UsersController < ApplicationController
       page: params[:page], limit: 20
     )
 
+    search_term = params[:search].to_s.downcase
+
     users_with_chat_array = @users_with_chat.filter_map do |chat|
-      receiver = chat.users.find { |user| user.uuid != current_user.uuid }
+      receiver = chat.users.find do |user|
+        user.uuid != current_user.uuid && user.name.downcase.include?(search_term)
+      end
+      next unless receiver
+
       receiver_data = user_data(receiver)
       receiver_data[:last_message] = chat.messages.last&.content
 
