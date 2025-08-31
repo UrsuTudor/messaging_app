@@ -1,30 +1,26 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, use } from "react";
 import "../assets/stylesheets/chat.css";
 import useThrottle from "../assets/hooks/useThrottle";
 import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { updateListEndMessage, updatePagination } from "../assets/helpers";
+import consumer from "../channels/consumer";
 
-export default function Chat({
-  receiver,
-  loggedUser,
-  setProfile,
-  setDisplayChat,
-  setRefetchChatList
-}) {
-  const [chat, setChat] = useState([]);
+export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat, setRefetchChatList }) {
+  const [chat, setChat] = useState({chat_id: "", messages: []});
   const [message, setMessage] = useState("");
   const [scrollTop, setScrollTop] = useScrolling();
   const [pagination, setPagination] = usePagination();
   const chatRef = useRef(null);
+  const subscriptionRef = useRef(null);
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
-    setChat([]);
-    if(pagination.page > 1) getChat(1)
+    setChat({chat_id: "", messages: []});
+    if (pagination.page > 1) getChat(1);
   }, [receiver]);
 
   useEffect(() => {
@@ -38,7 +34,6 @@ export default function Chat({
     if (receiver.uuid && scrollTop > scrollThreshold && !pagination.loading) {
       getChat();
     }
-
   }, [receiver.uuid, scrollTop]);
 
   async function getChat(page = pagination.page) {
@@ -64,7 +59,12 @@ export default function Chat({
       }
 
       const data = await res.json();
-      setChat((prevChat) => [...prevChat, ...data.messages]);
+      setChat((prev) => ({
+        chat_id: data.chat_id,
+        messages: [...prev.messages, ...data.messages],
+      }));
+
+      subscribeToChat(data.chat_id)
 
       updatePagination(setPagination, data.metadata.pages);
       return data;
@@ -73,6 +73,24 @@ export default function Chat({
     } finally {
       setPagination((prev) => ({ ...prev, loading: false }));
     }
+  }
+
+  function subscribeToChat(chat_id){
+    if (subscriptionRef.current) {
+      subscriptionRef.current.unsubscribe();
+    }
+
+     subscriptionRef.current = consumer.subscriptions.create(
+      { channel: "ChatChannel", room: chat_id },
+      {
+        received(data) {
+          setChat((prev) => ({
+            ...prev,
+            messages: [data, ...prev.messages],
+          }));
+        },
+      }
+    );
   }
 
   async function sendMessage(e, message) {
@@ -91,11 +109,10 @@ export default function Chat({
         throw new Error(`The message could not be sent.`);
       }
 
-      setChat((prevChat) => [{ user_uuid: loggedUser.uuid, content: message }, ...prevChat]);
       setMessage("");
-      if(chat.length == 0) {
-        setRefetchChatList(true)
-        console.log('set')
+
+      if (chat.length == 0) {
+        setRefetchChatList(true);
       }
     } catch (error) {
       console.error(error.message);
@@ -124,7 +141,7 @@ export default function Chat({
             <div
               className="chatIconContainer"
               onClick={() => {
-                setDisplayChat({chat: false, chatList: true});
+                setDisplayChat({ chat: false, chatList: true });
               }}
               data-testid="chatBackArrow"
             >
@@ -135,12 +152,11 @@ export default function Chat({
           <div
             className="userHeaderPortal"
             onClick={() => {
-              setProfile({display: true, user: receiver})
+              setProfile({ display: true, user: receiver });
               if (isMobile) {
-                setDisplayChat({chat: false, chatList: true});
+                setDisplayChat({ chat: false, chatList: true });
               }
             }}
-
             data-testid="userChatHeader"
           >
             <img
@@ -154,14 +170,14 @@ export default function Chat({
         </div>
       )}
       <div ref={chatRef} className="msgContainer" data-testid="msgList">
-        {chat &&
-          chat.map((message, i) => {
+        {chat.messages &&
+          chat.messages.map((message, i) => {
             if (message.user_uuid == receiver.uuid) {
               return (
                 <div className="message" key={i} data-testid="msg">
                   <img
                     className="smallAvatar"
-                     src={receiver.avatar ? receiver.avatar : "user.svg"}
+                    src={receiver.avatar ? receiver.avatar : "user.svg"}
                     alt={receiver.name + "'s profile picture"}
                   />
                   <p>{message.content}</p>
@@ -192,7 +208,7 @@ export default function Chat({
             data-testid="chatInput"
           />
           <button className="chatIconContainer sendButton" data-testid="sendButton">
-            <img className="icon" src="send.svg" alt="A send icon" onClick={(e) => sendMessage(e, message)} />
+            <img className="icon" src="send.svg" alt="A send icon" />
           </button>
         </form>
       )}

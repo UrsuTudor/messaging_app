@@ -11,7 +11,10 @@ class Api::V1::MessagesController < ApplicationController
     message = Message.new(chat: chat, user: current_user, content: message_params[:content])
 
     if message.save
-      render json: "Message sent."
+      ActionCable.server.broadcast("chat_#{chat.id}", {
+        content: message.content,
+        user_uuid: message.user.uuid
+      })
     else
       render json: message.errors, status: :unprocessable_entity
     end
