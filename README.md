@@ -25,6 +25,7 @@ The webpage can be viewed here: https://hikers-hub.fly.dev. It uses posrgresql a
   * Displays a list of users that you have not yet started a chat with
   * Remembers users that you have started a chat with and display them in a separate list
   * Lazy loading with infinite scrolling for the lists mentioned above as well as the chat itself
+  * Live chatting using WebSockets and Redis
   * Allows the user to:
     * View the profile of other users by hovering over their name in the user list or clicking on their banner in an open chat
     * Send messages to other users
