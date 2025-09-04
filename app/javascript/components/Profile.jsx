@@ -1,14 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../assets/stylesheets/profile.css";
 
 export default function Profile({ loggedUser, getLoggedUser, user }) {
   const [renderDescriptionForm, setRenderDescriptionForm] = useState(false);
   const [description, setDescription] = useState(user.description);
-
   const [renderAvatarForm, setRenderAvatarForm] = useState(false);
   const [avatar, setAvatar] = useState(user.avatar);
   const [feedback, setFeedback] = useState(null);
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    resizeTextArea()
+  }, [description]);
+
+  function resizeTextArea(){
+    if (textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+        textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+    }
+  }
 
   async function updateDescription(e) {
     e.preventDefault();
@@ -81,7 +92,7 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
     <div className="userProfile">
       <div className="imageContainer">
         <h1 data-testid="profileUserName">{user.name}</h1>
-        <img className="profileImage" src={user.avatar ? user.avatar : "user.svg"} alt={user.name + "'s profile picture"} data-testid="userAvatar"/>
+        <img className="profileImage" src={user.avatar ? user.avatar : "user_dark.svg"} alt={user.name + "'s profile picture"} data-testid="userAvatar"/>
 
         {renderAvatarForm ? (
           <form className="avatarForm">
@@ -121,12 +132,13 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
           <form className="descriptionForm">
             <h1></h1>
             <label htmlFor="description">
-              <input
-                type="text"
+              <textarea
+                className="descriptionInput"
                 id="description"
+                ref={textareaRef}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-              />
+              ></textarea>
               <button
                 className="iconContainer profileIconContainer"
                 data-section="description"
@@ -140,12 +152,15 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
         ) : (
           <div>
             <h1></h1>
-            <p>{user.description}</p>
+            <p className="description">{user.description}</p>
             {loggedUser.uuid == user.uuid && (
               <button
                 className="iconContainer profileIconContainer"
                 data-section="description"
-                onClick={() => setRenderDescriptionForm(true)}
+                onClick={() => {
+                  setRenderDescriptionForm(true)
+                  requestAnimationFrame(() => resizeTextArea());
+                }}
               >
                 <p>Change description</p>
                 <img className="icon" src="edit-3.svg" alt="An edit icon" />

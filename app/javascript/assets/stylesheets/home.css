@@ -49,31 +49,42 @@ h1, h2, h3, h4, h5, h6 {
   height: 100vh;
 }
 
+h1, nav h4, button > p {
+  color: white;
+}
+
+nav p{
+  color: inherit;
+}
+
+p {
+  color: #3c3c3c;
+}
+
 nav {
   display: flex;
   align-items: center;
   padding: 10px;
-  background-color: #262b15;
+  background-color: #264d36;
   color: white;
   height: 8%
 }
 
 nav > .userHeader {
   width: fit-content;
-  background-color: #262b15;
+  background-color: #5a7d5a;
   border-radius: 40px;
   border: none;
-  color: #afb4ad;
   padding-right: 2vw;
 }
 
 nav > .userHeader:hover {
-  background-color: #212512;
+  background-color: #6ba271;
   cursor: pointer;
 }
 
 nav > .userHeader:active {
-  background-color: #1b1f0f;
+  background-color: #4e7b50;
 }
 
 nav > h1 {
@@ -87,7 +98,7 @@ nav > h1 {
   align-items: center;
   gap: 1vw;
   border: none;
-  background-color: #262b15;
+  background-color: #5a7d5a;
   color: #ffffff;
 
   padding: 1vh;
@@ -96,12 +107,12 @@ nav > h1 {
 }
 
 .iconContainer:hover {
-  background-color: #212512;
+  background-color: #6ba271;
   cursor: pointer;
 }
 
 .iconContainer:active {
-  background-color: #1b1f0f;
+  background-color: #4e7b50;
 }
 
 .mainBodyContainer {
@@ -121,6 +132,8 @@ nav > h1 {
 .smallAvatar {
   height: 45px;
   border-radius: 20px;
+  margin-bottom: auto;
+  background-color: #e9f2ea;
 }
 
 .bigAvatar {
@@ -131,7 +144,7 @@ nav > h1 {
 }
 
 .userContainer {
-  background-color: #848871;
+  background-color: #f4f9f4;
   border: none;
   border-bottom: #464b37 1px solid; 
   min-height: 50px;
@@ -140,13 +153,13 @@ nav > h1 {
 
 .userContainer:hover {
   filter: brightness(0.85);
-  background-color: #676b53;
+  background-color: #e9f2e9;
   cursor: pointer;
 }
 
 .userContainer:active {
   filter: brightness(0.75);
-  background-color: #555845;
+  background-color: #dde9dd;
 }
 
 .userHeader {
@@ -168,27 +181,27 @@ nav > h1 {
 }
 
 .searchBar {
-  background-color: #848871;
+  background-color: #f8fff0;
   border: none;
   border-radius: 20px;
   height: 70%;
   text-indent: 10px;
-  color: #212512;
+  color: #5a7d5a;
 }
 
 .searchBar::placeholder {
-  color: #454738;
+  color: #5a7d5a;
   font-style: italic;
 }
 
 .searchBar:focus {
-  background-color: #bec49f;
+  background-color: #e8f7d7;
   outline: none;
 }
 
 .listHeader {
   color: white;
-  background-color: #676b53;
+  background-color: #5a7d5a;
   padding: 0 10px 0 10px;
   height: fit-content;
 

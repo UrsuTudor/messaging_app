@@ -8,8 +8,8 @@
   flex-direction: column;
   overflow: scroll;
   overflow-x: hidden;
-  background-color: #848871;
-  scrollbar-color: #464b37 #848871;
-  border-left: #464b37 1px solid;
+  background-color: #f4f9f4;
+  scrollbar-color: #5a7d5a #f4f9f4;
+  border-left: #5a7d5a 1px solid;
   flex: 1;
 }

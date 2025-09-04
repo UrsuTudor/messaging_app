@@ -1,7 +1,7 @@
 .userProfile {
   display: flex;
   flex-wrap: wrap;
-  background-color: #848871;
+  background-color: #f4f9f4;
   overflow: hidden;
 }
 
@@ -17,6 +17,10 @@ h1 {
   height: fit-content;
 }
 
+.imageContainer h1 {
+    color: black;
+}
+
 .profileImage {
   width: 25vw;
   height: auto;
@@ -24,13 +28,34 @@ h1 {
 
 .descriptionContainer{
   width: 60%;
-  padding-left: 1vw;
+  padding: 0 1vw 0 1vw;
   height: fit-content;
+}
+
+.description {
+  background-color: #e9f2ea;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.descriptionInput{
+  border: 1px solid #5a7d5a;
+  border-radius: 20px;
+  outline: none;
+  padding: 10px;
+  overflow: hidden;
+  resize: none;
+  width: 100%
+}
+
+.descriptionInput:focus {
+  border: 2px solid #5a7d5a;
+  outline: none;
 }
 
 .iconContainer.profileIconContainer {
   color: white;
-  background-color: #676b53;
+  background-color: #5a7d5a;
   padding: 0 1vh 0 1vh;
   margin-top: 1vh;
   max-height: 100px;
@@ -39,11 +64,11 @@ h1 {
 }
 
 .iconContainer.profileIconContainer:hover {
-  background-color: #565a45;
+  background-color: #4f6b4f;
 }
 
 .iconContainer.profileIconContainer:active {
-  background-color: #4c503d;
+  background-color: #456049;
 }
 
 .avatarForm {

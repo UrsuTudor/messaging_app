@@ -99,7 +99,7 @@ export default function ChatList({
             <div className="userHeader">
               <img
                 className="smallAvatar"
-                src={user.avatar ? user.avatar : "user.svg"}
+                src={user.avatar ? user.avatar : "user_dark.svg"}
                 alt={user.name + "'s profile picture"}
               />
               <h4 className="userName">{user.name}</h4>

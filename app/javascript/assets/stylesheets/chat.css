@@ -4,25 +4,25 @@
 }
 
 .chatContainer > .userHeader {
-  background-color: #848871;
+  background-color: #5a7d5a;
   padding: 1vh 0 1vh 1vh;
-  border-bottom: #464b37 1px solid;
+  border-bottom: #5a7d5a 1px solid;
 }
 
 .chatContainer > .userHeader:hover {
   filter: brightness(0.85);
-  background-color: #676b53;
+  background-color: #4f6b4f;
 }
 
 .chatContainer > .userHeader:active {
   filter: brightness(0.75);
-  background-color: #555845;
+  background-color: #456049;
 }
 
 .msgContainer {
   overflow-y: scroll;
   overflow-x: hidden;
-  scrollbar-color: #464b37 #848871;
+  scrollbar-color: #5a7d5a #f4f9f4;
 
   display: flex;
   flex-direction: column-reverse;
@@ -30,7 +30,7 @@
   height: 100%;
   padding: 10px;
 
-  background-color: #848871;
+  background-color: #f4f9f4;
 
 }
 
@@ -40,7 +40,7 @@
   padding: 10px 0 10px 0;
   align-items: center;
   border-top: #464b37 1px solid;
-  background-color: #848871;
+  background-color: #5a7d5a;
 }
 
 .msgInput {
@@ -59,14 +59,15 @@
   height: 40px;
   width: 40px;
   border-radius: 20px;
+  background-color: #5a7d5a;
 }
 
 .chatIconContainer:hover {
-  background-color: #676b53;
+  background-color: #4f6b4f;
 }
 
 .chatIconContainer:active {
-  background-color: #535743;
+  background-color: #456049;
 }
 
 .message {
@@ -76,7 +77,7 @@
   width: fit-content;
   padding: 10px;
 
-  background-color: #6e725a;
+  background-color: #e9f2ea;
   border-radius: 50px;
 }
 
@@ -98,10 +99,10 @@
   width: 100%;
   gap: 1vw;
   align-items: center;
+  cursor: pointer;
 }
 
 .sendButton {
-  background-color: #848871;
   border: none;
   cursor: pointer;
 }

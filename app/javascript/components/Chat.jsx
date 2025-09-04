@@ -177,7 +177,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
                 <div className="message" key={i} data-testid="msg">
                   <img
                     className="smallAvatar"
-                    src={receiver.avatar ? receiver.avatar : "user.svg"}
+                    src={receiver.avatar ? receiver.avatar : "user_dark.svg"}
                     alt={receiver.name + "'s profile picture"}
                   />
                   <p>{message.content}</p>
@@ -189,7 +189,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
                   <p>{message.content}</p>
                   <img
                     className="smallAvatar"
-                    src={loggedUser.avatar ? loggedUser.avatar : "user.svg"}
+                    src={loggedUser.avatar ? loggedUser.avatar : "user_dark.svg"}
                     alt={loggedUser.name + "'s profile picture"}
                   />
                 </div>
