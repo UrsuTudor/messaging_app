@@ -3,7 +3,10 @@ import "../assets/stylesheets/profile.css";
 
 export default function Profile({ loggedUser, getLoggedUser, user }) {
   const [renderDescriptionForm, setRenderDescriptionForm] = useState(false);
-  const [description, setDescription] = useState(user.description);
+  const [description, setDescription] = useState({
+    content: user.description,
+    length: user.description ? user.description.length : 0,
+  });
   const [renderAvatarForm, setRenderAvatarForm] = useState(false);
   const [avatar, setAvatar] = useState(user.avatar);
   const [feedback, setFeedback] = useState(null);
@@ -11,18 +14,19 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
   const textareaRef = useRef(null);
 
   useEffect(() => {
-    resizeTextArea()
+    resizeTextArea();
   }, [description]);
 
-  function resizeTextArea(){
+  function resizeTextArea() {
     if (textareaRef.current) {
-        textareaRef.current.style.height = "auto";
-        textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
     }
   }
 
   async function updateDescription(e) {
     e.preventDefault();
+
     try {
       const res = await fetch("/api/v1/users/update", {
         method: "POST",
@@ -30,7 +34,7 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
           "Content-Type": "application/json",
           "X-CSRF-Token": csrfToken,
         },
-        body: JSON.stringify({ user: { description: description } }),
+        body: JSON.stringify({ user: { description: description.content } }),
       });
 
       setFeedback("Your description has been updated successfully!");
@@ -92,7 +96,12 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
     <div className="userProfile">
       <div className="imageContainer">
         <h1 data-testid="profileUserName">{user.name}</h1>
-        <img className="profileImage" src={user.avatar ? user.avatar : "user_dark.svg"} alt={user.name + "'s profile picture"} data-testid="userAvatar"/>
+        <img
+          className="profileImage"
+          src={user.avatar ? user.avatar : "user_dark.svg"}
+          alt={user.name + "'s profile picture"}
+          data-testid="userAvatar"
+        />
 
         {renderAvatarForm ? (
           <form className="avatarForm">
@@ -105,10 +114,14 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
                 onChange={(e) => setAvatar(e.target.files[0])}
               />
               <label htmlFor="file" className="iconContainer profileIconContainer">
-                <p>Upload File</p>
+                <p style={{color: "white"}}>Upload File</p>
                 <img className="icon" src="chevron-up.svg" alt="An icon of an arrow pointing up" />
               </label>
-              <button type="button" className="iconContainer profileIconContainer" onClick={updateProfilePicture}>
+              <button
+                type="button"
+                className="iconContainer profileIconContainer"
+                onClick={updateProfilePicture}
+              >
                 Update profile picture
                 <img className="icon" src="save.svg" alt="An icon of a save file" />
               </button>
@@ -116,10 +129,7 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
           </form>
         ) : (
           loggedUser.uuid == user.uuid && (
-            <button
-              className="iconContainer profileIconContainer"
-              onClick={() => setRenderAvatarForm(true)}
-            >
+            <button className="iconContainer profileIconContainer" onClick={() => setRenderAvatarForm(true)}>
               Change profile picture
               <img className="icon" src="edit-3.svg" alt="An edit icon" />
             </button>
@@ -130,19 +140,25 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
       <div className="descriptionContainer">
         {renderDescriptionForm ? (
           <form className="descriptionForm">
-            <h1></h1>
             <label htmlFor="description">
               <textarea
                 className="descriptionInput"
                 id="description"
                 ref={textareaRef}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={description.content}
+                onChange={(e) => {
+                  description.length >= 500
+                    ? setFeedback("Your description cannot be longer than 500 characters.")
+                    : setFeedback("");
+                  setDescription({ content: e.target.value, length: e.target.value.length });
+                }}
               ></textarea>
+              <p className="descrLimitCounter">{500 - description.length}</p>
               <button
                 className="iconContainer profileIconContainer"
                 data-section="description"
                 onClick={updateDescription}
+                disabled={description.length > 500 ? true : false}
               >
                 Update description
                 <img className="icon" src="edit-3.svg" alt="An edit icon" />
@@ -151,14 +167,13 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
           </form>
         ) : (
           <div>
-            <h1></h1>
             <p className="description">{user.description}</p>
             {loggedUser.uuid == user.uuid && (
               <button
                 className="iconContainer profileIconContainer"
                 data-section="description"
                 onClick={() => {
-                  setRenderDescriptionForm(true)
+                  setRenderDescriptionForm(true);
                   requestAnimationFrame(() => resizeTextArea());
                 }}
               >
@@ -169,7 +184,11 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
           </div>
         )}
       </div>
-      {feedback && <p className="feedbackMsg" data-testid={"feedback"}>{feedback}</p>}
+      {feedback && (
+        <p className="feedbackMsg" data-testid={"feedback"}>
+          {feedback}
+        </p>
+      )}
     </div>
   );
 }

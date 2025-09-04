@@ -2,7 +2,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   before_create :assign_uuid
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: 32 }
+  validates :email, length: { maximum: 255 }
+  validates :description, length: { maximum: 500 }
   validate :validate_avatar
 
   has_one_attached :avatar

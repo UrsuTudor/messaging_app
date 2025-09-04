@@ -24,7 +24,7 @@ export default function SearchBar({route, dataKey, setPagination, listSetter}) {
     <input
       className="searchBar"
       type="text"
-      placeholder="Search for a friend"
+      placeholder="Search for a fellow hiker"
       onChange={(e) => {
         debouncedSearch(e.target.value);
       }}

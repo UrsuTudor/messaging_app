@@ -33,9 +33,11 @@ h1 {
 }
 
 .description {
-  background-color: #e9f2ea;
+  background-color: #d9e6d9;
   border-radius: 20px;
+  margin-top: 10px;
   padding: 10px;
+  white-space: pre-wrap;
 }
 
 .descriptionInput{
@@ -43,6 +45,7 @@ h1 {
   border-radius: 20px;
   outline: none;
   padding: 10px;
+  margin-top: 10px;
   overflow: hidden;
   resize: none;
   width: 100%
@@ -51,6 +54,11 @@ h1 {
 .descriptionInput:focus {
   border: 2px solid #5a7d5a;
   outline: none;
+}
+
+.descrLimitCounter {
+  text-align: right;
+  padding-right: 15px;
 }
 
 .iconContainer.profileIconContainer {
@@ -63,11 +71,16 @@ h1 {
   justify-self: center;
 }
 
-.iconContainer.profileIconContainer:hover {
+.iconContainer.profileIconContainer:disabled {
+  cursor: default;
+  opacity: 0.5
+}
+
+.iconContainer.profileIconContainer:hover:not(:disabled) {
   background-color: #4f6b4f;
 }
 
-.iconContainer.profileIconContainer:active {
+.iconContainer.profileIconContainer:active:not(:disabled) {
   background-color: #456049;
 }
 
