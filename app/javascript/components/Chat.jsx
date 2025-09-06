@@ -6,7 +6,7 @@ import useScrolling from "../assets/hooks/useScrolling";
 import { updateListEndMessage, updatePagination } from "../assets/helpers";
 import consumer from "../channels/consumer";
 
-export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat }) {
+export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat, chatList, setChatList }) {
   const [chat, setChat] = useState({ chat_id: "", messages: [] });
   const [message, setMessage] = useState("");
   const [scrollTop, setScrollTop] = useScrolling();
@@ -110,9 +110,19 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat 
       }
 
       setMessage("");
+      updateChatList()
     } catch (error) {
       console.error(error.message);
     }
+  }
+
+  function updateChatList(){
+    if(isMobile || chatList[0].uuid == receiver.uuid) return
+
+    setChatList((prev) => {
+      const filtered = prev.filter(user => user.uuid != receiver.uuid)
+      return [{name: receiver.name, uuid: receiver.uuid, avatar: receiver.avatar}, ...filtered]
+    })
   }
 
   useEffect(() => {

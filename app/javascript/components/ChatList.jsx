@@ -12,8 +12,8 @@ export default function ChatList({
   setReceiver,
   setProfile,
   setDisplayChat,
+  chatList, setChatList
 }) {
-  const [chatList, setChatList] = useState([]);
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
   const chatListRef = useRef(null);

@@ -12,6 +12,8 @@ export default function MobileLayout({
   signOut,
   profile,
   setProfile,
+  chatList,
+  setChatList
 }) {
   const [displayChat, setDisplayChat] = useState({ chat: false, chatList: true });
 
@@ -25,6 +27,8 @@ export default function MobileLayout({
             setReceiver={setReceiver}
             setProfile={setProfile}
             setDisplayChat={setDisplayChat}
+            chatList={chatList}
+            setChatList={setChatList}
           />
         )}
 
