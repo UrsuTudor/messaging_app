@@ -15,6 +15,8 @@ class Api::V1::MessagesController < ApplicationController
         content: message.content,
         user_uuid: message.user.uuid
       })
+
+      ActionCable.server.broadcast("chatList_#{receiver.id}", { signal: "refresh" })
     else
       render json: message.errors, status: :unprocessable_entity
     end

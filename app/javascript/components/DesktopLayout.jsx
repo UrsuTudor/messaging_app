@@ -13,8 +13,6 @@ export default function DesktopLayout({
   receiver,
   setReceiver,
   signOut,
-  refetchChatList,
-  setRefetchChatList,
 }) {
   return (
     <div className="appContainer">
@@ -24,8 +22,6 @@ export default function DesktopLayout({
         <ChatList
           setReceiver={setReceiver}
           setProfile={setProfile}
-          refetchChatList={refetchChatList}
-          setRefetchChatList={setRefetchChatList}
         />
 
         {profile["display"] ? (
@@ -39,7 +35,6 @@ export default function DesktopLayout({
             receiver={receiver}
             loggedUser={loggedUser}
             setProfile={setProfile}
-            setRefetchChatList={setRefetchChatList}
           />
         )}
 

@@ -6,13 +6,12 @@ import useScrolling from "../assets/hooks/useScrolling";
 import { setNewElements, updateListEndMessage, updateScrollBottom } from "../assets/helpers";
 import UserList from "./UserList";
 import SearchBar from "./SearchBar";
+import consumer from "../channels/consumer";
 
 export default function ChatList({
   setReceiver,
   setProfile,
   setDisplayChat,
-  refetchChatList,
-  setRefetchChatList,
 }) {
   const [chatList, setChatList] = useState([]);
   const [scrollBottom, setScrollBottom] = useScrolling();
@@ -21,11 +20,12 @@ export default function ChatList({
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
 
-  useEffect(() => {
-    setPagination((prevPagination) => ({ ...prevPagination, page: 1 }));
-    setChatList([]);
+  consumer.subscriptions.create(
+    {channel: "ChatListChannel"},
+    { received() {
+      setPagination((prevPagination) => ({ ...prevPagination, page: 1 }));
+      setChatList([]);
 
-    if (refetchChatList == true) {
       setNewElements(
         `/api/v1/users/chats?page=${1}`,
         "chat_users",
@@ -33,10 +33,8 @@ export default function ChatList({
         setPagination,
         pagination.page
       );
-    }
-    
-    setRefetchChatList(false);
-  }, [refetchChatList]);
+    }}
+  )
 
   useEffect(() => {
     if (pagination.page > pagination.pages) {

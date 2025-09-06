@@ -6,8 +6,8 @@ import useScrolling from "../assets/hooks/useScrolling";
 import { updateListEndMessage, updatePagination } from "../assets/helpers";
 import consumer from "../channels/consumer";
 
-export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat, setRefetchChatList }) {
-  const [chat, setChat] = useState({chat_id: "", messages: []});
+export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat }) {
+  const [chat, setChat] = useState({ chat_id: "", messages: [] });
   const [message, setMessage] = useState("");
   const [scrollTop, setScrollTop] = useScrolling();
   const [pagination, setPagination] = usePagination();
@@ -19,7 +19,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
-    setChat({chat_id: "", messages: []});
+    setChat({ chat_id: "", messages: [] });
     if (pagination.page > 1) getChat(1);
   }, [receiver]);
 
@@ -64,7 +64,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
         messages: [...prev.messages, ...data.messages],
       }));
 
-      subscribeToChat(data.chat_id)
+      subscribeToChat(data.chat_id);
 
       updatePagination(setPagination, data.metadata.pages);
       return data;
@@ -75,12 +75,12 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
     }
   }
 
-  function subscribeToChat(chat_id){
+  function subscribeToChat(chat_id) {
     if (subscriptionRef.current) {
       subscriptionRef.current.unsubscribe();
     }
 
-     subscriptionRef.current = consumer.subscriptions.create(
+    subscriptionRef.current = consumer.subscriptions.create(
       { channel: "ChatChannel", room: chat_id },
       {
         received(data) {
@@ -110,10 +110,6 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
       }
 
       setMessage("");
-
-      if (chat.length == 0) {
-        setRefetchChatList(true);
-      }
     } catch (error) {
       console.error(error.message);
     }

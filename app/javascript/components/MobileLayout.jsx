@@ -10,8 +10,6 @@ export default function MobileLayout({
   receiver,
   setReceiver,
   signOut,
-  refetchChatList,
-  setRefetchChatList,
   profile,
   setProfile,
 }) {
@@ -27,8 +25,6 @@ export default function MobileLayout({
             setReceiver={setReceiver}
             setProfile={setProfile}
             setDisplayChat={setDisplayChat}
-            refetchChatList={refetchChatList}
-            setRefetchChatList={setRefetchChatList}
           />
         )}
 
@@ -46,7 +42,6 @@ export default function MobileLayout({
             loggedUser={loggedUser}
             setProfile={setProfile}
             setDisplayChat={setDisplayChat}
-            setRefetchChatList={setRefetchChatList}
           />
         )}
       </div>

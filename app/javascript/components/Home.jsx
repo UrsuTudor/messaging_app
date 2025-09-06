@@ -7,7 +7,6 @@ export default function Home() {
   const [loggedUser, setLoggedUser] = useState(null);
   const [receiver, setReceiver] = useState({});
   const [profile, setProfile] = useState({ display: false, user: null });
-  const [refetchChatList, setRefetchChatList] = useState(false);
   const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
@@ -58,8 +57,6 @@ export default function Home() {
           receiver={receiver}
           setReceiver={setReceiver}
           signOut={signOut}
-          refetchChatList={refetchChatList}
-          setRefetchChatList={setRefetchChatList}
         />
       ) : (
         <DesktopLayout
@@ -70,8 +67,6 @@ export default function Home() {
           receiver={receiver}
           setReceiver={setReceiver}
           signOut={signOut}
-          refetchChatList={refetchChatList}
-          setRefetchChatList={setRefetchChatList}
         />
       )}
     </>
