@@ -22,9 +22,17 @@ class Api::V1::ChatsController < ApplicationController
     render json: { chat_id: chat.id, messages: message_data, metadata: pagy_metadata(@pagy) }
   end
 
+  def update_read_status
+    chat = Chat.find(params[:chat][:chat_id])
+    return unless chat.users.include?(current_user)
+
+    membership = chat.chat_memberships.find_by(user_id: current_user.id)
+    membership&.update(read: true)
+  end
+
   private
 
   def chat_params
-    params.require(:chat).permit(:receiver_uuid)
+    params.require(:chat).permit(:receiver_uuid, :chat_id)
   end
 end

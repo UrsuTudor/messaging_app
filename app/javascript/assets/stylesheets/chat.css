@@ -107,6 +107,11 @@
   cursor: pointer;
 }
 
+.unreadIcon {
+  margin-left: auto;
+  padding-right: 10px;
+}
+
 @media (max-width: 700px) {
   .msgInput {
     width: 75%;

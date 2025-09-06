@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       post "chats/open", to: "chats#find_or_create"
+      post "chats/update_read", to: "chats#update_read_status"
       post "messages/send", to: "messages#create"
       get "users/list", to: "users#index"
       get "users/current", to: "users#current_user_info"

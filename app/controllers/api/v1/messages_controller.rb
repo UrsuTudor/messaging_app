@@ -16,6 +16,9 @@ class Api::V1::MessagesController < ApplicationController
         user_uuid: message.user.uuid
       })
 
+      membership = chat.chat_memberships.find_by(user_id: receiver.id)
+      membership.update(read: false) if membership
+
       ActionCable.server.broadcast("chatList_#{receiver.id}", { signal: "refresh" })
     else
       render json: message.errors, status: :unprocessable_entity

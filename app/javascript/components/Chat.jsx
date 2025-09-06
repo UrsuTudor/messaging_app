@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, use } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../assets/stylesheets/chat.css";
 import useThrottle from "../assets/hooks/useThrottle";
 import usePagination from "../assets/hooks/usePagination";
@@ -16,6 +16,25 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
+  async function updateReadStatus(chat_id) {
+    try {
+      const res = await fetch(`/api/v1/chats/update_read`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({ chat: { chat_id: chat_id } }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`The read status could not be updated.`);
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
@@ -65,8 +84,9 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
       }));
 
       subscribeToChat(data.chat_id);
-
+      updateReadStatus(data.chat_id);
       updatePagination(setPagination, data.metadata.pages);
+
       return data;
     } catch (error) {
       console.error(error.message);
@@ -110,19 +130,19 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
       }
 
       setMessage("");
-      updateChatList()
+      updateChatList();
     } catch (error) {
       console.error(error.message);
     }
   }
 
-  function updateChatList(){
-    if(isMobile || chatList[0].uuid == receiver.uuid) return
+  function updateChatList() {
+    if (isMobile || chatList[0].uuid == receiver.uuid) return;
 
     setChatList((prev) => {
-      const filtered = prev.filter(user => user.uuid != receiver.uuid)
-      return [{name: receiver.name, uuid: receiver.uuid, avatar: receiver.avatar}, ...filtered]
-    })
+      const filtered = prev.filter((user) => user.uuid != receiver.uuid);
+      return [{ name: receiver.name, uuid: receiver.uuid, avatar: receiver.avatar }, ...filtered];
+    });
   }
 
   useEffect(() => {
@@ -204,7 +224,22 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
           })}
       </div>
       {receiver.uuid && (
-        <form className="messageForm" autoComplete="off" onSubmit={(e) => sendMessage(e, message)}>
+        <form
+          className="messageForm"
+          autoComplete="off"
+          onSubmit={(e) => {
+            sendMessage(e, message);
+            updateReadStatus(chat.chat_id)
+
+            setChatList((prev) => {
+              const index = prev.findIndex((u) => u.uuid === receiver.uuid);
+
+              const updated = [...prev];
+              updated[index] = { ...updated[index], read: true };
+              return updated;
+            });
+          }}
+        >
           <input
             className="msgInput"
             id="message"
