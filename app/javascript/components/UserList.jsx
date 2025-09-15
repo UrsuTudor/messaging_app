@@ -57,6 +57,7 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
                 name: user.name,
                 description: user.description,
                 uuid: user.uuid,
+                chat_id: user.chat_id
               });
               setProfile({ display: false, user: null });
 

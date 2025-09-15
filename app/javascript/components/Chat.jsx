@@ -7,7 +7,7 @@ import { updateListEndMessage, updatePagination } from "../assets/helpers";
 import consumer from "../channels/consumer";
 
 export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat, chatList, setChatList }) {
-  const [chat, setChat] = useState({ chat_id: "", messages: [] });
+  const [chat, setChat] = useState({ chat_id: receiver.chat_id, messages: [] });
   const [message, setMessage] = useState("");
   const [scrollTop, setScrollTop] = useScrolling();
   const [pagination, setPagination] = usePagination();
@@ -70,7 +70,10 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
           "Content-Type": "application/json",
           "X-CSRF-Token": csrfToken,
         },
-        body: JSON.stringify({ chat: { receiver_uuid: receiver.uuid } }),
+
+        // using both receiver.chat_id and chat.chat_id, because for new chats receiver won't get automatically updated,
+        // but the chat state will
+        body: JSON.stringify({ chat: { receiver_uuids: [receiver.uuid], chat_id: receiver.chat_id || chat.chat_id } }),
       });
 
       if (!res.ok) {
@@ -122,7 +125,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
           "Content-Type": "application/json",
           "X-CSRF-Token": csrfToken,
         },
-        body: JSON.stringify({ message: { content: message, receiver_uuid: receiver.uuid } }),
+        body: JSON.stringify({ message: { content: message, receiver_uuids: [receiver.uuid], chat_id: chat.chat_id } }),
       });
 
       if (!res.ok) {

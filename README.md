@@ -85,7 +85,7 @@ The webpage can be viewed here: https://hikers-hub.fly.dev. It uses posrgresql a
 
 ## What I would have done differently
 
-  * I would be more aware of the need for a mobile layout from the start and structure my components in a way that would make them less bloated with state. A fair amount of the state they share is state needed to display or hide child components during mobile rendering.
+  * I would be more aware of the need for a mobile layout from the start and structure my components in a way that would make them less bloated with state. A fair amount of the state they share is state needed to display or hide child components during mobile rendering. (I have refactored my components into a setup that is cleaner since writing this.)
 
 ## To do
   * Add group chats 

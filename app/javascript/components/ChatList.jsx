@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "../assets/stylesheets/chatList";
 import useThrottle from "../assets/hooks/useThrottle";
 import usePagination from "../assets/hooks/usePagination";
@@ -89,6 +89,7 @@ export default function ChatList({ setReceiver, setProfile, setDisplayChat, chat
                 name: user.name,
                 uuid: user.uuid,
                 description: user.description,
+                chat_id: user.chat_id
               });
               setChatList((prev) => {
                 const index = prev.findIndex((u) => u.uuid === user.uuid);

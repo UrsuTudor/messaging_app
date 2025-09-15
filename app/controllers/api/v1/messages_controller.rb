@@ -2,10 +2,9 @@ class Api::V1::MessagesController < ApplicationController
   include ChatFinder
 
   def create
-    receiver = find_receiver(message_params[:receiver_uuid])
-    return unless receiver
+    receivers = find_receivers(message_params[:receiver_uuids]).map(&:id)
 
-    chat = find_chat(current_user.id, receiver.id)
+    chat = Chat.find(message_params[:chat_id])
     return render json: { error: "Chat not found" }, status: :not_found unless chat
 
     message = Message.new(chat: chat, user: current_user, content: message_params[:content])
@@ -16,10 +15,12 @@ class Api::V1::MessagesController < ApplicationController
         user_uuid: message.user.uuid
       })
 
-      membership = chat.chat_memberships.find_by(user_id: receiver.id)
-      membership.update(read: false) if membership
+      receivers.each do |receiver_id|
+        membership = chat.chat_memberships.find_by(user_id: receiver_id)
+        membership.update(read: false) if membership
 
-      ActionCable.server.broadcast("chatList_#{receiver.id}", { signal: "refresh" })
+        ActionCable.server.broadcast("chatList_#{receiver_id}", { signal: "refresh" })
+      end
     else
       render json: message.errors, status: :unprocessable_entity
     end
@@ -28,6 +29,6 @@ class Api::V1::MessagesController < ApplicationController
   private
 
   def message_params
-    params.require(:message).permit(:content, :receiver_uuid)
+    params.require(:message).permit(:content, :chat_id, receiver_uuids: [])
   end
 end

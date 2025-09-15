@@ -39,6 +39,7 @@ class Api::V1::UsersController < ApplicationController
       next unless receiver
 
       receiver_data = user_data(receiver)
+      receiver_data[:chat_id] = chat.id
       receiver_data[:last_message] = chat.messages.last&.content
       receiver_data[:read] = chat.chat_memberships.find_by(user_id: current_user.id).read
 
