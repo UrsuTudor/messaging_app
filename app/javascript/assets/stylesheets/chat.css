@@ -54,7 +54,6 @@
 }
 
 .chatIconContainer {
-  display: flex;
   align-items: center;
   height: 40px;
   width: 40px;
@@ -64,6 +63,7 @@
 
 .chatIconContainer:hover {
   background-color: #4f6b4f;
+  cursor: pointer;
 }
 
 .chatIconContainer:active {

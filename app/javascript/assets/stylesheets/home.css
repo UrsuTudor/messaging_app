@@ -197,6 +197,7 @@ nav > h1 {
 .searchBar:focus {
   background-color: #e8f7d7;
   outline: none;
+  width: 100%
 }
 
 .listHeader {
@@ -208,6 +209,15 @@ nav > h1 {
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+#searchIcon {
+  height: 30px;
+  width: 30px;
+}
+
+.searchBar {
+  min-width: 205px;
 }
 
 @media (max-width: 425px), (max-height: 900px) {

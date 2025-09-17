@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../assets/stylesheets/chatList";
 import useThrottle from "../assets/hooks/useThrottle";
 import usePagination from "../assets/hooks/usePagination";
@@ -11,6 +11,7 @@ import consumer from "../channels/consumer";
 export default function ChatList({ setReceiver, setProfile, setDisplayChat, chatList, setChatList }) {
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
+  const [searchBarFocus, setSearchBarFocus] = useState(false)
   const chatListRef = useRef(null);
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
@@ -66,7 +67,7 @@ export default function ChatList({ setReceiver, setProfile, setDisplayChat, chat
   }, []);
 
   return (
-    <div className="chatListContainer">
+    <div className={searchBarFocus ? "chatListContainer widen" : "chatListContainer"}>
       <div className="listHeader">
         <h1>Chats</h1>
         <SearchBar
@@ -74,7 +75,9 @@ export default function ChatList({ setReceiver, setProfile, setDisplayChat, chat
           dataKey={"chat_users"}
           setPagination={setPagination}
           listSetter={setChatList}
+          setSearchBarFocus={setSearchBarFocus}
         />
+        <img className={searchBarFocus ? "chatIconContainer hidden" : "chatIconContainer"} src="group.svg" alt="A minimalistic icon of two people, marking the button to create a group." />
       </div>
 
       <div ref={chatListRef} className={isMobile ? "chatList mobileList" : "chatList"} data-testid="chatList">
