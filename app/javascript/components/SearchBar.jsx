@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import debounce from "lodash.debounce";
 import { setNewElements } from "../assets/helpers";
 
-export default function SearchBar({ route, dataKey, setPagination, listSetter }) {
+export default function SearchBar({ route, dataKey, setPagination, listSetter, adaptable = true }) {
   const [displaySearchBar, setDisplaySearchBar] = useState(window.innerWidth > 1400)
 
   function searchUsers(search) {
@@ -16,7 +16,7 @@ export default function SearchBar({ route, dataKey, setPagination, listSetter })
 
   const debouncedSearch = useMemo(() => debounce((search) => searchUsers(search), 300));
 
-  return window.innerWidth < 1400 && !displaySearchBar ? (
+  return window.innerWidth < 1400 && !displaySearchBar && adaptable ? (
     <img
       src="search.svg"
       className="chatIconContainer"

@@ -14,9 +14,9 @@ function updatePagination(setPagination, totalPages) {
   }));
 }
 
-async function setNewElements(fetchURL, dataKey, setElements, setPagination, reset = false) {
+async function setNewElements(fetchURL, dataKey, setElements, setPagination = null, reset = false) {
   try {
-    setPagination((prev) => ({ ...prev, loading: true }));
+    if(setPagination) setPagination((prev) => ({ ...prev, loading: true }));
 
     const res = await fetch(fetchURL, {
       method: "GET",
@@ -29,13 +29,13 @@ async function setNewElements(fetchURL, dataKey, setElements, setPagination, res
 
     reset ? setElements(data[dataKey]) : setElements((prevElements) => [...prevElements, ...data[dataKey]])
 
-    updatePagination(setPagination, data.metadata.pages);
+    if(setPagination) updatePagination(setPagination, data.metadata.pages);
 
     return data;
   } catch (error) {
     console.error(error.message);
   } finally {
-    setPagination((prev) => ({ ...prev, loading: false }));
+    if(setPagination) setPagination((prev) => ({ ...prev, loading: false }));
   }
 }
 

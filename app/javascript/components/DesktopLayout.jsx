@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ChatList from "./ChatList";
 import UserList from "./UserList";
 import Chat from "./Chat";
@@ -15,9 +15,12 @@ export default function DesktopLayout({
   signOut,
   chatList,
   setChatList
-}) {
+}) 
+{
+  const [dimmed, setDimmed] = useState(false)
+
   return (
-    <div className="appContainer">
+    <div className={dimmed ? "appContainer dimmed" : "appContainer"}>
       <NavBar loggedUser={loggedUser} profile={profile} setProfile={setProfile} signOut={signOut} />
 
       <div className="mainBodyContainer">
@@ -26,6 +29,7 @@ export default function DesktopLayout({
           setProfile={setProfile}
           chatList={chatList}
           setChatList={setChatList}
+          setDimmed ={setDimmed}
         />
 
         {profile["display"] ? (

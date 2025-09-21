@@ -7,11 +7,19 @@ import { setNewElements, updateListEndMessage, updateScrollBottom } from "../ass
 import UserList from "./UserList";
 import SearchBar from "./SearchBar";
 import consumer from "../channels/consumer";
+import GroupForm from "./GroupForm";
 
-export default function ChatList({ setReceiver, setProfile, setDisplayChat, chatList, setChatList }) {
+export default function ChatList({
+  setReceiver,
+  setProfile,
+  setDisplayChat,
+  chatList,
+  setChatList,
+  setDimmed,
+}) {
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
-  const [searchBarFocus, setSearchBarFocus] = useState(false)
+  const [displayGroupForm, setDisplayGroupForm] = useState(false);
   const chatListRef = useRef(null);
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
@@ -67,7 +75,7 @@ export default function ChatList({ setReceiver, setProfile, setDisplayChat, chat
   }, []);
 
   return (
-    <div className={searchBarFocus ? "chatListContainer widen" : "chatListContainer"}>
+    <div className="chatListContainer widen">
       <div className="listHeader">
         <h1>Chats</h1>
         <SearchBar
@@ -75,30 +83,46 @@ export default function ChatList({ setReceiver, setProfile, setDisplayChat, chat
           dataKey={"chat_users"}
           setPagination={setPagination}
           listSetter={setChatList}
-          setSearchBarFocus={setSearchBarFocus}
         />
-        <img className={searchBarFocus ? "chatIconContainer hidden" : "chatIconContainer"} src="group.svg" alt="A minimalistic icon of two people, marking the button to create a group." />
+        <img
+          className="chatIconContainer"
+          src="group.svg"
+          alt="A minimalistic icon of two people, marking the button to create a group."
+          onClick={() => {
+            setDisplayGroupForm(true);
+            setDimmed(true);
+          }}
+        />
+        {displayGroupForm && (
+          <GroupForm
+            setDimmed={setDimmed}
+            setDisplayGroupForm={setDisplayGroupForm}
+          />
+        )}
       </div>
 
       <div ref={chatListRef} className={isMobile ? "chatList mobileList" : "chatList"} data-testid="chatList">
         {chatList.map((user) => (
           <button
-            key={user.uuid}
+            key={user[0].chat_id}
             className="userContainer"
             onClick={() => {
               setProfile({ display: false, user: null });
-              setReceiver({
-                avatar: user.avatar,
-                name: user.name,
-                uuid: user.uuid,
-                description: user.description,
-                chat_id: user.chat_id
-              });
+              setReceiver(user.map((user) => {
+                return {
+                  avatar: user.avatar,
+                  name: user.name,
+                  uuid: user.uuid,
+                  description: user.description,
+                  chat_id: user.chat_id,
+                }
+              }));
               setChatList((prev) => {
-                const index = prev.findIndex((u) => u.uuid === user.uuid);
-
+                const index = prev.findIndex((u) => u[0].chat_id === user[0].chat_id);
                 const updated = [...prev];
-                updated[index] = { ...updated[index], read: true };
+                updated[index] = updated[index].map((user) => {
+                  return {...user, read: true}
+                })
                 return updated;
               });
               if (isMobile) {
@@ -110,11 +134,11 @@ export default function ChatList({ setReceiver, setProfile, setDisplayChat, chat
             <div className="userHeader">
               <img
                 className="smallAvatar"
-                src={user.avatar ? user.avatar : "user_dark.svg"}
+                src={user.length > 1 ? "group_dark.svg" : user[0].avatar || "user_dark.svg"}
                 alt={user.name + "'s profile picture"}
               />
-              <h4 className="userName">{user.name}</h4>
-              {user.read ? null : (
+              <h4 className="userName">{user.slice(1).reduce((result, user) => result + ", " + user.name, user[0].name )}</h4>
+              {user[0].read ? null : (
                 <img
                   className="unreadIcon"
                   src="bonfire.svg"

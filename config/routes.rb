@@ -10,7 +10,8 @@ Rails.application.routes.draw do
       get "users/list", to: "users#index"
       get "users/current", to: "users#current_user_info"
       post "users/update", to: "users#update"
-      get "users/chats", to: "users#users_with_chat"
+      get "users/chats", to: "users#paginated_users_with_chat"
+      get "users/group", to: "users#users_with_chat"
     end
   end
 

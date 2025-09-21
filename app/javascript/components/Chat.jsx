@@ -7,7 +7,10 @@ import { updateListEndMessage, updatePagination } from "../assets/helpers";
 import consumer from "../channels/consumer";
 
 export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat, chatList, setChatList }) {
-  const [chat, setChat] = useState({ chat_id: receiver.chat_id, messages: [] });
+  const [chat, setChat] = useState({
+    chat_id: receiver[0]?.chat_id || null,
+    messages: [],
+  });
   const [message, setMessage] = useState("");
   const [scrollTop, setScrollTop] = useScrolling();
   const [pagination, setPagination] = usePagination();
@@ -16,6 +19,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+  const receiver_uuids = receiver.map((receiver) => receiver.uuid)
 
   async function updateReadStatus(chat_id) {
     try {
@@ -38,7 +42,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
-    setChat({ chat_id: "", messages: [] });
+    setChat({ chat_id: receiver[0]?.chat_id, messages: [] });
     if (pagination.page > 1) getChat(1);
   }, [receiver]);
 
@@ -50,10 +54,10 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
 
     const scrollThreshold = scrollTop + scrollTop * 0.1 - 0.1;
 
-    if (receiver.uuid && scrollTop > scrollThreshold && !pagination.loading) {
+    if (receiver[0] && scrollTop > scrollThreshold && !pagination.loading) {
       getChat();
     }
-  }, [receiver.uuid, scrollTop]);
+  }, [receiver[0], scrollTop]);
 
   async function getChat(page = pagination.page) {
     if (page > pagination.pages) {
@@ -73,7 +77,9 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
 
         // using both receiver.chat_id and chat.chat_id, because for new chats receiver won't get automatically updated,
         // but the chat state will
-        body: JSON.stringify({ chat: { receiver_uuids: [receiver.uuid], chat_id: receiver.chat_id || chat.chat_id } }),
+        body: JSON.stringify({
+          chat: { receiver_uuids: receiver_uuids, chat_id: receiver[0].chat_id || chat.chat_id },
+        }),
       });
 
       if (!res.ok) {
@@ -125,7 +131,9 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
           "Content-Type": "application/json",
           "X-CSRF-Token": csrfToken,
         },
-        body: JSON.stringify({ message: { content: message, receiver_uuids: [receiver.uuid], chat_id: chat.chat_id } }),
+        body: JSON.stringify({
+          message: { content: message, receiver_uuids: receiver_uuids, chat_id: chat.chat_id },
+        }),
       });
 
       if (!res.ok) {
@@ -164,7 +172,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
 
   return (
     <div className="chatContainer" data-testid="chatContainer">
-      {receiver.uuid && (
+      {receiver[0] && (
         <div className="userHeader">
           {isMobile && (
             <div
@@ -181,7 +189,8 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
           <div
             className="userHeaderPortal"
             onClick={() => {
-              setProfile({ display: true, user: receiver });
+              if (receiver.length == 1) setProfile({ display: true, user: receiver });
+
               if (isMobile) {
                 setDisplayChat({ chat: false, chatList: true });
               }
@@ -190,29 +199,22 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
           >
             <img
               className="bigAvatar"
-              src={receiver.avatar ? receiver.avatar : "user.svg"}
+              src={receiver.length > 1 ? "group.svg" : receiver[0].avatar || "user.svg"}
               alt={receiver.name + "'s profile picture"}
               data-testid="chatAvatar"
             />
-            <h1 data-testid="chatUserName">{receiver.name}</h1>
+            <h1 data-testid="chatUserName">
+              {receiver
+                .slice(1)
+                .reduce((result, receiver) => result + ", " + receiver.name, receiver[0].name)}
+            </h1>
           </div>
         </div>
       )}
       <div ref={chatRef} className="msgContainer" data-testid="msgList">
         {chat.messages &&
           chat.messages.map((message, i) => {
-            if (message.user_uuid == receiver.uuid) {
-              return (
-                <div className="message" key={i} data-testid="msg">
-                  <img
-                    className="smallAvatar"
-                    src={receiver.avatar ? receiver.avatar : "user_dark.svg"}
-                    alt={receiver.name + "'s profile picture"}
-                  />
-                  <p>{message.content}</p>
-                </div>
-              );
-            } else {
+            if (message.user_uuid == loggedUser.uuid) {
               return (
                 <div className="message pushRight" key={i} data-testid="msg">
                   <p>{message.content}</p>
@@ -223,22 +225,35 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
                   />
                 </div>
               );
+            } else {
+              // edit this after adding ability to send messages
+              return (
+                <div className="message" key={i} data-testid="msg">
+                  <img
+                    className="smallAvatar"
+                    src={receiver.avatar ? receiver.avatar : "user_dark.svg"}
+                    alt={receiver.name + "'s profile picture"}
+                  />
+                  <p>{message.content}</p>
+                </div>
+              );
             }
           })}
       </div>
-      {receiver.uuid && (
+      {receiver[0] && (
         <form
           className="messageForm"
           autoComplete="off"
           onSubmit={(e) => {
             sendMessage(e, message);
-            updateReadStatus(chat.chat_id)
+            updateReadStatus(chat.chat_id);
 
             setChatList((prev) => {
-              const index = prev.findIndex((u) => u.uuid === receiver.uuid);
-
+              const index = prev.findIndex((u) => u[0].chat_id === chat.chat_id);
               const updated = [...prev];
-              updated[index] = { ...updated[index], read: true };
+              updated[index] = updated[index].map((user) => {
+                return { ...user, read: true };
+              });
               return updated;
             });
           }}
@@ -259,3 +274,6 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
     </div>
   );
 }
+
+//  once you get that to hit, try to send a message and go from there
+//  you need to make sure that chat_ids match and that messages are displayed properly

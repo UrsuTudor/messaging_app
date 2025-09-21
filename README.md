@@ -88,6 +88,6 @@ The webpage can be viewed here: https://hikers-hub.fly.dev. It uses posrgresql a
   * I would be more aware of the need for a mobile layout from the start and structure my components in a way that would make them less bloated with state. A fair amount of the state they share is state needed to display or hide child components during mobile rendering. (I have refactored my components into a setup that is cleaner since writing this.)
 
 ## To do
-  * Add group chats 
+  * Add the option to kick or add new members to a group chat
   * Add an event planner where users can plan events or choose to attend them
-  * Add user recommendations based on location
+  * Add user/event recommendations based on location

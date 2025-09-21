@@ -5,7 +5,7 @@ import DesktopLayout from "./DesktopLayout";
 
 export default function Home() {
   const [loggedUser, setLoggedUser] = useState(null);
-  const [receiver, setReceiver] = useState({});
+  const [receiver, setReceiver] = useState([]);
   const [profile, setProfile] = useState({ display: false, user: null });
   const [chatList, setChatList] = useState([]);
   const isMobile = window.innerWidth < 700;

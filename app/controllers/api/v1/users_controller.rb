@@ -21,6 +21,29 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def users_with_chat
+    users = current_user.chats
+        .includes(:users)
+
+    search_term = params[:search].to_s.downcase
+
+    users_with_chat_array = users.filter_map do |chat|
+      receivers = filter_users(chat, search_term)
+      next unless receivers.any?
+
+      data_of_receivers = []
+
+      receivers.each do |receiver|
+        receiver_data = user_data(receiver)
+        data_of_receivers << receiver_data
+      end
+
+      data_of_receivers
+    end
+
+    render json: { chat_users: users_with_chat_array }
+  end
+
+  def paginated_users_with_chat
     @pagy, @users_with_chat = pagy(
       current_user.chats
         .left_joins(:messages)
@@ -33,17 +56,20 @@ class Api::V1::UsersController < ApplicationController
     search_term = params[:search].to_s.downcase
 
     users_with_chat_array = @users_with_chat.filter_map do |chat|
-      receiver = chat.users.find do |user|
-        user.uuid != current_user.uuid && user.name.downcase.include?(search_term)
+      receivers = filter_users(chat, search_term)
+      next unless receivers.any?
+
+      data_of_receivers = []
+
+      receivers.each do |receiver|
+        receiver_data = user_data(receiver)
+        receiver_data[:chat_id] = chat.id
+        receiver_data[:read] = chat.chat_memberships.find_by(user_id: current_user.id).read
+
+        data_of_receivers << receiver_data
       end
-      next unless receiver
 
-      receiver_data = user_data(receiver)
-      receiver_data[:chat_id] = chat.id
-      receiver_data[:last_message] = chat.messages.last&.content
-      receiver_data[:read] = chat.chat_memberships.find_by(user_id: current_user.id).read
-
-      receiver_data
+      data_of_receivers
     end
 
     render json: { chat_users: users_with_chat_array, metadata: pagy_metadata(@pagy) }
@@ -73,6 +99,12 @@ class Api::V1::UsersController < ApplicationController
       avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
       description: user.description
     }
+  end
+
+  def filter_users(chat, search_term)
+    chat.users.select do |user|
+      user.uuid != current_user.uuid && user.name.downcase.include?(search_term)
+    end
   end
 
   def user_params

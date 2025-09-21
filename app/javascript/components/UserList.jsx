@@ -52,13 +52,15 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
             key={user.uuid}
             className="userContainer"
             onClick={() => {
-              setReceiver({
-                avatar: user.avatar,
-                name: user.name,
-                description: user.description,
-                uuid: user.uuid,
-                chat_id: user.chat_id
-              });
+              setReceiver([
+                {
+                  avatar: user.avatar,
+                  name: user.name,
+                  uuid: user.uuid,
+                  description: user.description,
+                  chat_id: user.chat_id,
+                },
+              ]);
               setProfile({ display: false, user: null });
 
               if (isMobile) {

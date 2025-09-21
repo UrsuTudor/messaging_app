@@ -47,6 +47,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  transition: 0.5s;
 }
 
 h1, nav h4, button > p {
@@ -185,6 +186,7 @@ nav > h1 {
   border: none;
   border-radius: 20px;
   height: 70%;
+  width: 205px;
   text-indent: 10px;
   color: #5a7d5a;
 }
@@ -197,7 +199,6 @@ nav > h1 {
 .searchBar:focus {
   background-color: #e8f7d7;
   outline: none;
-  width: 100%
 }
 
 .listHeader {
@@ -205,6 +206,7 @@ nav > h1 {
   background-color: #5a7d5a;
   padding: 0 10px 0 10px;
   height: fit-content;
+  position: relative;
 
   display: flex;
   gap: 10px;
@@ -216,8 +218,16 @@ nav > h1 {
   width: 30px;
 }
 
-.searchBar {
-  min-width: 205px;
+.dimmed {
+  filter: brightness(50%);
+}
+
+.hidden {
+  opacity: 0%;
+}
+
+.visible {
+  opacity: 100%
 }
 
 @media (max-width: 425px), (max-height: 900px) {

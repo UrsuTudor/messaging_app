@@ -6,6 +6,7 @@ class Api::V1::MessagesController < ApplicationController
 
     chat = Chat.find(message_params[:chat_id])
     return render json: { error: "Chat not found" }, status: :not_found unless chat
+    return unless chat.users.include?(current_user)
 
     message = Message.new(chat: chat, user: current_user, content: message_params[:content])
 

@@ -12,7 +12,13 @@ class Api::V1::ChatsController < ApplicationController
     elsif chat.nil?
       chat = Chat.new(users: [ current_user, *receivers ])
       render json: chat.errors unless chat.save
+
+      ActionCable.server.broadcast("chatList_#{current_user.id}", { signal: "refresh" })
+      receivers.each do |receiver_id|
+        ActionCable.server.broadcast("chatList_#{receiver_id}", { signal: "refresh" })
+      end
     end
+    return unless chat.users.include?(current_user)
 
     @pagy, @messages = pagy(chat.messages.order(created_at: :desc), page: params[:page], limit: 20)
 
