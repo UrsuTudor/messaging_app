@@ -13,7 +13,8 @@ class Api::V1::MessagesController < ApplicationController
     if message.save
       ActionCable.server.broadcast("chat_#{chat.id}", {
         content: message.content,
-        user_uuid: message.user.uuid
+        user_uuid: message.user.uuid,
+        user_name: message.user.name
       })
 
       receivers.each do |receiver_id|

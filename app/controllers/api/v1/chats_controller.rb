@@ -23,7 +23,7 @@ class Api::V1::ChatsController < ApplicationController
     @pagy, @messages = pagy(chat.messages.order(created_at: :desc), page: params[:page], limit: 20)
 
     message_data = @messages.map do |message|
-      { content: message.content, user_uuid: message.user.uuid }
+      { content: message.content, user_uuid: message.user.uuid, user_name: message.user.name }
     end
 
     render json: { chat_id: chat.id, messages: message_data, metadata: pagy_metadata(@pagy) }

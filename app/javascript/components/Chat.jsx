@@ -19,7 +19,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-  const receiver_uuids = receiver.map((receiver) => receiver.uuid)
+  const receiver_uuids = receiver.map((receiver) => receiver.uuid);
 
   async function updateReadStatus(chat_id) {
     try {
@@ -216,7 +216,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
           chat.messages.map((message, i) => {
             if (message.user_uuid == loggedUser.uuid) {
               return (
-                <div className="message pushRight" key={i} data-testid="msg">
+                <div className="messageContent pushRight" key={i} data-testid="msg">
                   <p>{message.content}</p>
                   <img
                     className="smallAvatar"
@@ -226,15 +226,17 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
                 </div>
               );
             } else {
-              // edit this after adding ability to send messages
               return (
                 <div className="message" key={i} data-testid="msg">
-                  <img
-                    className="smallAvatar"
-                    src={receiver.avatar ? receiver.avatar : "user_dark.svg"}
-                    alt={receiver.name + "'s profile picture"}
-                  />
-                  <p>{message.content}</p>
+                  {receiver.length > 1 && chat.messages[i + 1]?.user_uuid != message.user_uuid && <h4 className="chatUserName">{message.user_name}</h4>}
+                  <div className="messageContent">
+                    <img
+                      className="smallAvatar"
+                      src={receiver.avatar ? receiver.avatar : "user_dark.svg"}
+                      alt={receiver.name + "'s profile picture"}
+                    />
+                    <p>{message.content}</p>
+                  </div>
                 </div>
               );
             }
@@ -274,6 +276,3 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
     </div>
   );
 }
-
-//  once you get that to hit, try to send a message and go from there
-//  you need to make sure that chat_ids match and that messages are displayed properly

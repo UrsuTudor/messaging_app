@@ -72,10 +72,18 @@
 
 .message {
   display: flex;
+  flex-direction: column;
+  width: fit-content;
+
+  border-radius: 50px;
+}
+
+.messageContent{
+  display: flex;
   gap: 0.5vw;
   align-items: center;
   width: fit-content;
-  padding: 10px;
+  padding: 0 10px 0 0 ;
 
   background-color: #d9e6d9;
   border-radius: 50px;
@@ -84,6 +92,11 @@
 .pushRight {
   margin-left: auto;
   justify-content: right;
+  padding: 0 0 0 10px;
+}
+
+.chatUserName {
+  color: #333333;
 }
 
 .userHeader > .chatIconContainer:hover {
