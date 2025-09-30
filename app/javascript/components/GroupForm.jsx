@@ -3,13 +3,12 @@ import "../assets/stylesheets/groupForm";
 import SearchBar from "./SearchBar";
 import { createPortal } from "react-dom";
 import { setNewElements } from "../assets/helpers";
-import { isError } from "lodash";
 
 export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
   const [chats, setChats] = useState([]);
   const [groupList, setGroupList] = useState([]);
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-  console.log(groupList);
+
   useEffect(() => {
     setNewElements("/api/v1/users/group", "chat_users", setChats);
   }, []);
@@ -94,7 +93,7 @@ export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
               </button>
             ))}
           </div>
-          {chats.map((user) => (
+          {chats.map((user, i) => (
             <button
               type="button"
               key={user[0].uuid}

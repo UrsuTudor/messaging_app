@@ -4,6 +4,11 @@ class Api::V1::UsersController < ApplicationController
     user_ids_with_chat = current_user.chats
       .joins(:users)
       .where.not(users: { id: current_user.id })
+      .where(
+        id: Chat.joins(:users)
+                .group("chats.id")
+                .having("COUNT(users.id) = 2")
+      )
       .pluck("users.id")
       .uniq
 
@@ -20,13 +25,15 @@ class Api::V1::UsersController < ApplicationController
     }
   end
 
-  def users_with_chat
+  def users_with_private_chat
     users = current_user.chats
-        .includes(:users)
+                        .includes(:users)
 
     search_term = params[:search].to_s.downcase
 
     users_with_chat_array = users.filter_map do |chat|
+      next if chat.users.count > 2
+
       receivers = filter_users(chat, search_term)
       next unless receivers.any?
 

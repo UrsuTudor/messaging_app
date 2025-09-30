@@ -67,7 +67,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
 
     try {
       setPagination((prev) => ({ ...prev, loading: true }));
-
+      
       const res = await fetch(`/api/v1/chats/open?page=${page}`, {
         method: "POST",
         headers: {

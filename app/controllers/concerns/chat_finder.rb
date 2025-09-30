@@ -19,10 +19,15 @@ module ChatFinder
   end
 
   def find_private_chat(sender_id, receiver_id)
-    Chat.joins(:users)
+    Chat
+      .joins(:users)
       .where(users: { id: [ sender_id, receiver_id ] })
       .group("chats.id")
       .having("COUNT(DISTINCT users.id) = 2")
+      .where.not(id: Chat.joins(:users)
+                        .group("chats.id")
+                        .having("COUNT(users.id) > 2")
+                        .select(:id))
       .first
   end
 end

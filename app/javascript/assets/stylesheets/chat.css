@@ -30,8 +30,7 @@
   height: 100%;
   padding: 10px;
 
-  background-color: #f4f9f4;
-
+  background-color: #f4f9f4;  
 }
 
 .messageForm {
@@ -44,7 +43,6 @@
 }
 
 .msgInput {
-  border-radius: 20px;
   margin-left: 3vw;
 
   border: none;
