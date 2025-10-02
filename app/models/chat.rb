@@ -1,4 +1,6 @@
 class Chat < ApplicationRecord
+  validates :name, length: { minimum: 1, maximum: 50 }
+
   has_many :chat_memberships
   has_many :users, through: :chat_memberships
   has_many :messages

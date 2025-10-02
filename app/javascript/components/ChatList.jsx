@@ -93,12 +93,7 @@ export default function ChatList({
             setDimmed(true);
           }}
         />
-        {displayGroupForm && (
-          <GroupForm
-            setDimmed={setDimmed}
-            setDisplayGroupForm={setDisplayGroupForm}
-          />
-        )}
+        {displayGroupForm && <GroupForm setDimmed={setDimmed} setDisplayGroupForm={setDisplayGroupForm} />}
       </div>
 
       <div ref={chatListRef} className={isMobile ? "chatList mobileList" : "chatList"} data-testid="chatList">
@@ -108,21 +103,23 @@ export default function ChatList({
             className="userContainer"
             onClick={() => {
               setProfile({ display: false, user: null });
-              setReceiver(user.map((user) => {
-                return {
-                  avatar: user.avatar,
-                  name: user.name,
-                  uuid: user.uuid,
-                  description: user.description,
-                  chat_id: user.chat_id,
-                }
-              }));
+              setReceiver(
+                user.map((user) => {
+                  return {
+                    avatar: user.avatar,
+                    name: user.name,
+                    uuid: user.uuid,
+                    description: user.description,
+                    chat_id: user.chat_id,
+                  };
+                })
+              );
               setChatList((prev) => {
                 const index = prev.findIndex((u) => u[0].chat_id === user[0].chat_id);
                 const updated = [...prev];
                 updated[index] = updated[index].map((user) => {
-                  return {...user, read: true}
-                })
+                  return { ...user, read: true };
+                });
                 return updated;
               });
               if (isMobile) {
@@ -137,7 +134,11 @@ export default function ChatList({
                 src={user.length > 1 ? "group_dark.svg" : user[0].avatar || "user_dark.svg"}
                 alt={user.name + "'s profile picture"}
               />
-              <h4 className="userName">{user.slice(1).reduce((result, user) => result + ", " + user.name, user[0].name )}</h4>
+              <h4 className="userName">
+                {user[0].chat_name
+                  ? user[0].chat_name
+                  : user.slice(1).reduce((result, u) => result + ", " + u.name, user[0].name)}
+              </h4>
               {user[0].read ? null : (
                 <img
                   className="unreadIcon"

@@ -25,7 +25,7 @@ export default function Home() {
       }
 
       const data = await res.json();
-      setLoggedUser(data);
+      setLoggedUser([data]);
     } catch (error) {
       console.error(error.message);
     }

@@ -4,11 +4,11 @@ import "../assets/stylesheets/profile.css";
 export default function Profile({ loggedUser, getLoggedUser, user }) {
   const [renderDescriptionForm, setRenderDescriptionForm] = useState(false);
   const [description, setDescription] = useState({
-    content: user.description,
-    length: user.description ? user.description.length : 0,
+    content: user[0]?.description,
+    length: user[0]?.description ? user[0]?.description.length : 0,
   });
   const [renderAvatarForm, setRenderAvatarForm] = useState(false);
-  const [avatar, setAvatar] = useState(user.avatar);
+  const [avatar, setAvatar] = useState(user[0]?.avatar);
   const [feedback, setFeedback] = useState(null);
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
   const textareaRef = useRef(null);
@@ -95,11 +95,11 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
   return (
     <div className="userProfile">
       <div className="imageContainer">
-        <h1 data-testid="profileUserName">{user.name}</h1>
+        <h1 data-testid="profileUserName">{user[0]?.name}</h1>
         <img
           className="profileImage"
-          src={user.avatar ? user.avatar : "user_dark.svg"}
-          alt={user.name + "'s profile picture"}
+          src={user[0]?.avatar ? user[0]?.avatar : "user_dark.svg"}
+          alt={user[0]?.name + "'s profile picture"}
           data-testid="userAvatar"
         />
 
@@ -114,7 +114,7 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
                 onChange={(e) => setAvatar(e.target.files[0])}
               />
               <label htmlFor="file" className="iconContainer profileIconContainer">
-                <p style={{color: "white"}}>Upload File</p>
+                <p style={{ color: "white" }}>Upload File</p>
                 <img className="icon" src="chevron-up.svg" alt="An icon of an arrow pointing up" />
               </label>
               <button
@@ -128,7 +128,7 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
             </div>
           </form>
         ) : (
-          loggedUser.uuid == user.uuid && (
+          loggedUser[0].uuid == user[0]?.uuid && (
             <button className="iconContainer profileIconContainer" onClick={() => setRenderAvatarForm(true)}>
               Change profile picture
               <img className="icon" src="edit-3.svg" alt="An edit icon" />
@@ -166,22 +166,24 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
             </label>
           </form>
         ) : (
-          <div>
-            <p className="description">{user.description}</p>
-            {loggedUser.uuid == user.uuid && (
-              <button
-                className="iconContainer profileIconContainer"
-                data-section="description"
-                onClick={() => {
-                  setRenderDescriptionForm(true);
-                  requestAnimationFrame(() => resizeTextArea());
-                }}
-              >
-                <p>Change description</p>
-                <img className="icon" src="edit-3.svg" alt="An edit icon" />
-              </button>
-            )}
-          </div>
+          description.content && (
+            <div>
+              <p className="description">{user[0]?.description}</p>
+              {loggedUser[0].uuid == user[0]?.uuid && (
+                <button
+                  className="iconContainer profileIconContainer"
+                  data-section="description"
+                  onClick={() => {
+                    setRenderDescriptionForm(true);
+                    requestAnimationFrame(() => resizeTextArea());
+                  }}
+                >
+                  <p>Change description</p>
+                  <img className="icon" src="edit-3.svg" alt="An edit icon" />
+                </button>
+              )}
+            </div>
+          )
         )}
       </div>
       {feedback && (

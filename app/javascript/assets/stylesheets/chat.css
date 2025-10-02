@@ -9,16 +9,6 @@
   border-bottom: #5a7d5a 1px solid;
 }
 
-.chatContainer > .userHeader:hover {
-  filter: brightness(0.85);
-  background-color: #4f6b4f;
-}
-
-.chatContainer > .userHeader:active {
-  filter: brightness(0.75);
-  background-color: #456049;
-}
-
 .msgContainer {
   overflow-y: scroll;
   overflow-x: hidden;
@@ -105,12 +95,21 @@
   background-color: rgb(64, 66, 52);
 }
 
+.chatUserName {
+  cursor: pointer;
+  color: white;
+}
+
+.chatUserName:hover {
+  text-decoration: underline;
+}
+
 .userHeaderPortal {
   display: flex;
   width: 100%;
   gap: 1vw;
   align-items: center;
-  cursor: pointer;
+  padding-right: 20px;
 }
 
 .sendButton {

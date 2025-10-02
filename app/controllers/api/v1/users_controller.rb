@@ -71,6 +71,7 @@ class Api::V1::UsersController < ApplicationController
       receivers.each do |receiver|
         receiver_data = user_data(receiver)
         receiver_data[:chat_id] = chat.id
+        receiver_data[:chat_name] = chat.name
         receiver_data[:read] = chat.chat_memberships.find_by(user_id: current_user.id).read
 
         data_of_receivers << receiver_data

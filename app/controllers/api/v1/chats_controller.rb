@@ -26,7 +26,7 @@ class Api::V1::ChatsController < ApplicationController
       { content: message.content, user_uuid: message.user.uuid, user_name: message.user.name }
     end
 
-    render json: { chat_id: chat.id, messages: message_data, metadata: pagy_metadata(@pagy) }
+    render json: { chat_id: chat.id, messages: message_data, name: chat.name, metadata: pagy_metadata(@pagy) }
   end
 
   def update_read_status
@@ -37,9 +37,21 @@ class Api::V1::ChatsController < ApplicationController
     membership&.update(read: true)
   end
 
+def update
+  chat = Chat.find(chat_params[:chat_id])
+
+  return head :forbidden unless chat.users.include?(current_user)
+
+  if chat.update(name: chat_params[:name])
+    render json: "update successful"
+  else
+    render json: { errors: chat.errors.full_messages }, status: :unprocessable_entity
+  end
+end
+
   private
 
   def chat_params
-    params.require(:chat).permit(:chat_id, receiver_uuids: [])
+    params.require(:chat).permit(:chat_id, :name, receiver_uuids: [])
   end
 end

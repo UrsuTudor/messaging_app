@@ -16,9 +16,10 @@ export default function MobileLayout({
   setChatList
 }) {
   const [displayChat, setDisplayChat] = useState({ chat: false, chatList: true });
+  const [dimmed, setDimmed] = useState(false)
 
   return (
-    <div className="appContainer">
+    <div className={dimmed ? "appContainer dimmed" : "appContainer"}>
       <NavBar loggedUser={loggedUser} profile={profile} setProfile={setProfile} signOut={signOut} />
 
       <div className="mainBodyContainer">
@@ -29,6 +30,7 @@ export default function MobileLayout({
             setDisplayChat={setDisplayChat}
             chatList={chatList}
             setChatList={setChatList}
+            setDimmed ={setDimmed}
           />
         )}
 

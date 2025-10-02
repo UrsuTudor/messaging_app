@@ -10,10 +10,12 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
   const [chat, setChat] = useState({
     chat_id: receiver[0]?.chat_id || null,
     messages: [],
+    name: null,
   });
   const [message, setMessage] = useState("");
   const [scrollTop, setScrollTop] = useScrolling();
   const [pagination, setPagination] = usePagination();
+  const [displayChatNameForm, setDisplayChatNameForm] = useState(false);
   const chatRef = useRef(null);
   const subscriptionRef = useRef(null);
   const throttle = useThrottle();
@@ -43,6 +45,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
     setChat({ chat_id: receiver[0]?.chat_id, messages: [] });
+    setDisplayChatNameForm(false);
     if (pagination.page > 1) getChat(1);
   }, [receiver]);
 
@@ -67,7 +70,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
 
     try {
       setPagination((prev) => ({ ...prev, loading: true }));
-      
+
       const res = await fetch(`/api/v1/chats/open?page=${page}`, {
         method: "POST",
         headers: {
@@ -90,6 +93,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
       setChat((prev) => ({
         chat_id: data.chat_id,
         messages: [...prev.messages, ...data.messages],
+        name: data.name,
       }));
 
       subscribeToChat(data.chat_id);
@@ -156,6 +160,37 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
     });
   }
 
+  async function updateChatName(name) {
+    setChat((prev) => ({ ...prev, name }));
+
+    try {
+      const res = await fetch("/api/v1/chats/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({
+          chat: { chat_id: chat.chat_id, name: name },
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`The chat name could not be updated.`);
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  function displayProfile() {
+    if (receiver.length == 1) setProfile({ display: true, user: receiver });
+
+    if (isMobile) {
+      setDisplayChat({ chat: false, chatList: true });
+    }
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       throttle(() => {
@@ -186,28 +221,43 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
             </div>
           )}
 
-          <div
-            className="userHeaderPortal"
-            onClick={() => {
-              if (receiver.length == 1) setProfile({ display: true, user: receiver });
-
-              if (isMobile) {
-                setDisplayChat({ chat: false, chatList: true });
-              }
-            }}
-            data-testid="userChatHeader"
-          >
+          <div className="userHeaderPortal" data-testid="userChatHeader">
             <img
               className="bigAvatar"
               src={receiver.length > 1 ? "group.svg" : receiver[0].avatar || "user.svg"}
               alt={receiver.name + "'s profile picture"}
               data-testid="chatAvatar"
+              onClick={() => displayProfile()}
             />
-            <h1 data-testid="chatUserName">
-              {receiver
-                .slice(1)
-                .reduce((result, receiver) => result + ", " + receiver.name, receiver[0].name)}
-            </h1>
+
+            {displayChatNameForm ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setDisplayChatNameForm(false);
+                  updateChatName(e.target.elements[0].value);
+                }}
+              >
+                <input type="text" minLength={1} maxLength={50} />
+              </form>
+            ) : (
+              <>
+                <h1 className="chatUserName" data-testid="chatUserName" onClick={() => displayProfile()}>
+                  {chat.name
+                    ? chat.name
+                    : receiver
+                        .slice(1)
+                        .reduce((result, receiver) => result + ", " + receiver.name, receiver[0].name)}
+                </h1>
+
+                <img
+                  className="chatIconContainer "
+                  src="edit-3.svg"
+                  alt="An icon of a pencil representing the button to edit the group's name."
+                  onClick={() => setDisplayChatNameForm(true)}
+                />
+              </>
+            )}
           </div>
         </div>
       )}
@@ -228,7 +278,9 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
             } else {
               return (
                 <div className="message" key={i} data-testid="msg">
-                  {receiver.length > 1 && chat.messages[i + 1]?.user_uuid != message.user_uuid && <h4 className="chatUserName">{message.user_name}</h4>}
+                  {receiver.length > 1 && chat.messages[i + 1]?.user_uuid != message.user_uuid && (
+                    <h4 className="chatUserName">{message.user_name}</h4>
+                  )}
                   <div className="messageContent">
                     <img
                       className="smallAvatar"

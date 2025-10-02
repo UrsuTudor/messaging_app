@@ -13,7 +13,8 @@ export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
     setNewElements("/api/v1/users/group", "chat_users", setChats);
   }, []);
 
-  async function createGroup() {
+  async function createGroup(e) {
+    e.preventDefault()
     let receiver_uuids = groupList.map((user) => user.uuid);
 
     try {
@@ -39,8 +40,8 @@ export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
       {createPortal(
         <form
           className="groupForm"
-          onSubmit={() => {
-            createGroup();
+          onSubmit={(e) => {
+            createGroup(e);
             setDimmed(false);
             setDisplayGroupForm(false);
           }}
@@ -62,7 +63,7 @@ export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
               Create
             </button>
             <img
-              className="chatIconContainer closeBtn"
+              className="chatIconContainer edgeBtn"
               src="xmark.svg"
               alt="An icon of an x marking the button that closes the group builder."
               onClick={() => {

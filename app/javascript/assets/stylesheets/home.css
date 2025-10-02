@@ -141,6 +141,7 @@ nav > h1 {
   height: 60px;
   width: 60px;
   object-fit: cover;
+  cursor: pointer;
   border-radius: 30px;
 }
 
