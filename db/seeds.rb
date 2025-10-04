@@ -11,5 +11,9 @@
 require 'factory_bot_rails'
 include FactoryBot::Syntax::Methods
 
+User.create(name: "Dave", email: "dave@mail.com", password: "dave123")
 100.times { create(:user) }
-# 100.times { create(:chat) }
+
+(1..25).each do |i|
+  FactoryBot.create(:chat, users: [ User.first, User.find(i) ])
+end

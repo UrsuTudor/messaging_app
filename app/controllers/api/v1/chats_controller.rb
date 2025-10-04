@@ -11,7 +11,9 @@ class Api::V1::ChatsController < ApplicationController
       chat = Chat.find(chat_params[:chat_id])
     elsif chat.nil?
       chat = Chat.new(users: [ current_user, *receivers ])
-      render json: chat.errors unless chat.save
+      unless chat.save
+        return render json: chat.errors
+      end
 
       ActionCable.server.broadcast("chatList_#{current_user.id}", { signal: "refresh" })
       receivers.each do |receiver_id|

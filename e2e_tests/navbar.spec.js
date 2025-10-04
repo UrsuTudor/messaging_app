@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe("navbar tests", () => {
   test('opens profile and returns home', async({page}) => {
-    await page.goto("http://localhost:3000")
+    await page.goto("http://localhost:3001")
 
     const profileBtn = page.getByTestId("profileBtn")
     await profileBtn.click();
@@ -15,7 +15,7 @@ test.describe("navbar tests", () => {
   });
 
   test('logs user out', async({page}) => {
-    await page.goto("http://localhost:3000")
+    await page.goto("http://localhost:3001")
 
     await page.getByRole("button", {name: "Log Out"}).click();
 

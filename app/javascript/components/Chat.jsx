@@ -264,14 +264,14 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
       <div ref={chatRef} className="msgContainer" data-testid="msgList">
         {chat.messages &&
           chat.messages.map((message, i) => {
-            if (message.user_uuid == loggedUser.uuid) {
+            if (message.user_uuid == loggedUser[0].uuid) {
               return (
                 <div className="messageContent pushRight" key={i} data-testid="msg">
                   <p>{message.content}</p>
                   <img
                     className="smallAvatar"
-                    src={loggedUser.avatar ? loggedUser.avatar : "user_dark.svg"}
-                    alt={loggedUser.name + "'s profile picture"}
+                    src={loggedUser[0].avatar ? loggedUser[0].avatar : "user_dark.svg"}
+                    alt={loggedUser[0].name + "'s profile picture"}
                   />
                 </div>
               );

@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("chatList tests", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000");
+    await page.goto("http://localhost:3001");
   });
 
   test("handles pagination with scrolling", async ({ page }) => {
@@ -25,6 +25,7 @@ test.describe("chatList tests", () => {
 
     await chatList.nth(0).click();
     await expect(page.getByTestId("chatContainer")).toBeVisible();
+    await page.waitForTimeout(200)
     expect(await page.getByTestId("chatUserName").textContent()).toMatch(await chatList.nth(0).textContent());
 
     await chatList.nth(5).click();

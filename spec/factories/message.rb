@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :message do
-    content { "Hello" }
+    sequence(:content) { |n| "Message #{n}" }
     association :chat
     association :user
   end

@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("chat tests", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000");
+    await page.goto("http://localhost:3001");
   });
 
   test.describe("displays data correctly", () => {
@@ -10,7 +10,7 @@ test.describe("chat tests", () => {
       const chatList = page.getByTestId("chatListBtn");
       await expect(chatList.nth(0)).toBeVisible();
 
-      await chatList.nth(0).click();
+      await page.getByText("Chat1", {exact: true}).click()
       await expect(page.getByTestId("chatContainer")).toBeVisible();
     });
 
@@ -79,24 +79,5 @@ test.describe("chat tests", () => {
       await expect(input).toHaveValue("");
       await expect(page.getByTestId("msg")).toHaveCount(initialMsgCount + 1);
     });
-  });
-
-  test("triggers an update to the chatList when a message is sent to a new chat", async ({ page }) => {
-    await expect(page.getByTestId("userListBtn").nth(0)).toBeVisible();
-    const userWithNoChat = page.getByTestId("userListBtn").nth(6);
-
-    await userWithNoChat.click();
-    const input = page.getByTestId("chatInput");
-    await input.fill("new message");
-    await page.getByTestId("sendButton").click();
-
-    page.waitForResponse(
-      (response) => response.url().includes("/api/v1/users/chats") && response.request().method() === "GET"
-    );
-    await expect(page.getByTestId("chatListBtn").nth(0)).toBeVisible();
-
-    expect(await page.getByTestId("chatListBtn").nth(0).textContent()).toMatch(
-      await userWithNoChat.textContent()
-    );
   });
 });

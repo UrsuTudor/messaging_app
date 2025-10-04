@@ -69,7 +69,7 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
             }}
             onMouseEnter={() => {
               if (!isMobile) {
-                setProfile({ display: true, user: user });
+                setProfile({ display: true, user: [user] });
               }
             }}
             onMouseLeave={() => {

@@ -4,7 +4,7 @@ test.describe("mobile tests", () => {
   test.use({ viewport: { width: 650, height: 1200 } });
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000");
+    await page.goto("http://localhost:3001");
   });
 
   test("renders user and chat list without chat component", async ({ page }) => {
@@ -32,7 +32,7 @@ test.describe("mobile tests", () => {
       await expect(page.getByText("Users")).toBeVisible();
 
       await page.getByTestId("userListBtn").nth(0).click();
-      await page.getByTestId("userChatHeader").click();
+      await page.getByTestId("chatAvatar").click();
     });
 
     test("displays user profile by itself when the user's banner is clicked in chat", async ({ page }) => {

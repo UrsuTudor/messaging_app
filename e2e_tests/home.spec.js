@@ -4,7 +4,7 @@ test.describe("home tests", () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test("requires login before showing home page", async ({ page }) => {
-    await page.goto("http://localhost:3000");
+    await page.goto("http://localhost:3001");
     const email_field = page.getByRole("textbox", { name: "Email" });
     await email_field.focus();
     expect(email_field).toBeFocused();
@@ -13,7 +13,7 @@ test.describe("home tests", () => {
     await page.getByRole("textbox", { name: "Password" }).fill("dave123");
     await page.getByRole("button", { name: "Log in" }).click();
 
-    const title = page.getByRole("heading", { name: "Hiker's Hub" });
+    const title = page.getByRole("heading", { name: "Dave" });
     await expect(title).toBeVisible();
   });
 });

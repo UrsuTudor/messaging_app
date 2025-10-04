@@ -55,8 +55,7 @@ export default function ChatList({
         `/api/v1/users/chats?page=${pagination.page}`,
         "chat_users",
         setChatList,
-        setPagination,
-        pagination.page
+        setPagination
       );
     }
   }, [scrollBottom]);

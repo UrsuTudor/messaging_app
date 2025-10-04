@@ -2,13 +2,13 @@ import { test, expect } from "@playwright/test";
 
 test.describe("userList tests", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000");
+    await page.goto("http://localhost:3001");
   });
 
   test.describe("handles pagination", () => {
     test("requests a list of users on load", async ({ page }) => {
       await expect(page.getByTestId("userListBtn").nth(0)).toBeVisible();
-      expect(await page.getByTestId("userListBtn").count()).toBeGreaterThan(10)
+      expect(await page.getByTestId("userListBtn").count()).toBeGreaterThan(10);
     });
 
     test("requests more users when the container is scrolled down", async ({ page }) => {
@@ -46,7 +46,7 @@ test.describe("userList tests", () => {
       );
     });
 
-    test("displays chat with user on click", async ({ page }) => {
+    test("creates chat with user on click", async ({ page }) => {
       const userList = page.getByTestId("userListBtn");
       await expect(userList.nth(0)).toBeVisible();
 

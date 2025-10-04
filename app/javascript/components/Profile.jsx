@@ -166,24 +166,22 @@ export default function Profile({ loggedUser, getLoggedUser, user }) {
             </label>
           </form>
         ) : (
-          description.content && (
-            <div>
-              <p className="description">{user[0]?.description}</p>
-              {loggedUser[0].uuid == user[0]?.uuid && (
-                <button
-                  className="iconContainer profileIconContainer"
-                  data-section="description"
-                  onClick={() => {
-                    setRenderDescriptionForm(true);
-                    requestAnimationFrame(() => resizeTextArea());
-                  }}
-                >
-                  <p>Change description</p>
-                  <img className="icon" src="edit-3.svg" alt="An edit icon" />
-                </button>
-              )}
-            </div>
-          )
+          <div>
+            {description.content && <p className="description">{user[0]?.description}</p>}
+            {loggedUser[0].uuid == user[0]?.uuid && (
+              <button
+                className="iconContainer profileIconContainer"
+                data-section="description"
+                onClick={() => {
+                  setRenderDescriptionForm(true);
+                  requestAnimationFrame(() => resizeTextArea());
+                }}
+              >
+                <p>Change description</p>
+                <img className="icon" src="edit-3.svg" alt="An edit icon" />
+              </button>
+            )}
+          </div>
         )}
       </div>
       {feedback && (
