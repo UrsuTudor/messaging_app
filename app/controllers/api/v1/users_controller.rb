@@ -51,12 +51,13 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def paginated_users_with_chat
-    @pagy, @users_with_chat = pagy(
+   @pagy, @users_with_chat = pagy(
       current_user.chats
-        .left_joins(:messages)
-        .includes(:messages, :users)
-        .group("chats.id")
-        .order(Arel.sql("MAX(messages.created_at) DESC NULLS LAST")),
+      .left_joins(:messages, :users)
+      .includes(:messages, :users)
+      .where("chats.name ILIKE :term OR users.name ILIKE :term", term: "%#{params[:search]}%")
+      .group("chats.id")
+      .order(Arel.sql("MAX(messages.created_at) DESC NULLS LAST")),
       page: params[:page], limit: 20
     )
 
@@ -111,7 +112,9 @@ class Api::V1::UsersController < ApplicationController
 
   def filter_users(chat, search_term)
     chat.users.select do |user|
-      user.uuid != current_user.uuid && user.name.downcase.include?(search_term)
+      user.uuid != current_user.uuid &&
+        (user.name.downcase.include?(search_term) ||
+        chat.name&.downcase&.include?(search_term))
     end
   end
 

@@ -13,7 +13,10 @@ include FactoryBot::Syntax::Methods
 
 User.create(name: "Dave", email: "dave@mail.com", password: "dave123")
 100.times { create(:user) }
+User.create(name: "Ash", email: "ash@mail.com", password: "ash123")
 
 (1..25).each do |i|
   FactoryBot.create(:chat, users: [ User.first, User.find(i) ])
 end
+
+FactoryBot.create(:chat, users: [ User.first, User.second ], name: "Test Chat")

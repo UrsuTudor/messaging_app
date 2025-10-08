@@ -10,6 +10,7 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
   const [userList, setUserList] = useState([]);
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
+  const [searchTerm, setSearchTerm] = useState("");
   const userListRef = useRef(null);
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
@@ -21,11 +22,17 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
     }
 
     const scrollThreshold = userListRef.current.scrollHeight * 0.1;
+    if(pagination.page <= 1) setUserList([])
 
     if (scrollBottom < scrollThreshold && !pagination.loading) {
-      setNewElements(`/api/v1/users/list?page=${pagination.page}`, "users", setUserList, setPagination);
+      setNewElements(
+        `/api/v1/users/list?page=${pagination.page}&search=${searchTerm}`,
+        "users",
+        setUserList,
+        setPagination
+      );
     }
-  }, [scrollBottom]);
+  }, [scrollBottom, searchTerm]);
 
   useEffect(() => {
     const throttledUpdateScrollBottom = () =>
@@ -43,7 +50,13 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
     <div className={isMobile ? "userListContainer mobileList" : "userListContainer"}>
       <div className="listHeader">
         <h1> Users</h1>
-        <SearchBar route={`/api/v1/users/list?page=1`} dataKey={"users"} setPagination={setPagination} listSetter={setUserList} />
+        <SearchBar
+          route={`/api/v1/users/list?page=1`}
+          dataKey={"users"}
+          setPagination={setPagination}
+          listSetter={setUserList}
+          setSearchTerm={setSearchTerm}
+        />
       </div>
 
       <div className="userList" ref={userListRef} data-testid="userList">

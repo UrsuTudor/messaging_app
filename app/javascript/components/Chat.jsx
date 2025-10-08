@@ -238,7 +238,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
                   updateChatName(e.target.elements[0].value);
                 }}
               >
-                <input type="text" minLength={1} maxLength={50} />
+                <input type="text" minLength={1} maxLength={50} autoFocus />
               </form>
             ) : (
               <>

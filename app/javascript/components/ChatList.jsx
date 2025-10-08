@@ -20,6 +20,7 @@ export default function ChatList({
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
   const [displayGroupForm, setDisplayGroupForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const chatListRef = useRef(null);
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
@@ -49,16 +50,17 @@ export default function ChatList({
     }
 
     const scrollThreshold = chatListRef.current.scrollHeight * 0.1;
+    if(pagination.page <= 1) setChatList([])
 
     if (scrollBottom < scrollThreshold && !pagination.loading) {
       setNewElements(
-        `/api/v1/users/chats?page=${pagination.page}`,
+        `/api/v1/users/chats?page=${pagination.page}&search=${searchTerm}`,
         "chat_users",
         setChatList,
         setPagination
       );
     }
-  }, [scrollBottom]);
+  }, [scrollBottom, searchTerm]);
 
   useEffect(() => {
     const throttledUpdateScrollBottom = () =>
@@ -82,6 +84,7 @@ export default function ChatList({
           dataKey={"chat_users"}
           setPagination={setPagination}
           listSetter={setChatList}
+          setSearchTerm={setSearchTerm}
         />
         <img
           className="chatIconContainer"
