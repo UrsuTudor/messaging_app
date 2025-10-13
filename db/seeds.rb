@@ -11,12 +11,14 @@
 require 'factory_bot_rails'
 include FactoryBot::Syntax::Methods
 
-User.create(name: "Dave", email: "dave@mail.com", password: "dave123")
+dave1 = User.create(name: "Dave", email: "dave@mail.com", password: "dave123")
 100.times { create(:user) }
+dave2 = User.create(name: "Dave2", email: "dave2@mail.com", password: "dave2123")
 User.create(name: "Ash", email: "ash@mail.com", password: "ash123")
 
 (1..25).each do |i|
-  FactoryBot.create(:chat, users: [ User.first, User.find(i) ])
+  FactoryBot.create(:chat, users: [ dave1, User.find(i) ])
 end
 
-FactoryBot.create(:chat, users: [ User.first, User.second ], name: "Test Chat")
+chat = FactoryBot.create(:chat, users: [ dave1, dave2 ], name: "Test Chat")
+FactoryBot.create_list(:message, 25, chat: chat, user: User.second)

@@ -89,7 +89,7 @@ export default function ChatList({
         <img
           className="chatIconContainer"
           src="group.svg"
-          alt="A minimalistic icon of two people, marking the button to create a group."
+          alt="Create a group."
           onClick={() => {
             setDisplayGroupForm(true);
             setDimmed(true);
@@ -145,7 +145,7 @@ export default function ChatList({
                 <img
                   className="unreadIcon"
                   src="bonfire.svg"
-                  alt="A minimalistic icon reprezenting a bonfire"
+                  alt="message notification"
                 />
               )}
             </div>

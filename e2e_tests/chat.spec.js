@@ -10,7 +10,7 @@ test.describe("chat tests", () => {
       const chatList = page.getByTestId("chatListBtn");
       await expect(chatList.nth(0)).toBeVisible();
 
-      await page.getByText("Chat1", {exact: true}).click()
+      await page.getByText("Test Chat", {exact: true}).click()
       await expect(page.getByTestId("chatContainer")).toBeVisible();
     });
 

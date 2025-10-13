@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { chromium, test, expect } from "@playwright/test";
 
 test.describe("chatList tests", () => {
   test.beforeEach(async ({ page }) => {
@@ -25,11 +25,68 @@ test.describe("chatList tests", () => {
 
     await chatList.nth(0).click();
     await expect(page.getByTestId("chatContainer")).toBeVisible();
-    await page.waitForTimeout(200)
+    await page.waitForTimeout(200);
     expect(await page.getByTestId("chatUserName").textContent()).toMatch(await chatList.nth(0).textContent());
 
     await chatList.nth(5).click();
     await expect(page.getByTestId("chatContainer")).toBeVisible();
+    await page.waitForTimeout(200);
     expect(await page.getByTestId("chatUserName").textContent()).toMatch(await chatList.nth(5).textContent());
+  });
+
+  test.describe("notification updates", () => {
+    test.beforeEach(async ({ page }) => {
+      await expect(page.getByRole("img", { name: "message notification" })).toHaveCount(0);
+
+      const browser = page.context().browser();
+      const user2Context = await browser.newContext({ storageState: "playwright/.auth/user2.json" });
+      const user2Page = await user2Context.newPage();
+      await user2Page.goto("http://localhost:3001");
+
+      await expect(user2Page.getByText("Dave2")).toBeVisible();
+      await user2Page.getByText("Test Chat").click();
+
+      const input = user2Page.getByTestId("chatInput");
+      await input.fill("new message");
+      await user2Page.getByTestId("sendButton").click();
+    });
+
+    test("displays notification icon when logged user receives a message", async ({ page }) => {
+      await expect(page.getByRole("img", { name: "message notification" })).toBeVisible();
+    });
+
+    test("hides notification message when user opens the chat", async ({ page }) => {
+      await expect(page.getByRole("img", { name: "message notification" })).toBeVisible();
+
+      await page.getByTestId("chatListBtn").first().click();
+
+      await expect(page.getByRole("img", { name: "message notification" })).toHaveCount(0);
+    });
+
+    test("if chat is already open, hides notification message when receiver sends a message", async ({ page }) => {
+      await expect(page.getByRole("img", { name: "message notification" })).toBeVisible();
+      await page.getByTestId("chatListBtn").first().click();
+      await expect(page.getByRole("img", { name: "message notification" })).toHaveCount(0);
+
+      const browser = page.context().browser();
+      const user2Context = await browser.newContext({ storageState: "playwright/.auth/user2.json" });
+      const user2Page = await user2Context.newPage();
+      await user2Page.goto("http://localhost:3001");
+
+      await expect(user2Page.getByText("Dave2")).toBeVisible();
+      await user2Page.getByText("Test Chat").click();
+
+      const page2Input = user2Page.getByTestId("chatInput");
+      await page2Input.fill("new message");
+      await user2Page.getByTestId("sendButton").click();
+
+      await expect(page.getByRole("img", { name: "message notification" })).toBeVisible();
+
+      const loggedUserChatInput = page.getByTestId("chatInput");
+      await loggedUserChatInput.fill("new message");
+      await page.getByTestId("sendButton").click();
+      
+      await expect(page.getByRole("img", { name: "message notification" })).toHaveCount(0);
+    });
   });
 });
