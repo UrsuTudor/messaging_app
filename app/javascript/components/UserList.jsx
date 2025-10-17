@@ -3,7 +3,7 @@ import "../assets/stylesheets/userList.css";
 import useThrottle from "../assets/hooks/useThrottle";
 import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
-import { setNewElements, updateListEndMessage, updateScrollBottom } from "../assets/helpers";
+import { setNewElements, updateListEndMessage, updateScrollBottom, handleResize } from "../assets/helpers";
 import SearchBar from "./SearchBar";
 
 export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
@@ -11,6 +11,7 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
   const [searchTerm, setSearchTerm] = useState("");
+  const [displaySearchBar, setDisplaySearchBar] = useState(window.innerWidth > 1400);
   const userListRef = useRef(null);
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
@@ -22,7 +23,7 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
     }
 
     const scrollThreshold = userListRef.current.scrollHeight * 0.1;
-    if(pagination.page <= 1) setUserList([])
+    if (pagination.page <= 1) setUserList([]);
 
     if (scrollBottom < scrollThreshold && !pagination.loading) {
       setNewElements(
@@ -46,6 +47,13 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
     };
   }, []);
 
+  useEffect(() => {
+    setDisplaySearchBar(window.innerWidth > 1400);
+
+    const cleanup = handleResize(setDisplaySearchBar);
+    return cleanup;
+  }, []);
+
   return (
     <div className={isMobile ? "userListContainer mobileList" : "userListContainer"}>
       <div className="listHeader">
@@ -56,6 +64,8 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
           setPagination={setPagination}
           listSetter={setUserList}
           setSearchTerm={setSearchTerm}
+          displaySearchBar={displaySearchBar}
+          setDisplaySearchBar={setDisplaySearchBar}
         />
       </div>
 

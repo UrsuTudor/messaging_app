@@ -3,7 +3,7 @@ import "../assets/stylesheets/chatList";
 import useThrottle from "../assets/hooks/useThrottle";
 import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
-import { setNewElements, updateListEndMessage, updateScrollBottom } from "../assets/helpers";
+import { setNewElements, updateListEndMessage, updateScrollBottom, handleResize } from "../assets/helpers";
 import UserList from "./UserList";
 import SearchBar from "./SearchBar";
 import consumer from "../channels/consumer";
@@ -21,6 +21,7 @@ export default function ChatList({
   const [pagination, setPagination] = usePagination();
   const [displayGroupForm, setDisplayGroupForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [displaySearchBar, setDisplaySearchBar] = useState(false);
   const chatListRef = useRef(null);
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
@@ -50,7 +51,7 @@ export default function ChatList({
     }
 
     const scrollThreshold = chatListRef.current.scrollHeight * 0.1;
-    if(pagination.page <= 1) setChatList([])
+    if (pagination.page <= 1) setChatList([]);
 
     if (scrollBottom < scrollThreshold && !pagination.loading) {
       setNewElements(
@@ -75,27 +76,43 @@ export default function ChatList({
     };
   }, []);
 
+  useEffect(() => {
+    setDisplaySearchBar(window.innerWidth > 1400);
+
+    const cleanup = handleResize(setDisplaySearchBar);
+    return cleanup;
+  }, []);
+
   return (
-    <div className="chatListContainer widen">
+    <div className={displaySearchBar ? "chatListContainer widen" : "chatListContainer"}>
       <div className="listHeader">
         <h1>Chats</h1>
         <SearchBar
           route={"api/v1/users/chats?page=1"}
           dataKey={"chat_users"}
           setPagination={setPagination}
-          listSetter={setChatList}
           setSearchTerm={setSearchTerm}
+          displaySearchBar={displaySearchBar}
+          setDisplaySearchBar={setDisplaySearchBar}
         />
         <img
           className="chatIconContainer"
           src="group.svg"
-          alt="Create a group."
+          alt="Create a group"
           onClick={() => {
             setDisplayGroupForm(true);
             setDimmed(true);
           }}
         />
-        {displayGroupForm && <GroupForm setDimmed={setDimmed} setDisplayGroupForm={setDisplayGroupForm} />}
+        {displayGroupForm && (
+          <GroupForm
+            setDimmed={setDimmed}
+            setDisplayGroupForm={setDisplayGroupForm}
+            setReceiver={setReceiver}
+            setPagination={setPagination}
+            setChatList={setChatList}
+          />
+        )}
       </div>
 
       <div ref={chatListRef} className={isMobile ? "chatList mobileList" : "chatList"} data-testid="chatList">
@@ -142,11 +159,7 @@ export default function ChatList({
                   : user.slice(1).reduce((result, u) => result + ", " + u.name, user[0].name)}
               </h4>
               {user[0].read ? null : (
-                <img
-                  className="unreadIcon"
-                  src="bonfire.svg"
-                  alt="message notification"
-                />
+                <img className="unreadIcon" src="bonfire.svg" alt="message notification" />
               )}
             </div>
           </button>

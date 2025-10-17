@@ -1,3 +1,5 @@
+import debounce from "lodash.debounce";
+
 function updateListEndMessage(setPagination) {
   setPagination((prev) => ({
     ...prev,
@@ -14,9 +16,19 @@ function updatePagination(setPagination, totalPages) {
   }));
 }
 
+function handleResize(setDisplaySearchBar) {
+  const debouncedResize = debounce(() => {
+    setDisplaySearchBar(window.innerWidth > 1400);
+  }, 100);
+
+  window.addEventListener("resize", debouncedResize);
+
+  return () => window.removeEventListener("resize", debouncedResize);
+}
+
 async function setNewElements(fetchURL, dataKey, setElements, setPagination = null, reset = false) {
   try {
-    if(setPagination) setPagination((prev) => ({ ...prev, loading: true }));
+    if (setPagination) setPagination((prev) => ({ ...prev, loading: true }));
 
     const res = await fetch(fetchURL, {
       method: "GET",
@@ -27,15 +39,15 @@ async function setNewElements(fetchURL, dataKey, setElements, setPagination = nu
 
     const data = await res.json();
 
-    reset ? setElements(data[dataKey]) : setElements((prevElements) => [...prevElements, ...data[dataKey]])
+    reset ? setElements(data[dataKey]) : setElements((prevElements) => [...prevElements, ...data[dataKey]]);
 
-    if(setPagination) updatePagination(setPagination, data.metadata.pages);
+    if (setPagination) updatePagination(setPagination, data.metadata.pages);
 
     return data;
   } catch (error) {
     console.error(error.message);
   } finally {
-    if(setPagination) setPagination((prev) => ({ ...prev, loading: false }));
+    if (setPagination) setPagination((prev) => ({ ...prev, loading: false }));
   }
 }
 
@@ -43,4 +55,4 @@ function updateScrollBottom(setScrollBottom, element) {
   setScrollBottom(element.scrollHeight - element.scrollTop - element.clientHeight);
 }
 
-export { setNewElements, updateListEndMessage, updatePagination, updateScrollBottom };
+export { setNewElements, updateListEndMessage, updatePagination, updateScrollBottom, handleResize };

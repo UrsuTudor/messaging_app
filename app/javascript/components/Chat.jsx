@@ -152,11 +152,24 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
   }
 
   function updateChatList() {
-    if (isMobile || chatList[0].uuid == receiver.uuid) return;
+    if (isMobile || chatList[0][0].uuid == receiver[0].uuid) return;
 
     setChatList((prev) => {
-      const filtered = prev.filter((user) => user.uuid != receiver.uuid);
-      return [{ name: receiver.name, uuid: receiver.uuid, avatar: receiver.avatar }, ...filtered];
+      const filtered = prev.filter((user) => user[0].uuid != receiver[0].uuid);
+      return [
+        receiver.map((user) => {
+          return {
+            avatar: user.avatar,
+            chat_id: chat.chat_id,
+            chat_name: chat.name,
+            description: user.description,
+            name: user.name,
+            read: true,
+            uuid: user.uuid,
+          };
+        }),
+        ...filtered,
+      ];
     });
   }
 
@@ -243,11 +256,10 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
             ) : (
               <>
                 <h1 className="chatUserName" data-testid="chatUserName" onClick={() => displayProfile()}>
-                  {chat.name
-                    ? chat.name
-                    : receiver
-                        .slice(1)
-                        .reduce((result, receiver) => result + ", " + receiver.name, receiver[0].name)}
+                  {chat.name ||
+                    receiver
+                      .slice(1)
+                      .reduce((result, receiver) => result + ", " + receiver.name, receiver[0].name)}
                 </h1>
 
                 <img
@@ -304,6 +316,7 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
 
             setChatList((prev) => {
               const index = prev.findIndex((u) => u[0].chat_id === chat.chat_id);
+              if (index < 0) return prev;
               const updated = [...prev];
               updated[index] = updated[index].map((user) => {
                 return { ...user, read: true };

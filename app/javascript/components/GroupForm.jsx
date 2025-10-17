@@ -4,17 +4,24 @@ import SearchBar from "./SearchBar";
 import { createPortal } from "react-dom";
 import { setNewElements } from "../assets/helpers";
 
-export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
+export default function GroupForm({
+  setDimmed,
+  setDisplayGroupForm,
+  setReceiver,
+  setPagination,
+}) {
   const [chats, setChats] = useState([]);
   const [groupList, setGroupList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
   useEffect(() => {
-    setNewElements("/api/v1/users/group", "chat_users", setChats);
-  }, []);
+    setChats([]);
+    setNewElements(`/api/v1/users/group?search=${searchTerm}`, "chat_users", setChats);
+  }, [searchTerm]);
 
   async function createGroup(e) {
-    e.preventDefault()
+    e.preventDefault();
     let receiver_uuids = groupList.map((user) => user.uuid);
 
     try {
@@ -30,6 +37,20 @@ export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
       if (!res.ok) {
         throw new Error("The group could not be created.");
       }
+
+      const data = await res.json();
+
+      setReceiver(
+        groupList.map((user) => {
+          return {
+            avatar: user.avatar,
+            name: user.name,
+            uuid: user.uuid,
+            description: user.description,
+            chat_id: data.chat_id,
+          };
+        })
+      );
     } catch (error) {
       console.error(error.message);
     }
@@ -51,7 +72,9 @@ export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
               route={"api/v1/users/chats?page=1"}
               dataKey={"chat_users"}
               listSetter={setChats}
+              setPagination={setPagination}
               adaptable={false}
+              setSearchTerm={setSearchTerm}
             />
             <button
               type="submit"
@@ -65,7 +88,7 @@ export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
             <img
               className="chatIconContainer edgeBtn"
               src="xmark.svg"
-              alt="An icon of an x marking the button that closes the group builder."
+              alt="Close group form"
               onClick={() => {
                 setDisplayGroupForm(false);
                 setDimmed(false);
@@ -85,11 +108,7 @@ export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
               >
                 <div className="userHeader">
                   <h4 className="userName">{user.name}</h4>
-                  <img
-                    className="groupUserIcon"
-                    src="xmark.svg"
-                    alt="An icon of an x marking the button that removes a user from the group that is being built."
-                  />
+                  <img className="groupUserIcon" src="xmark.svg" alt="Remove user from group" />
                 </div>
               </button>
             ))}
@@ -103,6 +122,7 @@ export default function GroupForm({ setDimmed, setDisplayGroupForm }) {
                 setGroupList((prev) => [...prev, user[0]]);
                 setChats((prev) => prev.filter((u) => u[0].uuid !== user[0].uuid));
               }}
+              data-testid="groupFormUserBtn"
             >
               <div className="userHeader">
                 <img
