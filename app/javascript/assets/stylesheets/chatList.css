@@ -1,8 +1,7 @@
 .chatListContainer{
   display: flex;
   flex-direction: column;
-  min-width: fit-content;
-  transition: 1s;
+  min-width: 200px;
 }
 
 .chatList {
@@ -19,4 +18,9 @@
 .userContainer > p {
   padding-left: 1vw;
   text-align: left;
+}
+
+.widen {
+  transition: none;
+  min-width: 375px;
 }

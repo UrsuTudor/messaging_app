@@ -1,6 +1,7 @@
 .userListContainer{
   display: flex;
   flex-direction: column;
+  max-width: 375px;
 }
 
 .userList { 

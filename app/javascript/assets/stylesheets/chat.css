@@ -1,6 +1,7 @@
 .chatContainer {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .chatContainer > .userHeader {
@@ -83,10 +84,6 @@
   padding: 0 0 0 10px;
 }
 
-.chatUserName {
-  color: #333333;
-}
-
 .userHeader > .chatIconContainer:hover {
    background-color: #535743;
 }
@@ -98,6 +95,9 @@
 .chatUserName {
   cursor: pointer;
   color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chatUserName:hover {

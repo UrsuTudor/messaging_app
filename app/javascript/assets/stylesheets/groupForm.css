@@ -3,18 +3,22 @@
   display: flex;
   flex-direction: column;
   background-color: #f4f9f4;
-  width: 25vw;
-  min-width: fit-content;
+  width: max(25vw, 375px);
   height: max(350px, 50vh);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .groupForm > .listHeader {
   display: flex;
   height: 50px;
-  min-width: 350px
+  width: 100%;
+  position: sticky;
+  top: 0;
 }
 
 .edgeBtn {
@@ -25,8 +29,13 @@
   display: flex;
   flex-wrap: wrap;
   gap: 3px;
-  margin: 5px;
+  padding: 5px;
   width: 100%;
+  height: fit-content;
+  background-color: #f4f9f4;
+
+  position: sticky;
+  top: 43px;
 }
 
 .groupUserIcon {
