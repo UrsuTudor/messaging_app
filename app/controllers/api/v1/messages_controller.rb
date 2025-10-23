@@ -2,6 +2,8 @@ class Api::V1::MessagesController < ApplicationController
   include ChatFinder
 
   def create
+    return render(json: { error: "No receivers provided" }, status: :not_found) unless message_params[:receiver_uuids]
+
     receivers = find_receivers(message_params[:receiver_uuids]).map(&:id)
 
     chat = Chat.find(message_params[:chat_id])

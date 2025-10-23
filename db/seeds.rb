@@ -11,12 +11,18 @@
 require 'factory_bot_rails'
 include FactoryBot::Syntax::Methods
 
-dave1 = User.create(name: "Dave", email: "dave@mail.com", password: "dave123")
+dave1 = User.create(name: "Dave", email: "dave@mail.com", password: "dave123", description: "fake user")
+dave1.avatar.attach(
+  io: File.open(Rails.root.join('public', 'icon.png')),
+  filename: "icon.png",
+  content_type: "image/png"
+)
+
 100.times { create(:user) }
 dave2 = User.create(name: "Dave2", email: "dave2@mail.com", password: "dave2123")
 User.create(name: "Ash", email: "ash@mail.com", password: "ash123")
 
-(1..25).each do |i|
+(3..25).each do |i|
   FactoryBot.create(:chat, users: [ dave1, User.find(i) ])
 end
 

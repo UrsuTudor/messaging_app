@@ -96,7 +96,8 @@ class Api::V1::UsersController < ApplicationController
     render json: {
       name: current_user.name,
       avatar: current_user.avatar.attached? ? url_for(current_user.avatar) : nil,
-      uuid: current_user.uuid, description: current_user.description }
+      uuid: current_user.uuid,
+      description: current_user.description }
   end
 
   private

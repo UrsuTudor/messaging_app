@@ -74,5 +74,13 @@ RSpec.configure do |config|
 
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
+  config.include Devise::Test::IntegrationHelpers, type: :request
   config.include FactoryBot::Syntax::Methods
+  config.before(:each, type: :request) do
+    allow_any_instance_of(Api::V1::ChatsController)
+      .to receive(:verify_authenticity_token).and_return(true)
+
+    allow_any_instance_of(Api::V1::MessagesController)
+      .to receive(:verify_authenticity_token).and_return(true)
+  end
 end

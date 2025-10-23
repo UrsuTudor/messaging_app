@@ -3,8 +3,9 @@ class Api::V1::ChatsController < ApplicationController
 
   include ChatFinder
   def find_or_create
-    receivers = find_receivers(chat_params[:receiver_uuids])
+    return render(json: { error: "No receivers provided" }, status: :unprocessable_entity) unless chat_params["receiver_uuids"]
 
+    receivers = find_receivers(chat_params[:receiver_uuids])
     chat = receivers.length == 1 ? find_private_chat(current_user.id, receivers[0].id) : nil
 
     if chat.nil? && chat_params[:chat_id]
