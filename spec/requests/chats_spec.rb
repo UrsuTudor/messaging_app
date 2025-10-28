@@ -37,4 +37,21 @@ describe "ChatsController", type: :request do
     expect(JSON.parse(response.body)['messages'][1]['content']).to include("first message")
     expect(JSON.parse(response.body)['messages'][0]['content']).to include("second message")
   end
+
+  it "creates a group chat if multiple receivers are provided" do
+    receiver1 = User.create(name: "test", email: "test@mail.com", password: "123123")
+    receiver2 = User.create(name: "test", email: "test2@mail.com", password: "123123")
+    receiver3 = User.create(name: "test", email: "test3@mail.com", password: "123123")
+
+    expect {
+      post "/api/v1/chats/open", params: { chat: { receiver_uuids: [ receiver1.uuid, receiver2.uuid, receiver3.uuid ] } }
+    }.to change(Chat, :count).by(1)
+
+    newly_created_chat = Chat.last
+
+    expect(newly_created_chat.users.first.uuid).to match(User.first.uuid)
+    expect(newly_created_chat.users.second.uuid).to match(receiver1.uuid)
+    expect(newly_created_chat.users.third.uuid).to match(receiver2.uuid)
+    expect(newly_created_chat.users.fourth.uuid).to match(receiver3.uuid)
+  end
 end

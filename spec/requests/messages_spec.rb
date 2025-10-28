@@ -53,4 +53,48 @@ RSpec.describe "Messages", type: :request do
 
     expect(chat.messages.first.content).to include("Hello")
   end
+
+  describe "group chat messaging" do
+    before do
+      receiver1 = User.create(name: "test", email: "test@mail.com", password: "123123")
+      receiver2 = User.create(name: "test", email: "test2@mail.com", password: "123123")
+      receiver3 = User.create(name: "test", email: "test3@mail.com", password: "123123")
+
+      expect {
+        post "/api/v1/chats/open", params: { chat: { receiver_uuids: [ receiver1.uuid, receiver2.uuid, receiver3.uuid ] } }
+      }.to change(Chat, :count).by(1)
+    end
+    it "sends messages to group chat" do
+      newly_created_chat = Chat.last
+      chat_users = newly_created_chat.users
+
+      post "/api/v1/messages/send", params: { message: { content: "Hello",
+                                                         receiver_uuids: [ chat_users[1].uuid,
+                                                                           chat_users[2].uuid,
+                                                                           chat_users[3].uuid ],
+                                                         chat_id: newly_created_chat.id } }
+
+      expect(newly_created_chat.messages.count).to be(1)
+    end
+
+    it "doesn't accidentally send messages to other existing chats" do
+      newly_created_chat = Chat.last
+      chat_users = newly_created_chat.users
+
+      expect {
+        post "/api/v1/chats/open", params: { chat: { receiver_uuids: [ chat_users[1].uuid ] } }
+      }.to change(Chat, :count).by(1)
+
+      private_chat = Chat.last
+
+      post "/api/v1/messages/send", params: { message: { content: "Hello",
+                                                         receiver_uuids: [ chat_users[1].uuid,
+                                                                           chat_users[2].uuid,
+                                                                           chat_users[3].uuid ],
+                                                         chat_id: newly_created_chat.id } }
+
+      expect(newly_created_chat.messages.count).to be(1)
+      expect(private_chat.messages.count).to be(0)
+    end
+  end
 end
