@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { before } from "lodash";
 
 test.describe("chat tests", () => {
   test.beforeEach(async ({ page }) => {
@@ -10,7 +11,7 @@ test.describe("chat tests", () => {
       const chatList = page.getByTestId("chatListBtn");
       await expect(chatList.nth(0)).toBeVisible();
 
-      await page.getByText("Test Chat", {exact: true}).click()
+      await page.getByText("Test Chat", { exact: true }).click();
       await expect(page.getByTestId("chatContainer")).toBeVisible();
     });
 
@@ -78,6 +79,28 @@ test.describe("chat tests", () => {
 
       await expect(input).toHaveValue("");
       await expect(page.getByTestId("msg")).toHaveCount(initialMsgCount + 1);
+    });
+
+    test("handles real time messaging", async ({ page }) => {
+      const browser = page.context().browser();
+      const user2Context = await browser.newContext({ storageState: "playwright/.auth/user2.json" });
+      const user2Page = await user2Context.newPage();
+      await user2Page.goto("http://localhost:3001");
+
+      const chatList = user2Page.getByTestId("chatListBtn");
+      await expect(chatList.nth(0)).toBeVisible();
+
+      await user2Page.getByText("Test Chat", { exact: true }).click();
+      await expect(user2Page.getByTestId("msg").nth(0)).toBeVisible();
+
+      let msgNumberCount = await user2Page.getByTestId("msg").count();
+
+      const input = page.getByTestId("chatInput");
+      await input.fill("hmm");
+      await page.getByTestId("sendButton").click();
+
+      const msgLocator = user2Page.getByTestId("msg");
+      await expect(msgLocator).toHaveCount(msgNumberCount + 1);
     });
   });
 });
