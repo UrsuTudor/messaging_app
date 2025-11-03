@@ -7,12 +7,22 @@ Rails.application.routes.draw do
       post "chats/open", to: "chats#find_or_create"
       post "chats/update_read", to: "chats#update_read_status"
       post "chats/update", to: "chats#update"
+
       post "messages/send", to: "messages#create"
+
       get "users/list", to: "users#index"
       get "users/current", to: "users#current_user_info"
       post "users/update", to: "users#update"
       get "users/chats", to: "users#paginated_users_with_chat"
       get "users/group", to: "users#users_with_private_chat"
+
+      get  "events/participants", to: "event_memberships#index"
+      post "events/participate", to: "event_memberships#create"
+      delete "events/leave_event", to: "event_memberships#destroy"
+
+      post "events/create", to: "events#create"
+      post "events/update", to: "events#update"
+      delete "events/delete", to: "events#destroy"
     end
   end
 

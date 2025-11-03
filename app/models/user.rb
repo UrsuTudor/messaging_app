@@ -11,6 +11,9 @@ class User < ApplicationRecord
   has_many :chat_memberships
   has_many :chats, through: :chat_memberships
 
+  has_many :event_memberships
+  has_many :events, through: :event_memberships
+
   def validate_avatar
     return unless avatar.attached?
 

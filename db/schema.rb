@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_30_123817) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_28_115036) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -58,6 +58,25 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_30_123817) do
     t.string "name"
   end
 
+  create_table "event_memberships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "event_id", null: false
+    t.integer "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_event_memberships_on_event_id"
+    t.index ["user_id"], name: "index_event_memberships_on_user_id"
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.string "title"
+    t.string "location"
+    t.datetime "date"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "messages", force: :cascade do |t|
     t.text "content"
     t.bigint "chat_id", null: false
@@ -88,6 +107,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_30_123817) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "chat_memberships", "chats"
   add_foreign_key "chat_memberships", "users"
+  add_foreign_key "event_memberships", "events"
+  add_foreign_key "event_memberships", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "users"
 end

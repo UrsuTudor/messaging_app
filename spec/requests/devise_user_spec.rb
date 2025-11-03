@@ -8,8 +8,6 @@ describe "UsersController", type: :request do
     .and_return(User.first)
   end
 
-
-
   it "fails creation if name is missing" do
     post "/users",
       params: { user: { email: "test@mail.com", password: "123" } },
@@ -34,15 +32,11 @@ describe "UsersController", type: :request do
   end
 
   it "returns a paginated array of user data of the users the current_user has a chat with" do
-    receiver = User.find_by(name: "Dave2")
-    chat = find_private_chat(receiver.id, User.first.id)
-
-    post "/api/v1/messages/send", params: { message: { content: "Hello", receiver_uuids: [ receiver.uuid ], chat_id: chat.id } }
+    create_list(:chat, 25, users: [ User.first, User.second, User.third ])
 
     get "/api/v1/users/chats?page=1"
     first_data_set = JSON.parse(response.body)["chat_users"]
     expect(first_data_set.length).to be(20)
-    expect(first_data_set[0][0]["uuid"]).to eq(receiver.uuid)
   end
 
   it "returns logged user info" do

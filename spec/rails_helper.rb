@@ -82,5 +82,11 @@ RSpec.configure do |config|
 
     allow_any_instance_of(Api::V1::MessagesController)
       .to receive(:verify_authenticity_token).and_return(true)
+
+    allow_any_instance_of(Api::V1::EventsController)
+      .to receive(:verify_authenticity_token).and_return(true)
+
+    allow_any_instance_of(Api::V1::EventMembershipsController)
+      .to receive(:verify_authenticity_token).and_return(true)
   end
 end

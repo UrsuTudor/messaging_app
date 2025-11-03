@@ -96,7 +96,7 @@ test.describe("chat tests", () => {
       let msgNumberCount = await user2Page.getByTestId("msg").count();
 
       const input = page.getByTestId("chatInput");
-      await input.fill("hmm");
+      await input.fill("new message");
       await page.getByTestId("sendButton").click();
 
       const msgLocator = user2Page.getByTestId("msg");
