@@ -125,8 +125,7 @@ nav > h1 {
 /* layout of the children */
 .mobileChatListContainer { flex: 1; }
 .chatListContainer {flex: 1}
-.chatContainer { flex: 3; }
-.userProfile { flex: 3}
+.chatContainer, .userProfile, .eventFormContainer { flex: 3; }
 .userListContainer { flex: 1.2; }
 .mobileList { height: 50%;}
 

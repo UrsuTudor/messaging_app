@@ -113,7 +113,7 @@ export default function GroupForm({
               </button>
             ))}
           </div>
-          {chats.map((user, i) => (
+          {chats.map((user) => (
             <button
               type="button"
               key={user[0].uuid}

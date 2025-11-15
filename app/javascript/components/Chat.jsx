@@ -222,7 +222,6 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
     <div className="chatContainer" data-testid="chatContainer">
       {receiver[0] && (
         <div className="userHeader">
-          {isMobile && (
             <div
               className="chatIconContainer"
               onClick={() => {
@@ -232,7 +231,6 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
             >
               <img className="icon" src="arrow-left.svg" />
             </div>
-          )}
 
           <div className="userHeaderPortal" data-testid="userChatHeader">
             <img

@@ -59,3 +59,5 @@ gem "pagy"
 gem "redis"
 
 gem "dockerfile-rails", ">= 1.7", group: :development
+gem "dotenv-rails"
+gem "httparty"

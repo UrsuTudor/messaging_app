@@ -15,7 +15,6 @@ export default function MobileLayout({
   chatList,
   setChatList
 }) {
-  const [displayChat, setDisplayChat] = useState({ chat: false, chatList: true });
   const [dimmed, setDimmed] = useState(false)
 
   return (

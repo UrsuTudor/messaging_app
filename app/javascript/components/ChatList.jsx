@@ -10,9 +10,9 @@ import consumer from "../channels/consumer";
 import GroupForm from "./GroupForm";
 
 export default function ChatList({
+  setDisplayChat,
   setReceiver,
   setProfile,
-  setDisplayChat,
   chatList,
   setChatList,
   setDimmed,
@@ -133,6 +133,7 @@ export default function ChatList({
                   };
                 })
               );
+              setDisplayChat({ chat: true, chatList: true });
               setChatList((prev) => {
                 const index = prev.findIndex((u) => u[0].chat_id === user[0].chat_id);
                 const updated = [...prev];

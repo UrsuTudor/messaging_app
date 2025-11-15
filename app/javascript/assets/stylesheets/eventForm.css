@@ -1,0 +1,41 @@
+.eventFormContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.eventForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.eventTitle, .datePicker {
+    border: 1px solid #5a7d5a;
+    border-radius: 20px;
+    outline: none;
+    padding: 0 10px 0 10px
+}
+
+.datePicker {
+  margin-left: 10px;
+  height: 30px;
+}
+
+.eventTitle:focus, .datePicker:hover {
+  border: 2px solid #5a7d5a;
+  outline: none;
+}
+
+.eventForm > .eventBtn {
+  width: 50%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.eventPageTitle {
+  border-bottom: #5a7d5a 1px solid;
+}
+
+/* figure location API, finish styling the form and send the request to the backend */
