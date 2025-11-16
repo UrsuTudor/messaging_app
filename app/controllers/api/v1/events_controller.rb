@@ -4,6 +4,22 @@ class Api::V1::EventsController < ApplicationController
   def index
   end
 
+  def show
+    event = Event.find_by(id: params[:id])
+    return "The event could not be found.", status: :not_found unless event
+
+    render json: {
+      event_id: event.id,
+      title: event.title,
+      description: event.description,
+      organisers: event.organisers.map { |org| user_data(org) },
+      date: event.date,
+      cover_image_url: (
+        event.cover_image.attached? ? url_for(event.cover_image) : nil
+      )
+    }
+  end
+
   def create
     if event_params[:organisers].blank? || !event_params[:organisers].include?(current_user.uuid)
       render json: "Couldn't create an event without an organizer or of which you are not one of the organisers.",
@@ -89,7 +105,7 @@ class Api::V1::EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:event_id, :title, :cover_image, :description, :date, :location, organisers: [])
+    params.require(:event).permit(:id, :title, :cover_image, :description, :date, :location, organisers: [])
   end
 
   def user_data(user)
@@ -97,7 +113,23 @@ class Api::V1::EventsController < ApplicationController
       name: user.name,
       uuid: user.uuid,
       avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
-      description: user.description
+      description: user.description,
+      events: user.events.map do |event|
+        event_data(event)
+      end
+    }
+  end
+
+   def event_data(e)
+    {
+      id: e.id,
+      title: e.title,
+      description: e.description,
+      date: e.date.strftime("%B %-d, %Y"),
+      location: e.location,
+      cover_image_url: (
+        e.cover_image.attached? ? url_for(e.cover_image) : nil
+      )
     }
   end
 end

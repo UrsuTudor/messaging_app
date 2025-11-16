@@ -8,6 +8,7 @@ export default function Home() {
   const [receiver, setReceiver] = useState([]);
   const [profile, setProfile] = useState({ display: false, user: null });
   const [displayChat, setDisplayChat] = useState({ chat: false, chatList: true });
+  const [displayEvent, setDisplayEvent] = useState({ display: false, event: null });
   const [chatList, setChatList] = useState([]);
   const isMobile = window.innerWidth < 700;
 
@@ -50,7 +51,9 @@ export default function Home() {
 
   return (
     <>
-      {!loggedUser ? (<div>Loading...</div>) : isMobile ? (
+      {!loggedUser ? (
+        <div>Loading...</div>
+      ) : isMobile ? (
         <MobileLayout
           loggedUser={loggedUser}
           getLoggedUser={getLoggedUser}
@@ -70,6 +73,8 @@ export default function Home() {
           setProfile={setProfile}
           displayChat={displayChat}
           setDisplayChat={setDisplayChat}
+          displayEvent={displayEvent}
+          setDisplayEvent={setDisplayEvent}
           receiver={receiver}
           setReceiver={setReceiver}
           signOut={signOut}

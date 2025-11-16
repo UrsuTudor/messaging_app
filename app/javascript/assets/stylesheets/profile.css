@@ -1,8 +1,13 @@
 .userProfile {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   background-color: #f4f9f4;
-  overflow: hidden;
+  overflow: scroll;
+}
+
+.generalInfoContainer {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 h1 {
@@ -102,4 +107,9 @@ div[data-section="description"] {
   padding-top: 1vh;
   margin-bottom: auto;
   text-align: center;
+}
+
+.userEvents {
+  display: flex;
+  flex-direction: column;
 }

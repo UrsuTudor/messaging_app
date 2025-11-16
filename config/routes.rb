@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       delete "events/leave_event", to: "event_memberships#destroy"
 
       get "events/locations", to: "events#locations"
+      get "events/:id", to: "events#show"
       post "events/create", to: "events#create"
       post "events/update", to: "events#update"
       delete "events/delete", to: "events#destroy"

@@ -97,7 +97,11 @@ class Api::V1::UsersController < ApplicationController
       name: current_user.name,
       avatar: current_user.avatar.attached? ? url_for(current_user.avatar) : nil,
       uuid: current_user.uuid,
-      description: current_user.description }
+      description: current_user.description,
+      events: current_user.events.map do |event|
+        event_data(event)
+      end
+    }
   end
 
   private
@@ -107,7 +111,22 @@ class Api::V1::UsersController < ApplicationController
       name: user.name,
       uuid: user.uuid,
       avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
-      description: user.description
+      description: user.description,
+      events: user.events.map do |event|
+        event_data(event)
+      end
+    }
+  end
+
+  def event_data(e)
+    {
+      id: e.id,
+      title: e.title,
+      date: e.date.strftime("%B %-d, %Y"),
+      location: e.location,
+      cover_image_url: (
+        e.cover_image.attached? ? url_for(e.cover_image) : nil
+      )
     }
   end
 

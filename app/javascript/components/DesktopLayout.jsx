@@ -5,6 +5,7 @@ import Chat from "./Chat";
 import Profile from "./Profile";
 import NavBar from "./NavBar";
 import EventForm from "./EventForm";
+import Event from "./Event";
 
 export default function DesktopLayout({
   loggedUser,
@@ -13,16 +14,16 @@ export default function DesktopLayout({
   setProfile,
   displayChat,
   setDisplayChat,
+  displayEvent,
+  setDisplayEvent,
   receiver,
   setReceiver,
   signOut,
   chatList,
-  setChatList
-}) 
+  setChatList,
+}) {
+  const [dimmed, setDimmed] = useState(false);
 
-{
-  const [dimmed, setDimmed] = useState(false)
-  
   return (
     <div className={dimmed ? "appContainer dimmed" : "appContainer"}>
       <NavBar loggedUser={loggedUser} profile={profile} setProfile={setProfile} signOut={signOut} />
@@ -33,7 +34,7 @@ export default function DesktopLayout({
           setProfile={setProfile}
           chatList={chatList}
           setChatList={setChatList}
-          setDimmed ={setDimmed}
+          setDimmed={setDimmed}
           setDisplayChat={setDisplayChat}
         />
 
@@ -42,6 +43,8 @@ export default function DesktopLayout({
             loggedUser={loggedUser}
             user={profile["user"] ? profile["user"] : loggedUser}
             getLoggedUser={getLoggedUser}
+            setDisplayEvent={setDisplayEvent}
+            setProfile={setProfile}
           />
         ) : displayChat["chat"] ? (
           <Chat
@@ -52,7 +55,11 @@ export default function DesktopLayout({
             setChatList={setChatList}
             setDisplayChat={setDisplayChat}
           />
-        ) : <EventForm loggedUser={loggedUser}/>}
+        ) : displayEvent["display"] ? (
+          <Event event={displayEvent["event"]} setProfile={setProfile} setDisplayEvent={setDisplayEvent} />
+        ) : (
+          <EventForm loggedUser={loggedUser} />
+        )}
 
         <UserList setReceiver={setReceiver} setProfile={setProfile} />
       </div>
