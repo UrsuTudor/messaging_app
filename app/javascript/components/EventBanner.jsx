@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function EventBanner({ event, setDisplayEvent, setProfile }) {
+export default function EventBanner({ event, setDisplayEvent, setProfile, hereFrom }) {
   async function displayEvent(){
     try {
       const res = await fetch(`/api/v1/events/${event.id}`, {
@@ -12,7 +12,7 @@ export default function EventBanner({ event, setDisplayEvent, setProfile }) {
       }
 
       const data = await res.json();
-      setDisplayEvent({display: true, event: data})
+      setDisplayEvent({display: true, event: data, from: hereFrom})
       setProfile((prev) => ({...prev, display: false}))
 
     } catch (error) {

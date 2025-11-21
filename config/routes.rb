@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       post "events/participate", to: "event_memberships#create"
       delete "events/leave_event", to: "event_memberships#destroy"
 
+      get "events/all", to: "events#index"
       get "events/locations", to: "events#locations"
       get "events/:id", to: "events#show"
       post "events/create", to: "events#create"

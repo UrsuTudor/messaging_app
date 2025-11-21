@@ -19,8 +19,6 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
   let pastEvents = [];
   let upcomingEvents = [];
 
-    console.log(user)
-
   user[0].events.forEach((e) => {
     const eventDate = new Date(e.date);
 
@@ -223,8 +221,8 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
         </div>
 
         {eventListDisplay === "upcoming"
-          ? upcomingEvents.map((e) => <EventBanner key={e.id} event={e} setDisplayEvent={setDisplayEvent} setProfile={setProfile}/>)
-          : pastEvents.map((e) => <EventBanner key={e.id} event={e} setDisplayEvent={setDisplayEvent} setProfile={setProfile} />)}
+          ? upcomingEvents.map((e) => <EventBanner key={e.id} event={e} setDisplayEvent={setDisplayEvent} setProfile={setProfile} hereFrom={"profile"}/>)
+          : pastEvents.map((e) => <EventBanner key={e.id} event={e} setDisplayEvent={setDisplayEvent} setProfile={setProfile} hereFrom={"profile"}/>)}
       </div>
     </div>
   );

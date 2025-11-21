@@ -1,12 +1,14 @@
 import React from "react";
 
-export default function Event({ event, setProfile, setDisplayEvent }) {
+export default function Event({ event, setProfile, setDisplayEvent, hereFrom }) {
   return (
     <div>
       <button
         onClick={() => {
-          setDisplayEvent((prev) => ({display: false, event: null}))
-          setProfile((prev) => ({ ...prev, display: true }));
+          setDisplayEvent((prev) => ({ display: false, event: null }));
+          hereFrom == "profile"
+            ? setProfile((prev) => ({ ...prev, display: true }))
+            : setDisplayEvent({ ...prev, display: false });
         }}
       >
         Back
@@ -16,12 +18,13 @@ export default function Event({ event, setProfile, setDisplayEvent }) {
         <div className="orgContainer">
           {event.organisers.map((org) => (
             <img
+              key={org.uuid}
               className="smallAvatar"
               src={org.avatar ? org.avatar : "user_dark.svg"}
               alt={org.name + "'s profile picture"}
               onClick={() => {
-                setDisplayEvent((prev) => ({display: false, event: null}))
-                setProfile((prev) => ({ display: true, user: [org] }))
+                setDisplayEvent((prev) => ({ display: false, event: null }));
+                setProfile((prev) => ({ display: true, user: [org] }));
               }}
             />
           ))}

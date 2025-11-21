@@ -6,6 +6,7 @@ import Profile from "./Profile";
 import NavBar from "./NavBar";
 import EventForm from "./EventForm";
 import Event from "./Event";
+import EventList from "./EventList";
 
 export default function DesktopLayout({
   loggedUser,
@@ -56,9 +57,9 @@ export default function DesktopLayout({
             setDisplayChat={setDisplayChat}
           />
         ) : displayEvent["display"] ? (
-          <Event event={displayEvent["event"]} setProfile={setProfile} setDisplayEvent={setDisplayEvent} />
+          <Event event={displayEvent["event"]} setProfile={setProfile} setDisplayEvent={setDisplayEvent} hereFrom={displayEvent.from} />
         ) : (
-          <EventForm loggedUser={loggedUser} />
+          <EventList setDisplayEvent={setDisplayEvent} setProfile={setProfile}/>
         )}
 
         <UserList setReceiver={setReceiver} setProfile={setProfile} />

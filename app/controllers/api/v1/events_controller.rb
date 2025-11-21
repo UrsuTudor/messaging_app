@@ -2,6 +2,22 @@ class Api::V1::EventsController < ApplicationController
   include Pagy::Backend
 
   def index
+    search = "%#{params[:search]}%"
+
+    events = Event
+      .joins(:event_memberships)
+      .where.not(event_memberships: { user_id: current_user.id })
+      .where("title ILIKE :search OR location ILIKE :search", search: search)
+      .distinct
+
+    @pagy, @events = pagy(events, page: params[:page], limit: 20)
+
+    puts events
+
+    render json: {
+      events: @events.map { |e| event_data(e) },
+      metadata: pagy_metadata(@pagy)
+    }
   end
 
   def show
@@ -22,7 +38,7 @@ class Api::V1::EventsController < ApplicationController
 
   def create
     if event_params[:organisers].blank? || !event_params[:organisers].include?(current_user.uuid)
-      render json: "Couldn't create an event without an organizer or of which you are not one of the organisers.",
+      render json: "Couldn't create an event without an organiser or of which you are not one of the organisers.",
                   status: :unprocessable_entity
       return
     end
@@ -51,7 +67,7 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def update
-    event = Event.find_by(id: event_params[:event_id])
+    event = Event.find_by(id: event_params[:id])
 
     return head :not_found unless event
     return head :forbidden unless event.organisers.include?(current_user)
@@ -64,7 +80,7 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def destroy
-    event = Event.find_by(id: event_params[:event_id])
+    event = Event.find_by(id: event_params[:id])
     return head :not_found unless event
 
     authorised = event.organisers.include?(current_user) && event.organisers.count == 1
