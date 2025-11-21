@@ -3,6 +3,8 @@ include ChatFinder
 
 describe "UsersController", type: :request do
   before do
+    create_list(:user, 100)
+
     allow_any_instance_of(Api::V1::UsersController)
     .to receive(:current_user)
     .and_return(User.first)
@@ -40,6 +42,12 @@ describe "UsersController", type: :request do
   end
 
   it "returns logged user info" do
+    User.first.avatar.attach(
+      io: StringIO.new("fake image data"),
+      filename: "avatar.png",
+      content_type: "image/png"
+    )
+
     get "/api/v1/users/current"
     user_data = JSON.parse(response.body)
 

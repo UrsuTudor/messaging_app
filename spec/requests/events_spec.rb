@@ -1,21 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe "Event", type: :request do
-  let(:user1) { User.first }
-  let(:user2) { User.second }
+  let(:user1) { create(:user, email: "testmail@mail.com") }
+  let(:user2) { create(:user, email: "testmail2@mail.com") }
   let(:datetime) { DateTime.current }
 
   before do
     allow_any_instance_of(Api::V1::EventsController)
       .to receive(:current_user)
-      .and_return(User.first)
+      .and_return(user1)
+
+    create_list(:event, 27, organisers: [ user2 ])
   end
 
   describe "retrieves event data" do
-    before do
-      create_list(:event, 27)
-    end
-
     it "retrieves data of one event" do
       tested_event = Event.first
       tested_event.cover_image.attach(
@@ -37,8 +35,7 @@ RSpec.describe "Event", type: :request do
     end
 
     it "retireves a paginated list of events" do
-      puts Event.first.organisers
-      get "/api/v1/events/all?page=1&search=''"
+      get "/api/v1/events/all?page=1&search="
 
       page_one = JSON.parse(response.body)
 

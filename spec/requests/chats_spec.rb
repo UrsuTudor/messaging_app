@@ -4,7 +4,7 @@ describe "ChatsController", type: :request do
   before do
     allow_any_instance_of(Api::V1::ChatsController)
       .to receive(:current_user)
-      .and_return(User.first)
+      .and_return(create(:user))
   end
 
   it "doesn't create a chat if receiver uuid is missing" do

@@ -1,28 +1,29 @@
 require 'rails_helper'
 
 RSpec.describe "EventMemberships", type: :request do
-  let(:user1) { User.first }
-  let(:user2) { User.second }
+  let(:user1) { create(:user, email: "testmail@test.com") }
+  let(:user2) { create(:user, email: "testmail2@test.com") }
   let(:datetime) { DateTime.current }
 
   before do
+    create_list(:user, 30)
+
     allow_any_instance_of(Api::V1::EventMembershipsController)
       .to receive(:current_user)
-      .and_return(User.first)
+      .and_return(user1)
   end
-
 
   describe "returns users:" do
     let(:participants) { User.limit(25).to_a }
-    let(:event) { create(:event, organisers: [ User.last, User.second_to_last ], participants: participants) }
+    let(:event) { create(:event, organisers: [ user1, user2 ], participants: participants) }
 
     it "returns a list of organisers" do
       get "/api/v1/events/participants?search=organiser", params: { event_membership: { event_id: event.id } }
 
       organisers =  JSON.parse(response.body)["users"]
       expect(organisers.length).to be(2)
-      expect(organisers[0]["uuid"]).to match(User.last.uuid)
-      expect(organisers[1]["uuid"]).to match(User.second_to_last.uuid)
+      expect(organisers[0]["uuid"]).to match(user1.uuid)
+      expect(organisers[1]["uuid"]).to match(user2.uuid)
     end
 
     it "returns a paginated list of participants" do

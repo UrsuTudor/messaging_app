@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe Event, type: :model do
   describe "#validate_cover_image" do
-    let(:event) { build(:event, title: "Test Event") }
+    let(:user1) { create(:user) }
+    let(:event) { build(:event, title: "Test Event", organisers: [ user1 ]) }
 
     it "adds an error about invalid type when the type of the file is wrong" do
       event.cover_image.attach(

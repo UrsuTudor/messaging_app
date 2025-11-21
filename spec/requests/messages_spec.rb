@@ -2,14 +2,16 @@ require 'rails_helper'
 include ChatFinder
 
 RSpec.describe "Messages", type: :request do
+  let(:user1) { create(:user) }
+
   before do
     allow_any_instance_of(Api::V1::ChatsController)
-      .to receive(:current_user)
-      .and_return(User.first)
+        .to receive(:current_user)
+        .and_return(user1)
 
-    allow_any_instance_of(Api::V1::MessagesController)
-      .to receive(:current_user)
-      .and_return(User.first)
+      allow_any_instance_of(Api::V1::MessagesController)
+        .to receive(:current_user)
+        .and_return(user1)
   end
 
   it "fails creation if receiver uuid is missing" do

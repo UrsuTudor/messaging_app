@@ -12,8 +12,6 @@ class Api::V1::EventsController < ApplicationController
 
     @pagy, @events = pagy(events, page: params[:page], limit: 20)
 
-    puts events
-
     render json: {
       events: @events.map { |e| event_data(e) },
       metadata: pagy_metadata(@pagy)
