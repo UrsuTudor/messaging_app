@@ -4,14 +4,16 @@ import SearchBar from "./SearchBar";
 import { setNewElements, updateScrollBottom } from "../assets/helpers";
 import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
+import useThrottle from "../assets/hooks/useThrottle";
 import "../assets/stylesheets/eventList.css";
 
-export default function EventList({setDisplayEvent, setProfile}){
-  const [searchTerm, setSearchTerm] = useState("")
-  const [events, setEvents] = useState([])
+export default function EventList({ setDisplayEvent, setDisplayEventForm, setProfile }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [events, setEvents] = useState([]);
   const [pagination, setPagination] = usePagination();
   const [scrollBottom, setScrollBottom] = useScrolling();
   const eventListRef = useRef(null);
+  const throttle = useThrottle();
 
   useEffect(() => {
     const scrollThreshold = eventListRef.current.scrollHeight * 0.1;
@@ -27,33 +29,37 @@ export default function EventList({setDisplayEvent, setProfile}){
     }
   }, [scrollBottom, searchTerm]);
 
-  async function getEvents(){
-    try {
-      const res = await fetch(`/api/v1/events/all?page=${pagination.page}&search=${searchTerm}`, {
-        method: "GET",
-      });
+  useEffect(() => {
+    const throttledUpdateScrollBottom = () =>
+      throttle(() => updateScrollBottom(setScrollBottom, eventListRef.current), 50);
+    eventListRef.current.addEventListener("scroll", throttledUpdateScrollBottom);
 
-      if (!res.ok) {
-        throw new Error(`We couldn't retrieve a list of events.`);
+    return () => {
+      if (eventListRef.current) {
+        eventListRef.current.removeEventListener("scroll", throttledUpdateScrollBottom);
       }
-
-      const data = await res.json();
-      setEvents(data)
-
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
+    };
+  }, []);
 
   return (
     <div className="eventListContainer" ref={eventListRef}>
+      <div className="listHeader">
+        <h1>Events</h1>
+      </div>
       <div className="eventListHeader">
         <SearchBar setPagination={setPagination} setSearchTerm={setSearchTerm} adaptable={false} />
+        <button onClick={() => setDisplayEventForm(true)}>Create your own</button>
       </div>
 
       {events.map((e) => (
-        <EventBanner key={e.id} event={e} setDisplayEvent={setDisplayEvent} setProfile={setProfile} hereFrom={"home"}/>
-      ))} 
+        <EventBanner
+          key={e.id}
+          event={e}
+          setDisplayEvent={setDisplayEvent}
+          setProfile={setProfile}
+          hereFrom={"home"}
+        />
+      ))}
     </div>
-  )
+  );
 }

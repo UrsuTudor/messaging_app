@@ -19,7 +19,7 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
   let pastEvents = [];
   let upcomingEvents = [];
 
-  user[0].events.forEach((e) => {
+  if(user[0].events) user[0].events.forEach((e) => {
     const eventDate = new Date(e.date);
 
     if (today > eventDate) {

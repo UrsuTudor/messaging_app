@@ -10,6 +10,7 @@ export default function Home() {
   const [displayChat, setDisplayChat] = useState({ chat: false, chatList: true });
   const [displayEvent, setDisplayEvent] = useState({ display: false, event: null });
   const [chatList, setChatList] = useState([]);
+  const [displayEventForm, setDisplayEventForm] = useState(false)
   const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
@@ -80,6 +81,8 @@ export default function Home() {
           signOut={signOut}
           chatList={chatList}
           setChatList={setChatList}
+          displayEventForm={displayEventForm}
+          setDisplayEventForm={setDisplayEventForm}
         />
       )}
     </>

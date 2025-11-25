@@ -13,6 +13,7 @@ class Event < ApplicationRecord
   has_one_attached :cover_image
 
   validates :title, presence: true, length: { maximum: 100 }
+  validates :date, presence: true
   validates :description, length: { maximum: 2000 }
   validate :validate_cover_image
 

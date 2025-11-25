@@ -22,6 +22,8 @@ export default function DesktopLayout({
   signOut,
   chatList,
   setChatList,
+  displayEventForm,
+  setDisplayEventForm
 }) {
   const [dimmed, setDimmed] = useState(false);
 
@@ -57,9 +59,16 @@ export default function DesktopLayout({
             setDisplayChat={setDisplayChat}
           />
         ) : displayEvent["display"] ? (
-          <Event event={displayEvent["event"]} setProfile={setProfile} setDisplayEvent={setDisplayEvent} hereFrom={displayEvent.from} />
+          <Event
+            event={displayEvent["event"]}
+            setProfile={setProfile}
+            setDisplayEvent={setDisplayEvent}
+            hereFrom={displayEvent.from}
+          />
+        ) : displayEventForm ? (
+          <EventForm loggedUser={loggedUser} setDisplayEventForm={setDisplayEventForm}/>
         ) : (
-          <EventList setDisplayEvent={setDisplayEvent} setProfile={setProfile}/>
+          <EventList setDisplayEvent={setDisplayEvent} setProfile={setProfile} setDisplayEventForm={setDisplayEventForm}/>
         )}
 
         <UserList setReceiver={setReceiver} setProfile={setProfile} />

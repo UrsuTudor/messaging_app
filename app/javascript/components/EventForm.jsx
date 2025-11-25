@@ -3,7 +3,7 @@ import { debounce } from "lodash";
 import "../assets/stylesheets/eventForm.css";
 import { setNewElements } from "../assets/helpers";
 
-export default function EventForm({ loggedUser }) {
+export default function EventForm({ loggedUser, setDisplayEventForm }) {
   let [eventDetails, setEventDetails] = useState({
     organisers: [loggedUser],
     title: "",
@@ -112,6 +112,7 @@ export default function EventForm({ loggedUser }) {
         className="eventForm"
         onSubmit={(e) => {
           createEvent(e);
+          setDisplayEventForm(false)
         }}
       >
         <div className="organiserSearchContainer">
