@@ -35,12 +35,6 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def create
-    if event_params[:organisers].blank? || !event_params[:organisers].include?(current_user.uuid)
-      render json: "Couldn't create an event without an organiser or of which you are not one of the organisers.",
-                  status: :unprocessable_entity
-      return
-    end
-
     event = Event.new(title: event_params[:title],
                       description: event_params[:description],
                       date: event_params[:date],
@@ -48,17 +42,10 @@ class Api::V1::EventsController < ApplicationController
                       cover_image: event_params[:cover_image]
     )
 
-    organisers = event_params[:organisers].map do |organiser_uuid|
-      user = User.find_by(uuid: organiser_uuid)
-      user_data(user)
-    end
-
     if event.save
-      organisers.each do |user|
-        event.event_memberships.create!(user_id: User.find_by(uuid: user[:uuid]).id, role: :organiser)
-      end
+      event.event_memberships.create!(user_id: current_user.id, role: "organiser", status: "accepted")
 
-      render json: { event_id: event.id, title: event.title, description: event.description, organisers: organisers, date: event.date }
+      render json: { event_id: event.id, title: event.title, description: event.description, organisers: [ user_data(current_user) ], date: event.date }
     else
       render json: event.errors, status: :unprocessable_entity
     end
@@ -119,7 +106,7 @@ class Api::V1::EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:id, :title, :cover_image, :description, :date, :location, organisers: [])
+    params.require(:event).permit(:id, :title, :cover_image, :description, :date, :location)
   end
 
   def user_data(user)

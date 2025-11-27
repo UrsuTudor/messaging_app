@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe "EventMemberships", type: :request do
   let(:user1) { create(:user, email: "testmail@test.com") }
   let(:user2) { create(:user, email: "testmail2@test.com") }
-  let(:datetime) { DateTime.current }
+  let(:event_not_organized_by_current_user) { Event.create!(title: "Bear Event", date: DateTime.tomorrow, organisers: [ user2 ]) }
+  let(:event) { Event.create!(title: "Bear Event", date: DateTime.tomorrow, organisers: [ user1 ]) }
 
   before do
     create_list(:user, 30)
@@ -44,52 +45,49 @@ RSpec.describe "EventMemberships", type: :request do
   end
 
   describe "handles participant addition:" do
-    let(:event_not_organized_by_current_user) { Event.create!(title: "Bear Event", date: DateTime.tomorrow, organisers: [ user2 ]) }
-    let(:event_organized_by_current_user) { Event.create!(title: "Bear Event", date: DateTime.tomorrow, organisers: [ user1 ]) }
-
     it "adds a participant when event_id is provided" do
-      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id } }
+      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id, role: "participant" } }
 
       expect(response).to have_http_status(:ok)
 
       event = Event.find(event_not_organized_by_current_user.id)
 
-      expect(event.event_memberships.exists?(user_id: user1, role: "participant")).to be(true)
+      expect(event.event_memberships.exists?(user_id: user1, role: "participant", status: "accepted")).to be(true)
     end
 
     it "doesn't add a participant if the participant is also an organizer" do
-      post "/api/v1/events/participate", params: { event_membership: { event_id: event_organized_by_current_user.id } }
+      post "/api/v1/events/participate", params: { event_membership: { event_id: event.id, role: "participant" } }
 
-      expect(event_organized_by_current_user.event_memberships.exists?(user_id: user1, role: "organiser")).to be(true)
+      expect(user1.event_memberships.exists?(user_id: user1, role: "organiser")).to be(true)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(JSON.parse(response.body)["error"]).to match("You are already a participant")
+      expect(JSON.parse(response.body)["error"]).to match("User is already a participant")
     end
 
     it "doesn't add a participant if the participant is also an organizer" do
-      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id } }
-      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id } }
+      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id, role: "participant" } }
+      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id, role: "participant" } }
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(JSON.parse(response.body)["error"]).to match("You are already a participant")
+      expect(JSON.parse(response.body)["error"]).to match("User is already a participant")
     end
 
     it "doesn't add a participant if the event has already passed" do
       event_not_organized_by_current_user.update!(date: DateTime.current)
 
-      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id } }
+      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id, role: "participant" } }
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(JSON.parse(response.body)["error"]).to match("Cannot join a past event")
+      expect(JSON.parse(response.body)["error"]).to match("Cannot join past events")
     end
   end
 
   describe "handles participant removal" do
     let(:event_not_organized_by_current_user) { Event.create!(title: "Bear Event", date: DateTime.tomorrow, organisers: [ user2 ]) }
-    let(:event_organized_by_current_user) { Event.create!(title: "Bear Event", date: DateTime.tomorrow, organisers: [ user1 ]) }
+    let(:event_user) { Event.create!(title: "Bear Event", date: DateTime.tomorrow, organisers: [ user1 ]) }
 
     it "removes participant" do
-      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id } }
+      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id, role: "participant" } }
 
       expect(event_not_organized_by_current_user.event_memberships.count).to be(2)
 
@@ -105,10 +103,90 @@ RSpec.describe "EventMemberships", type: :request do
     end
 
     it "doesn't remove participant if they are the last organizer of the event" do
-      delete "/api/v1/events/leave_event", params: { event_membership: { event_id: event_organized_by_current_user.id } }
+      delete "/api/v1/events/leave_event", params: { event_membership: { event_id: event_user.id } }
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(JSON.parse(response.body)["error"]).to match("You are the only organiser of this event")
+    end
+  end
+
+  describe "handles organiser addition" do
+    it "creates a pending request when the role param is organiser" do
+      expect {
+        post "/api/v1/events/participate", params: { event_membership: { event_id: event.id, role: "organiser", user_uuids: [ user2.uuid ] } }
+      }.to change { event.event_memberships.count }.by(1)
+
+      expect(event.event_memberships.last.user_id).to be(user2.id)
+      expect(event.event_memberships.last.status).to match("pending")
+    end
+
+    it "creates multiple request when the role param is organiser" do
+      user3 = create(:user, email: "testmail3@test.com")
+      user4 = create(:user, email: "testmail4@test.com")
+
+      expect {
+        post "/api/v1/events/participate", params: { event_membership: { event_id: event.id, role: "organiser", user_uuids: [ user2.uuid, user3.uuid, user4.uuid ] } }
+      }.to change { event.event_memberships.count }.by(3)
+
+      expect(event.event_memberships.last.user_id).to be(user4.id)
+      expect(event.event_memberships.last.status).to match("pending")
+    end
+
+    it "skips a uuid if the user already has a membership" do
+      post "/api/v1/events/participate", params: { event_membership: { event_id: event.id, role: "organiser", user_uuids: [ user2.uuid ] } }
+
+      expect {
+        post "/api/v1/events/participate", params: { event_membership: { event_id: event.id, role: "organiser", user_uuids: [ user2.uuid ] } }
+      }.not_to change { event.event_memberships.count }
+    end
+
+    it "accepts a sent request" do
+      create(:event_membership, event: event, user: user2, role: "organiser", status: "pending")
+
+      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event.id, reply: "accept" } }
+
+      membership = EventMembership.find_by(event_id: event.id, user_id: user1.id)
+      expect(membership.status).to match("accepted")
+    end
+
+    it "declines a sent request" do
+      create(:event_membership, event: event, user: user2, role: "organiser", status: "pending")
+
+      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event.id, reply: "decline" } }
+
+      membership = EventMembership.find_by(event_id: event.id, user_id: user1.id)
+      expect(membership.status).to match("declined")
+    end
+
+    it "sets the status of a request as deleted" do
+      create(:event_membership, event: event, user: user2, role: "organiser", status: "accepted")
+
+      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event.id, reply: "delete" } }
+
+      membership = EventMembership.find_by(event_id: event.id, user_id: user1.id)
+      expect(membership.status).to match("deleted")
+    end
+
+    it "fails if reply doesn't match expected input" do
+      create(:event_membership, event: event, user: user2, role: "organiser", status: "pending")
+
+      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event.id, reply: "fail" } }
+
+      expect(response.status).to be(422)
+    end
+
+    it "fails if the event id provided doesn't match any event" do
+      create(:event_membership, event: event, user: user2, role: "organiser", status: "pending")
+
+      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: Event.last.id + 1, reply: "accept" } }
+
+      expect(response.status).to be(404)
+    end
+
+     it "fails if event exists, but the user isn't a member" do
+      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event_not_organized_by_current_user.id, reply: "decline" } }
+
+      expect(response.status).to be(404)
     end
   end
 end

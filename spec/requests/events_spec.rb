@@ -46,7 +46,7 @@ RSpec.describe "Event", type: :request do
   describe "handles creation" do
     it "creates a new event when all the parameters are provided" do
       expect {
-        post "/api/v1/events/create", params: { event: { title: "Bear Event", description: "Cool bear event", date: datetime, organisers: [ user1.uuid, user2.uuid ] } }
+        post "/api/v1/events/create", params: { event: { title: "Bear Event", description: "Cool bear event", date: datetime } }
       }.to change(Event, :count).by(1)
 
       event = JSON.parse(response.body)
@@ -56,33 +56,11 @@ RSpec.describe "Event", type: :request do
       expect(event["description"]).to match("Cool bear event")
       expect(json_date.to_i).to eq(datetime.to_i)
       expect(event["organisers"][0]["uuid"]).to match(user1.uuid)
-      expect(event["organisers"][1]["uuid"]).to match(user2.uuid)
-    end
-
-    it "doesn't create a new event if organisers doesn't contain the current_user" do
-      expect {
-        post "/api/v1/events/create", params: { event: { title: "Bear Event", description: "Cool bear event", date: datetime, organisers: [ user2 ] } }.to_json,
-                                      headers: { "CONTENT_TYPE" => "application/json" }
-      }.not_to change(Event, :count)
-    end
-
-    it "doesn't create a new event if organisers is an empty array" do
-      expect {
-        post "/api/v1/events/create", params: { event: { title: "Bear Event", description: "Cool bear event", date: datetime, organisers: [] } }.to_json,
-                                      headers: { "CONTENT_TYPE" => "application/json" }
-      }.not_to change(Event, :count)
-    end
-
-    it "doesn't create a new event if organisers is nil" do
-      expect {
-        post "/api/v1/events/create", params: { event: { title: "Bear Event", description: "Cool bear event", date: datetime, organisers: nil } }.to_json,
-                                      headers: { "CONTENT_TYPE" => "application/json" }
-    }.not_to change(Event, :count)
     end
 
     it "doesn't create an event when the title is missing" do
       expect {
-        post "/api/v1/events/create", params: { event: { description: "Cool bear event", date: datetime, organisers: [ user1.uuid, user2.uuid ] } }
+        post "/api/v1/events/create", params: { event: { description: "Cool bear event", date: datetime } }
       }.not_to change(Event, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
@@ -92,7 +70,7 @@ RSpec.describe "Event", type: :request do
       event_title = "a" * 101
 
       expect {
-        post "/api/v1/events/create", params: { event: { title: event_title, description: "Cool bear event", date: datetime, organisers: [ user1.uuid, user2.uuid ] } }
+        post "/api/v1/events/create", params: { event: { title: event_title, description: "Cool bear event", date: datetime } }
       }.not_to change(Event, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
@@ -100,7 +78,7 @@ RSpec.describe "Event", type: :request do
   end
 
   describe "updates existing events" do
-    let(:event) { Event.create!(title: "Bear Event", organisers: [ user1, user2 ], description: "Bear event description") }
+    let(:event) { create(:event, title: "Bear Event", description: "Bear event description", date: Date.current, organisers: [ user1 ]) }
     it "updates the title and descriptions of an event" do
       post "/api/v1/events/update", params: { event: { id: event.id, title: "Rare Winter Bear Event", description: "Bear winter event description" } }
 
@@ -121,7 +99,7 @@ RSpec.describe "Event", type: :request do
     end
 
     it "doesn't update description if the current_user is not one of the organisers" do
-      event_with_different_organiser = Event.create!(title: "Bear Event", organisers: [ user2 ], description: "Bear event description")
+      event_with_different_organiser = create(:event, title: "Bear Event", description: "Bear event description", organisers: [ user2 ])
 
       post "/api/v1/events/update", params: { event: { id: event_with_different_organiser.id,
                                               title: "Rare Winter Bear Event",
@@ -133,9 +111,9 @@ RSpec.describe "Event", type: :request do
   end
 
   describe "handles event deletion" do
-    let(:event_organised_by_current_user) { create(:event, organisers: [ User.first ]) }
-    let(:event_with_multipl_organisers) { create(:event, organisers: [ User.first, create(:user, email: "test@mail.com") ]) }
-    let(:event_not_organised_by_current_user) { create(:event, organisers: [ create(:user, email: "test@mail.com") ]) }
+    let(:event_organised_by_current_user) { create(:event, organisers: [ user1 ]) }
+    let(:event_with_multiple_organisers) { create(:event, organisers: [ user1, user2 ]) }
+    let(:event_not_organised_by_current_user) { create(:event, organisers: [ user2 ]) }
 
     it 'deletes an event when conditions are met' do
       event = Event.find_by(id: event_organised_by_current_user.id)
@@ -152,7 +130,7 @@ RSpec.describe "Event", type: :request do
     end
 
     it 'does not delete an event when it still has more than one organiser' do
-      event = Event.find_by(id: event_with_multipl_organisers.id)
+      event = Event.find_by(id: event_with_multiple_organisers.id)
       expect {
         delete "/api/v1/events/delete", params: { event: { id: event.id } }
       }.not_to change(Event, :count)

@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :event do
     sequence(:title) { |n| "Event#{n}" }
-    date { Date.current }
+    date { Date.tomorrow }
 
     transient do
       organisers { [] }
@@ -9,7 +9,7 @@ FactoryBot.define do
 
     after(:create) do |event, evaluator|
       evaluator.organisers.each do |organiser|
-        create(:event_membership, event: event, user: organiser, role: "organiser")
+        create(:event_membership, event: event, user: organiser, role: "organiser", status: "accepted")
       end
     end
   end

@@ -1,12 +1,12 @@
 class Event < ApplicationRecord
   has_many :event_memberships, dependent: :destroy
   has_many :organisers,
-           -> { where(event_memberships: { role: :organiser }) },
+           -> { where(event_memberships: { role: :organiser, status: "accepted" }) },
            through: :event_memberships,
            source: :user
 
   has_many :participants,
-           -> { where(event_memberships: { role: :participant }) },
+           -> { where(event_memberships: { role: :participant, status: "accepted" }) },
            through: :event_memberships,
            source: :user
 

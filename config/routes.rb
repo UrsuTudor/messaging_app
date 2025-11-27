@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
       get  "events/participants", to: "event_memberships#index"
       post "events/participate", to: "event_memberships#create"
+      post "events/reply_to_invite", to: "event_memberships#update"
       delete "events/leave_event", to: "event_memberships#destroy"
 
       get "events/all", to: "events#index"
