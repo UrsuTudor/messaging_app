@@ -3,7 +3,7 @@ include ChatFinder
 
 describe "UsersController", type: :request do
   before do
-    create_list(:user, 100)
+    create_list(:user, 60)
 
     allow_any_instance_of(Api::V1::UsersController)
     .to receive(:current_user)
@@ -55,5 +55,31 @@ describe "UsersController", type: :request do
     expect(user_data["description"]).to eq(User.first.description)
     expect(user_data["uuid"]).to eq(User.first.uuid)
     expect(user_data["avatar"]).to eq(url_for(User.first.avatar))
+  end
+
+  describe "returns current_user event data" do
+    before do
+      create_list(:event, 3, organisers: [ User.second ])
+      create(:event_membership, event: Event.first, user: User.first, status: "pending")
+      create(:event_membership, event: Event.second, user: User.first)
+      create(:event_membership, event: Event.second, user: User.first, status: "declined")
+    end
+
+    it "only returns data of accepted or pending events" do
+      get "/api/v1/users/current"
+      user_data = JSON.parse(response.body)
+
+      expect(user_data["events"].length).to be(2)
+      expect(user_data["events"][0]["id"]).to be(Event.first.id)
+      expect(user_data["events"][1]["id"]).to be(Event.second.id)
+    end
+
+    it "only returns pending event requests" do
+      get "/api/v1/users/current"
+      user_data = JSON.parse(response.body)
+
+      expect(user_data["pending_requests"].length).to be(1)
+      expect(user_data["pending_requests"][0]).to be(Event.first.id)
+    end
   end
 end

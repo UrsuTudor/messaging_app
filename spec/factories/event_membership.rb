@@ -3,5 +3,6 @@ FactoryBot.define do
     event
     user
     role { "participant" }
+    status { "accepted" }
   end
 end

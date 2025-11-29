@@ -100,7 +100,10 @@ class Api::V1::UsersController < ApplicationController
       description: current_user.description,
       events: current_user.events.map do |event|
         event_data(event)
-      end
+      end,
+      pending_requests: current_user.event_memberships
+                                    .where(status: "pending")
+                                    .pluck(:event_id)
     }
   end
 
