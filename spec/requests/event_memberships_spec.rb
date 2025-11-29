@@ -170,7 +170,7 @@ RSpec.describe "EventMemberships", type: :request do
     it "declines a sent request" do
       create(:event_membership, event: event, user: user2, role: "organiser", status: "pending")
 
-      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event.id, reply: "decline" } }
+      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event.id, reply: "declined" } }
 
       membership = EventMembership.find_by(event_id: event.id, user_id: user1.id)
       expect(membership.status).to match("declined")
@@ -179,7 +179,7 @@ RSpec.describe "EventMemberships", type: :request do
     it "sets the status of a request as deleted" do
       create(:event_membership, event: event, user: user2, role: "organiser", status: "accepted")
 
-      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event.id, reply: "delete" } }
+      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event.id, reply: "deleted" } }
 
       membership = EventMembership.find_by(event_id: event.id, user_id: user1.id)
       expect(membership.status).to match("deleted")

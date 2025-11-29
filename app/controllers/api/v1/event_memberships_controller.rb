@@ -75,16 +75,12 @@ class Api::V1::EventMembershipsController < ApplicationController
     membership = EventMembership.find_by(event_id: event_membership_params[:event_id], user_id: current_user.id)
     return head :not_found unless membership
 
-    case event_membership_params[:reply]
-    when "decline"
-      membership.update!(status: "declined")
-    when "accept"
-      membership.update!(status: "accepted")
-    when "delete"
-      membership.update!(status: "deleted")
-    else
-      return render json: { error: "Invalid reply" }, status: :unprocessable_content
-    end
+    valid_replies = [ "declined", "accepted", "deleted" ]
+    reply = event_membership_params[:reply]
+
+    return render json: { error: "Invalid reply" }, status: :unprocessable_content unless valid_replies.include?(reply)
+
+    membership.update!(status: reply)
 
     head :no_content
   end
