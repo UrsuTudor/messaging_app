@@ -33,11 +33,18 @@ class Api::V1::EventMembershipsController < ApplicationController
       return render json: { error: "User is already a participant" }, status: :unprocessable_content  if event.event_memberships.exists?(user_id: current_user.id)
       event.event_memberships.create!(user_id: current_user.id, role: "participant", status: "accepted")
     elsif event_membership_params[:role] == "organiser"
-      event_membership_params[:user_uuids].each do |org|
-        organiser = User.find_by(uuid: org)
+      return head :forbidden unless event.organisers.exists?(current_user.id)
 
-        next if event.event_memberships.exists?(user_id: organiser.id, role: "organiser")
-        event.event_memberships.create!(user_id: organiser.id, role: "organiser", status: "pending")
+      event_membership_params[:user_uuids].each do |org|
+        user = User.find_by(uuid: org)
+        next unless user
+
+        membership = EventMembership.find_or_initialize_by(user_id: user.id, event_id: event.id)
+        next if membership.role == "organiser"
+
+        membership.role = "organiser"
+        membership.status = "pending"
+        membership.save!
       end
     end
 

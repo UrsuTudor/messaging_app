@@ -64,7 +64,7 @@ RSpec.describe "EventMemberships", type: :request do
       expect(JSON.parse(response.body)["error"]).to match("User is already a participant")
     end
 
-    it "doesn't add a participant if the participant is also an organizer" do
+    it "doesn't add a participant if the participant is already a participant" do
       post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id, role: "participant" } }
       post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id, role: "participant" } }
 
@@ -132,12 +132,30 @@ RSpec.describe "EventMemberships", type: :request do
       expect(event.event_memberships.last.status).to match("pending")
     end
 
-    it "skips a uuid if the user already has a membership" do
+    it "skips a uuid if the user is already an organiser" do
       post "/api/v1/events/participate", params: { event_membership: { event_id: event.id, role: "organiser", user_uuids: [ user2.uuid ] } }
 
       expect {
         post "/api/v1/events/participate", params: { event_membership: { event_id: event.id, role: "organiser", user_uuids: [ user2.uuid ] } }
       }.not_to change { event.event_memberships.count }
+    end
+
+    it "forbids the operation if the current_user is not an organiser of the event" do
+      post "/api/v1/events/participate", params: { event_membership: { event_id: event_not_organized_by_current_user.id, role: "organiser", user_uuids: [ user1.uuid ] } }
+
+      expect(response.status).to be(403)
+    end
+
+    it "updates an existing participant membership to a pending organiser one" do
+      membership = create(:event_membership, user: user2, event: event)
+      expect(membership.status).to match("accepted")
+      expect(membership.role).to match("participant")
+
+      post "/api/v1/events/participate", params: { event_membership: { event_id: event.id, role: "organiser", user_uuids: [ user2.uuid ] } }
+
+      updated_membership = EventMembership.find_by(user_id: user2.id, event_id: event.id)
+      expect(updated_membership.status).to match("pending")
+      expect(updated_membership.role).to match("organiser")
     end
 
     it "accepts a sent request" do
