@@ -23,7 +23,7 @@ class Api::V1::EventsController < ApplicationController
     return "The event could not be found.", status: :not_found unless event
 
     render json: {
-      event_id: event.id,
+      id: event.id,
       title: event.title,
       description: event.description,
       organisers: event.organisers.map { |org| user_data(org) },

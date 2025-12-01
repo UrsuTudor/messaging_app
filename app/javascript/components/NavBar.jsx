@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
+import InviteList from "./InviteList";
 
 export default function NavBar({
   loggedUser,
   profile,
   setProfile,
   signOut,
+  setDisplayEvent
 }) {
+  const [displayInviteList, setDisplayInviteList] = useState(false)
+  const pendingRequests = loggedUser[0].pending_requests
 
   return (
     <nav>
@@ -27,10 +31,16 @@ export default function NavBar({
         </button>
       )}
       <h1>Hiker's Hub</h1>
+      <button className="iconContainer" onClick={() => {setDisplayInviteList(true)}}>
+        <img className="icon" src="trekking.svg" alt="View your invites" />
+        <p>{pendingRequests.length}</p>
+      </button>
       <button className="iconContainer" onClick={signOut}>
         <p>Log Out</p>
         <img className="icon" src="log-out.svg" alt="A sign out icon" />
       </button>
+
+      {displayInviteList && <InviteList eventIds={pendingRequests} setDisplayEvent={setDisplayEvent}/>}
     </nav>
   );
 }

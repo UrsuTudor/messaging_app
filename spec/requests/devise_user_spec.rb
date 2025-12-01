@@ -65,13 +65,12 @@ describe "UsersController", type: :request do
       create(:event_membership, event: Event.second, user: User.first, status: "declined")
     end
 
-    it "only returns data of accepted or pending events" do
+    it "only returns data of accepted events" do
       get "/api/v1/users/current"
       user_data = JSON.parse(response.body)
 
-      expect(user_data["events"].length).to be(2)
-      expect(user_data["events"][0]["id"]).to be(Event.first.id)
-      expect(user_data["events"][1]["id"]).to be(Event.second.id)
+      expect(user_data["events"].length).to be(1)
+      expect(user_data["events"][0]["id"]).to be(Event.second.id)
     end
 
     it "only returns pending event requests" do

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function EventBanner({ event, setDisplayEvent, setProfile, hereFrom }) {
+export default function EventBanner({ event, setDisplayEvent, setProfile = () => {}, hereFrom }) {
   async function displayEvent(){
     try {
       const res = await fetch(`/api/v1/events/${event.id}`, {

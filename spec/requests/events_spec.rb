@@ -26,7 +26,7 @@ RSpec.describe "Event", type: :request do
 
       event_data = JSON.parse(response.body)
 
-      expect(event_data["event_id"]).to be(tested_event.id)
+      expect(event_data["id"]).to be(tested_event.id)
       expect(event_data["title"]).to match(tested_event.title)
       expect(event_data["description"]).to match(tested_event.description)
       expect(event_data["organisers"].length).to equal(tested_event.organisers.length)

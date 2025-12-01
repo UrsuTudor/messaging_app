@@ -29,7 +29,7 @@ export default function DesktopLayout({
 
   return (
     <div className={dimmed ? "appContainer dimmed" : "appContainer"}>
-      <NavBar loggedUser={loggedUser} profile={profile} setProfile={setProfile} signOut={signOut} />
+      <NavBar loggedUser={loggedUser} profile={profile} setProfile={setProfile} signOut={signOut} setDisplayEvent={setDisplayEvent}/>
 
       <div className="mainBodyContainer">
         <ChatList

@@ -57,6 +57,28 @@ export default function EventForm({ loggedUser, setDisplayEventForm }) {
       }
 
       const data = await res.json();
+      sendOrganiserInvites(data.event_id);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  async function sendOrganiserInvites(eventId) {
+    try {
+      const res = await fetch(`/api/v1/events/participate`, {
+        method: "POST",
+        headers: {
+          "X-CSRF-Token": csrfToken,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          event_membership: { event_id: eventId, role: "organiser", user_uuids: organiserUuids },
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("We couldn't send invites to other organisers.");
+      }
     } catch (error) {
       console.error(error.message);
     }
@@ -112,7 +134,7 @@ export default function EventForm({ loggedUser, setDisplayEventForm }) {
         className="eventForm"
         onSubmit={(e) => {
           createEvent(e);
-          setDisplayEventForm(false)
+          setDisplayEventForm(false);
         }}
       >
         <div className="organiserSearchContainer">

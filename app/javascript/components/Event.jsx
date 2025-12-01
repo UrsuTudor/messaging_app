@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Event({ event, setProfile, setDisplayEvent, hereFrom }) {
   return (
-    <div>
+    <div className="eventContainer">
       <button
         onClick={() => {
           setDisplayEvent((prev) => ({ display: false, event: null }));
@@ -13,7 +13,7 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom }) 
       >
         Back
       </button>
-      <div className="eventContainer">
+      <div>
         <img src={event.cover_image_url} alt="" />
         <div className="orgContainer">
           {event.organisers.map((org) => (
