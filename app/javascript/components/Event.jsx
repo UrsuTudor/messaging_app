@@ -8,7 +8,7 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom }) 
           setDisplayEvent((prev) => ({ display: false, event: null }));
           hereFrom == "profile"
             ? setProfile((prev) => ({ ...prev, display: true }))
-            : setDisplayEvent({ ...prev, display: false });
+            : setDisplayEvent((prev) => ({ ...prev, display: false }));
         }}
       >
         Back

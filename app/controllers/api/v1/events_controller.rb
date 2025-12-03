@@ -5,10 +5,11 @@ class Api::V1::EventsController < ApplicationController
     search = "%#{params[:search]}%"
 
     events = Event
-      .joins(:event_memberships)
-      .where.not(event_memberships: { user_id: current_user.id })
-      .where("title ILIKE :search OR location ILIKE :search", search: search)
-      .distinct
+        .where.not(
+          id: EventMembership.where(user_id: current_user.id).select(:event_id)
+        )
+        .where("title ILIKE :search OR location ILIKE :search", search: search)
+        .distinct
 
     @pagy, @events = pagy(events, page: params[:page], limit: 20)
 
@@ -26,6 +27,7 @@ class Api::V1::EventsController < ApplicationController
       id: event.id,
       title: event.title,
       description: event.description,
+      location: event.location,
       organisers: event.organisers.map { |org| user_data(org) },
       date: event.date,
       cover_image_url: (
