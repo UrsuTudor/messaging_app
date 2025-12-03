@@ -27,7 +27,7 @@ export default function InviteList({ eventIds, setDisplayEvent }) {
 
   async function replyToInvite(reply, eventId) {
     try {
-      const res = await fetch(`/api/v1/events/reply_to_invite`, {
+      const res = await fetch(`/api/v1/events/update_membership`, {
         method: "POST",
         headers: {
           "X-CSRF-Token": csrfToken,

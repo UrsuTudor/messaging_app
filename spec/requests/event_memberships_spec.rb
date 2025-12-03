@@ -161,7 +161,7 @@ RSpec.describe "EventMemberships", type: :request do
     it "accepts a sent request" do
       create(:event_membership, event: event, user: user2, role: "organiser", status: "pending")
 
-      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event.id, reply: "accept" } }
+      post "/api/v1/events/update_membership", params: { event_membership: { event_id: event.id, reply: "accept" } }
 
       membership = EventMembership.find_by(event_id: event.id, user_id: user1.id)
       expect(membership.status).to match("accepted")
@@ -170,7 +170,7 @@ RSpec.describe "EventMemberships", type: :request do
     it "declines a sent request" do
       create(:event_membership, event: event_not_organized_by_current_user, user: user1, role: "organiser", status: "pending")
 
-      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event_not_organized_by_current_user.id, reply: "declined" } }
+      post "/api/v1/events/update_membership", params: { event_membership: { event_id: event_not_organized_by_current_user.id, reply: "declined" } }
       expect(response.status).to be(204)
 
       membership = EventMembership.find_by(event_id: event_not_organized_by_current_user.id, user_id: user1.id)
@@ -180,7 +180,7 @@ RSpec.describe "EventMemberships", type: :request do
     it "sets the status of a request as deleted" do
       create(:event_membership, event: event_not_organized_by_current_user, user: user1, role: "organiser", status: "accepted")
 
-      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event_not_organized_by_current_user.id, reply: "deleted" } }
+      post "/api/v1/events/update_membership", params: { event_membership: { event_id: event_not_organized_by_current_user.id, reply: "deleted" } }
       expect(response.status).to be(204)
 
       membership = EventMembership.find_by(event_id: event_not_organized_by_current_user.id, user_id: user1.id)
@@ -190,7 +190,7 @@ RSpec.describe "EventMemberships", type: :request do
     it "exits if reply doesn't match expected input" do
       create(:event_membership, event: event_not_organized_by_current_user, user: user1, role: "organiser", status: "pending")
 
-      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event_not_organized_by_current_user.id, reply: "fail" } }
+      post "/api/v1/events/update_membership", params: { event_membership: { event_id: event_not_organized_by_current_user.id, reply: "fail" } }
 
       expect(response.status).to be(422)
     end
@@ -198,13 +198,13 @@ RSpec.describe "EventMemberships", type: :request do
     it "exits if the event id provided doesn't match any event" do
       create(:event_membership, event: event, user: user2, role: "organiser", status: "pending")
 
-      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: Event.last.id + 1, reply: "accept" } }
+      post "/api/v1/events/update_membership", params: { event_membership: { event_id: Event.last.id + 1, reply: "accept" } }
 
       expect(response.status).to be(404)
     end
 
      it "exits if event exists, but the user doesn't have a membership" do
-      post "/api/v1/events/reply_to_invite", params: { event_membership: { event_id: event_not_organized_by_current_user.id, reply: "decline" } }
+      post "/api/v1/events/update_membership", params: { event_membership: { event_id: event_not_organized_by_current_user.id, reply: "decline" } }
 
       expect(response.status).to be(404)
     end

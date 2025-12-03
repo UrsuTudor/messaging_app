@@ -6,9 +6,10 @@ class Api::V1::EventsController < ApplicationController
 
     events = Event
         .where.not(
-          id: EventMembership.where(user_id: current_user.id).select(:event_id)
+          id: EventMembership.where(user_id: current_user.id, status: "accepted").select(:event_id)
         )
         .where("title ILIKE :search OR location ILIKE :search", search: search)
+        .where("date >= ?", Date.today)
         .distinct
 
     @pagy, @events = pagy(events, page: params[:page], limit: 20)
@@ -29,7 +30,8 @@ class Api::V1::EventsController < ApplicationController
       description: event.description,
       location: event.location,
       organisers: event.organisers.map { |org| user_data(org) },
-      date: event.date,
+      participants: event.participants.map { |part| user_data(part) },
+      date: event.date.strftime("%B %-d, %Y"),
       cover_image_url: (
         event.cover_image.attached? ? url_for(event.cover_image) : nil
       )
@@ -47,7 +49,12 @@ class Api::V1::EventsController < ApplicationController
     if event.save
       event.event_memberships.create!(user_id: current_user.id, role: "organiser", status: "accepted")
 
-      render json: { event_id: event.id, title: event.title, description: event.description, organisers: [ user_data(current_user) ], date: event.date }
+      render json: { event_id: event.id,
+                     title: event.title,
+                     description: event.description,
+                     organisers: [ user_data(current_user) ],
+                     date: event.date
+                    }
     else
       render json: event.errors, status: :unprocessable_entity
     end
