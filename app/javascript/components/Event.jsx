@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-export default function Event({ event, setProfile, setDisplayEvent, hereFrom, loggedUser }) {
+export default function Event({ event, setProfile, setDisplayEvent, hereFrom, loggedUser, getLoggedUser }) {
   const [eventDetails, setEventDetails] = useState(event);
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
@@ -56,11 +56,37 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom, lo
     }
   }
 
+  async function deleteEvent() {
+    try {
+      const res = await fetch(`/api/v1/events/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({ event: { id: event.id } }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete the event.");
+      }
+
+      getLoggedUser()
+      setDisplayEvent({ display: false, event: null });
+      hereFrom == "profile"
+        ? setProfile((prev) => ({ ...prev, display: true }))
+        : setDisplayEvent((prev) => ({ ...prev, display: false }));
+
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
   return (
     <div className="eventContainer">
       <button
         onClick={() => {
-          setDisplayEvent((prev) => ({ display: false, event: null }));
+          setDisplayEvent({ display: false, event: null });
           hereFrom == "profile"
             ? setProfile((prev) => ({ ...prev, display: true }))
             : setDisplayEvent((prev) => ({ ...prev, display: false }));
@@ -95,6 +121,7 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom, lo
         ) : (
           <button onClick={() => joinEvent()}>Join Event</button>
         )}
+        {event.organisers.length == 1 && <button onClick={() => deleteEvent()}>Delete Event</button>}
         <p>{event.description}</p>
 
         {eventDetails.participants.map((part) => (

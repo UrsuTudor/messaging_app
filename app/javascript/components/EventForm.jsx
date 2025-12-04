@@ -3,7 +3,7 @@ import { debounce } from "lodash";
 import "../assets/stylesheets/eventForm.css";
 import { setNewElements } from "../assets/helpers";
 
-export default function EventForm({ loggedUser, setDisplayEventForm }) {
+export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUser }) {
   let [eventDetails, setEventDetails] = useState({
     organisers: [loggedUser],
     title: "",
@@ -58,6 +58,7 @@ export default function EventForm({ loggedUser, setDisplayEventForm }) {
 
       const data = await res.json();
       sendOrganiserInvites(data.event_id);
+      getLoggedUser()
     } catch (error) {
       console.error(error.message);
     }

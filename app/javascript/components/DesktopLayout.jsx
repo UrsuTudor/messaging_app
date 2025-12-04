@@ -65,9 +65,10 @@ export default function DesktopLayout({
             setDisplayEvent={setDisplayEvent}
             hereFrom={displayEvent.from}
             loggedUser={loggedUser}
+            getLoggedUser={getLoggedUser}
           />
         ) : displayEventForm ? (
-          <EventForm loggedUser={loggedUser} setDisplayEventForm={setDisplayEventForm}/>
+          <EventForm loggedUser={loggedUser} setDisplayEventForm={setDisplayEventForm} getLoggedUser={getLoggedUser}/>
         ) : (
           <EventList setDisplayEvent={setDisplayEvent} setProfile={setProfile} setDisplayEventForm={setDisplayEventForm}/>
         )}

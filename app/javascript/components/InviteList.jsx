@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import EventBanner from "./EventBanner";
+import "../assets/stylesheets/inviteList.css";
 
 export default function InviteList({ eventIds, setDisplayEvent }) {
   const [eventsInvitedTo, setEventsInvitedTo] = useState([]);
