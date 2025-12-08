@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { debounce } from "lodash";
 import "../assets/stylesheets/eventForm.css";
-import { setNewElements } from "../assets/helpers";
+import { setNewElements, sendOrganiserInvites } from "../assets/helpers";
 
 export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUser }) {
   let [eventDetails, setEventDetails] = useState({
@@ -41,7 +41,6 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
     formData.append("event[date]", eventDetails.date);
     formData.append("event[location]", eventDetails.location);
     formData.append("event[cover_image]", eventDetails.coverImage);
-    organiserUuids.forEach((uuid) => formData.append("event[organisers][]", uuid));
 
     try {
       const res = await fetch(`/api/v1/events/create`, {
@@ -57,29 +56,8 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
       }
 
       const data = await res.json();
-      sendOrganiserInvites(data.event_id);
+      sendOrganiserInvites(data.event_id, organiserUuids, csrfToken);
       getLoggedUser()
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
-
-  async function sendOrganiserInvites(eventId) {
-    try {
-      const res = await fetch(`/api/v1/events/participate`, {
-        method: "POST",
-        headers: {
-          "X-CSRF-Token": csrfToken,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          event_membership: { event_id: eventId, role: "organiser", user_uuids: organiserUuids },
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error("We couldn't send invites to other organisers.");
-      }
     } catch (error) {
       console.error(error.message);
     }
@@ -143,7 +121,7 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
             <input
               className="eventTitle"
               type="text"
-              placeholder="Add Organisers"
+              placeholder="Invite Organisers"
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </label>

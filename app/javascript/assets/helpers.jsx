@@ -55,4 +55,25 @@ function updateScrollBottom(setScrollBottom, element) {
   setScrollBottom(element.scrollHeight - element.scrollTop - element.clientHeight);
 }
 
-export { setNewElements, updateListEndMessage, updatePagination, updateScrollBottom, handleResize };
+async function sendOrganiserInvites(eventId, organiserUuids, csrf) {
+  try {
+    const res = await fetch(`/api/v1/events/participate`, {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": csrf,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event_membership: { event_id: eventId, role: "organiser", user_uuids: organiserUuids },
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("We couldn't send invites to other organisers.");
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+export { setNewElements, updateListEndMessage, updatePagination, updateScrollBottom, handleResize, sendOrganiserInvites };

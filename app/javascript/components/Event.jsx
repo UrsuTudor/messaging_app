@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 export default function Event({ event, setProfile, setDisplayEvent, hereFrom, loggedUser, getLoggedUser }) {
   const [eventDetails, setEventDetails] = useState(event);
@@ -20,6 +20,8 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom, lo
       }
 
       setEventDetails((prev) => ({ ...prev, participants: [...prev.participants, loggedUser[0]] }));
+
+      getLoggedUser();
     } catch (error) {
       console.error(error.message);
     }
@@ -40,7 +42,7 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom, lo
         throw new Error("Failed to leave the event.");
       }
 
-      if (eventDetails.organisers.map((org) => org.uuid).includes(loggedUser.uuid)) {
+      if (eventDetails.organisers.map((org) => org.uuid).includes(loggedUser[0].uuid)) {
         setEventDetails((prev) => ({
           ...prev,
           organisers: prev.organisers.filter((org) => org.uuid != loggedUser[0].uuid),
@@ -51,6 +53,9 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom, lo
           participants: prev.participants.filter((part) => part.uuid != loggedUser[0].uuid),
         }));
       }
+
+      getLoggedUser();
+      
     } catch (error) {
       console.error(error.message);
     }
@@ -71,12 +76,11 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom, lo
         throw new Error("Failed to delete the event.");
       }
 
-      getLoggedUser()
+      getLoggedUser();
       setDisplayEvent({ display: false, event: null });
       hereFrom == "profile"
         ? setProfile((prev) => ({ ...prev, display: true }))
         : setDisplayEvent((prev) => ({ ...prev, display: false }));
-
     } catch (error) {
       console.error(error.message);
     }
@@ -97,7 +101,7 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom, lo
       <div>
         <img src={event.cover_image_url} alt="" />
         <div className="orgContainer">
-          {event.organisers.map((org) => (
+          {eventDetails.organisers.map((org) => (
             <img
               key={org.uuid}
               className="smallAvatar"
@@ -121,18 +125,22 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom, lo
         ) : (
           <button onClick={() => joinEvent()}>Join Event</button>
         )}
-        {event.organisers.length == 1 && <button onClick={() => deleteEvent()}>Delete Event</button>}
+
+        {event.organisers.length == 1 &&
+          eventDetails.organisers.map((org) => org.uuid).includes(loggedUser[0].uuid) && (
+            <button onClick={() => deleteEvent()}>Delete Event</button>
+          )}
         <p>{event.description}</p>
 
         {eventDetails.participants.map((part) => (
           <img
             key={part.uuid}
             className="smallAvatar"
-            src={part.avatar ? org.avatar : "user_dark.svg"}
+            src={part.avatar ? part.avatar : "user_dark.svg"}
             alt={part.name + "'s profile picture"}
             onClick={() => {
-              setDisplayEvent((prev) => ({ display: false, event: null }));
-              setProfile((prev) => ({ display: true, user: [part] }));
+              setDisplayEvent({ display: false, event: null });
+              setProfile({ display: true, user: [part] });
             }}
           />
         ))}
