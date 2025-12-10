@@ -1,10 +1,16 @@
 import React, { useEffect, useMemo } from "react";
 import debounce from "lodash.debounce";
 
-export default function SearchBar({ setPagination, setSearchTerm, adaptable = true, displaySearchBar, setDisplaySearchBar }) {
+export default function SearchBar({
+  setPagination,
+  setSearchTerm,
+  adaptable = true,
+  displaySearchBar,
+  setDisplaySearchBar = () => {},
+}) {
   useEffect(() => {
-    if(displaySearchBar) triggerSearch("")
-  }, [displaySearchBar])
+    if (displaySearchBar) triggerSearch("");
+  }, [displaySearchBar]);
 
   function triggerSearch(search) {
     setPagination((prev) => ({
@@ -12,7 +18,7 @@ export default function SearchBar({ setPagination, setSearchTerm, adaptable = tr
       page: 1,
     }));
 
-    setSearchTerm(search)
+    setSearchTerm(search);
   }
 
   const debouncedSearch = useMemo(() => debounce((search) => triggerSearch(search), 300));

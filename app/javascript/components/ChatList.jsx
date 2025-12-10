@@ -7,7 +7,7 @@ import { setNewElements, updateListEndMessage, updateScrollBottom, handleResize 
 import UserList from "./UserList";
 import SearchBar from "./SearchBar";
 import consumer from "../channels/consumer";
-import GroupForm from "./GroupForm";
+import UserListForm from "./UserListForm";
 
 export default function ChatList({
   setDisplayChat,
@@ -19,9 +19,10 @@ export default function ChatList({
 }) {
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
-  const [displayGroupForm, setDisplayGroupForm] = useState(false);
+  const [displayUserListForm, setDisplayUserListForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [displaySearchBar, setDisplaySearchBar] = useState(false);
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
   const chatListRef = useRef(null);
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
@@ -83,6 +84,42 @@ export default function ChatList({
     return cleanup;
   }, []);
 
+  async function createGroup(e, userList) {
+    e.preventDefault();
+    let receiver_uuids = userList.map((user) => user.uuid);
+
+    try {
+      const res = await fetch(`/api/v1//chats/open?`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({ chat: { receiver_uuids: receiver_uuids } }),
+      });
+
+      if (!res.ok) {
+        throw new Error("The group could not be created.");
+      }
+
+      const data = await res.json();
+
+      setReceiver(
+        userList.map((user) => {
+          return {
+            avatar: user.avatar,
+            name: user.name,
+            uuid: user.uuid,
+            description: user.description,
+            chat_id: data.chat_id,
+          };
+        })
+      );
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
   return (
     <div className={displaySearchBar ? "chatListContainer widen" : "chatListContainer"}>
       <div className="listHeader">
@@ -100,17 +137,18 @@ export default function ChatList({
           src="group.svg"
           alt="Create a group"
           onClick={() => {
-            setDisplayGroupForm(true);
+            setDisplayUserListForm(true);
             setDimmed(true);
           }}
         />
-        {displayGroupForm && (
-          <GroupForm
+        {displayUserListForm && (
+          <UserListForm
             setDimmed={setDimmed}
-            setDisplayGroupForm={setDisplayGroupForm}
+            setDisplayUserListForm={setDisplayUserListForm}
             setReceiver={setReceiver}
             setPagination={setPagination}
             setChatList={setChatList}
+            callback={createGroup}
           />
         )}
       </div>

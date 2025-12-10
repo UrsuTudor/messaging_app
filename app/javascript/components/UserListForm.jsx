@@ -4,57 +4,20 @@ import SearchBar from "./SearchBar";
 import { createPortal } from "react-dom";
 import { setNewElements } from "../assets/helpers";
 
-export default function GroupForm({
+export default function UserListForm({
   setDimmed,
-  setDisplayGroupForm,
-  setReceiver,
+  setDisplayUserListForm,
   setPagination,
+  callback
 }) {
   const [chats, setChats] = useState([]);
-  const [groupList, setGroupList] = useState([]);
+  const [userList, setUserList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
   useEffect(() => {
     setChats([]);
     setNewElements(`/api/v1/users/group?search=${searchTerm}`, "chat_users", setChats);
   }, [searchTerm]);
-
-  async function createGroup(e) {
-    e.preventDefault();
-    let receiver_uuids = groupList.map((user) => user.uuid);
-
-    try {
-      const res = await fetch(`/api/v1//chats/open?`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken,
-        },
-        body: JSON.stringify({ chat: { receiver_uuids: receiver_uuids } }),
-      });
-
-      if (!res.ok) {
-        throw new Error("The group could not be created.");
-      }
-
-      const data = await res.json();
-
-      setReceiver(
-        groupList.map((user) => {
-          return {
-            avatar: user.avatar,
-            name: user.name,
-            uuid: user.uuid,
-            description: user.description,
-            chat_id: data.chat_id,
-          };
-        })
-      );
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
 
   return (
     <>
@@ -62,9 +25,9 @@ export default function GroupForm({
         <form
           className="groupForm"
           onSubmit={(e) => {
-            createGroup(e);
+            callback(e, userList);
             setDimmed(false);
-            setDisplayGroupForm(false);
+            setDisplayUserListForm(false);
           }}
         >
           <div className="listHeader">
@@ -78,9 +41,9 @@ export default function GroupForm({
             />
             <button
               type="submit"
-              disabled={!groupList[0]}
+              disabled={!userList[0]}
               className={
-                groupList[0] ? "iconContainer groupSubmitBtn visible" : "iconContainer groupSubmitBtn hidden"
+                userList[0] ? "iconContainer groupSubmitBtn visible" : "iconContainer groupSubmitBtn hidden"
               }
             >
               Create
@@ -90,19 +53,19 @@ export default function GroupForm({
               src="xmark.svg"
               alt="Close group form"
               onClick={() => {
-                setDisplayGroupForm(false);
+                setDisplayUserListForm(false);
                 setDimmed(false);
               }}
             />
           </div>
           <div className="groupList">
-            {groupList.map((user) => (
+            {userList.map((user) => (
               <button
                 type="button"
                 key={user.uuid}
                 className="groupListUser"
                 onClick={() => {
-                  setGroupList((prev) => prev.filter((u) => u.uuid !== user.uuid));
+                  setUserList((prev) => prev.filter((u) => u.uuid !== user.uuid));
                   setChats((prev) => [[user], ...prev]);
                 }}
               >
@@ -119,7 +82,7 @@ export default function GroupForm({
               key={user[0].uuid}
               className="userContainer"
               onClick={() => {
-                setGroupList((prev) => [...prev, user[0]]);
+                setUserList((prev) => [...prev, user[0]]);
                 setChats((prev) => prev.filter((u) => u[0].uuid !== user[0].uuid));
               }}
               data-testid="groupFormUserBtn"
