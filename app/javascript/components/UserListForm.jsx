@@ -7,7 +7,7 @@ import { setNewElements } from "../assets/helpers";
 export default function UserListForm({
   setDimmed,
   setDisplayUserListForm,
-  setPagination,
+  setPagination = null,
   callback
 }) {
   const [chats, setChats] = useState([]);
@@ -32,9 +32,6 @@ export default function UserListForm({
         >
           <div className="listHeader">
             <SearchBar
-              route={"api/v1/users/chats?page=1"}
-              dataKey={"chat_users"}
-              listSetter={setChats}
               setPagination={setPagination}
               adaptable={false}
               setSearchTerm={setSearchTerm}
@@ -62,15 +59,15 @@ export default function UserListForm({
             {userList.map((user) => (
               <button
                 type="button"
-                key={user.uuid}
+                key={user[0].uuid}
                 className="groupListUser"
                 onClick={() => {
-                  setUserList((prev) => prev.filter((u) => u.uuid !== user.uuid));
-                  setChats((prev) => [[user], ...prev]);
+                  setUserList((prev) => prev.filter((u) => u[0].uuid !== user[0].uuid));
+                  setChats((prev) => [user, ...prev]);
                 }}
               >
                 <div className="userHeader">
-                  <h4 className="userName">{user.name}</h4>
+                  <h4 className="userName">{user[0].name}</h4>
                   <img className="groupUserIcon" src="xmark.svg" alt="Remove user from group" />
                 </div>
               </button>
@@ -82,7 +79,7 @@ export default function UserListForm({
               key={user[0].uuid}
               className="userContainer"
               onClick={() => {
-                setUserList((prev) => [...prev, user[0]]);
+                setUserList((prev) => [...prev, user]);
                 setChats((prev) => prev.filter((u) => u[0].uuid !== user[0].uuid));
               }}
               data-testid="groupFormUserBtn"

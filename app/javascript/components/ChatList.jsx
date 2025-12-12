@@ -86,7 +86,7 @@ export default function ChatList({
 
   async function createGroup(e, userList) {
     e.preventDefault();
-    let receiver_uuids = userList.map((user) => user.uuid);
+    let receiver_uuids = userList.map((user) => user[0].uuid);
 
     try {
       const res = await fetch(`/api/v1//chats/open?`, {
@@ -107,10 +107,10 @@ export default function ChatList({
       setReceiver(
         userList.map((user) => {
           return {
-            avatar: user.avatar,
-            name: user.name,
-            uuid: user.uuid,
-            description: user.description,
+            avatar: user[0].avatar,
+            name: user[0].name,
+            uuid: user[0].uuid,
+            description: user[0].description,
             chat_id: data.chat_id,
           };
         })
@@ -125,8 +125,6 @@ export default function ChatList({
       <div className="listHeader">
         <h1>Chats</h1>
         <SearchBar
-          route={"api/v1/users/chats?page=1"}
-          dataKey={"chat_users"}
           setPagination={setPagination}
           setSearchTerm={setSearchTerm}
           displaySearchBar={displaySearchBar}
@@ -145,9 +143,7 @@ export default function ChatList({
           <UserListForm
             setDimmed={setDimmed}
             setDisplayUserListForm={setDisplayUserListForm}
-            setReceiver={setReceiver}
             setPagination={setPagination}
-            setChatList={setChatList}
             callback={createGroup}
           />
         )}

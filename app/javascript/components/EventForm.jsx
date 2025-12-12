@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { debounce } from "lodash";
 import "../assets/stylesheets/eventForm.css";
 import { setNewElements, sendOrganiserInvites } from "../assets/helpers";
+import UserListForm from "./UserListForm";
 
-export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUser }) {
+export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUser, setDimmed }) {
   let [eventDetails, setEventDetails] = useState({
     organisers: [loggedUser],
     title: "",
@@ -16,7 +17,7 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
   const [locations, setLocations] = useState([]);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [chats, setChats] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [displayUserListForm, setDisplayUserListForm] = useState(false);
   let organiserUuids = eventDetails.organisers.map((org) => org[0].uuid);
 
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
@@ -27,10 +28,11 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
     resizeTextArea();
   }, [eventDetails.description]);
 
-  useEffect(() => {
-    setChats([]);
-    setNewElements(`/api/v1/users/group?search=${searchTerm}`, "chat_users", setChats);
-  }, [searchTerm]);
+  function updateEventDetails(e, userList) {
+    e.preventDefault();
+    e.stopPropagation();
+    setEventDetails((prev) => ({ ...prev, organisers: [loggedUser, ...userList] }));
+  }
 
   async function createEvent(e) {
     e.preventDefault();
@@ -57,7 +59,7 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
 
       const data = await res.json();
       sendOrganiserInvites(data.event_id, organiserUuids, csrfToken);
-      getLoggedUser()
+      getLoggedUser();
     } catch (error) {
       console.error(error.message);
     }
@@ -94,7 +96,7 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
         {eventDetails.title.length > 1 && <h2 className="eventPageTitle"> {eventDetails.title} </h2>}
         {eventDetails.organisers.map((organiser) => {
           return (
-            <div className="organiserContainer">
+            <div className="organiserContainer" key={organiser[0].uuid}>
               <img
                 className="smallAvatar"
                 src={organiser[0].avatar ? organiser[0].avatar : "user_dark.svg"}
@@ -117,14 +119,22 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
         }}
       >
         <div className="organiserSearchContainer">
-          <label>
-            <input
-              className="eventTitle"
-              type="text"
-              placeholder="Invite Organisers"
-              onChange={(e) => setSearchTerm(e.target.value)}
+          <button
+            type="button"
+            onClick={() => {
+              setDimmed(true);
+              setDisplayUserListForm(true);
+            }}
+          >
+            Invite other organisers
+          </button>
+          {displayUserListForm && (
+            <UserListForm
+              setDimmed={setDimmed}
+              setDisplayUserListForm={setDisplayUserListForm}
+              callback={updateEventDetails}
             />
-          </label>
+          )}
           {chats.map((user, i) => (
             <button
               type="button"

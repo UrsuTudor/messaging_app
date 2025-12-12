@@ -23,13 +23,19 @@ export default function DesktopLayout({
   chatList,
   setChatList,
   displayEventForm,
-  setDisplayEventForm
+  setDisplayEventForm,
 }) {
   const [dimmed, setDimmed] = useState(false);
 
   return (
     <div className={dimmed ? "appContainer dimmed" : "appContainer"}>
-      <NavBar loggedUser={loggedUser} profile={profile} setProfile={setProfile} signOut={signOut} setDisplayEvent={setDisplayEvent}/>
+      <NavBar
+        loggedUser={loggedUser}
+        profile={profile}
+        setProfile={setProfile}
+        signOut={signOut}
+        setDisplayEvent={setDisplayEvent}
+      />
 
       <div className="mainBodyContainer">
         <ChatList
@@ -68,9 +74,18 @@ export default function DesktopLayout({
             getLoggedUser={getLoggedUser}
           />
         ) : displayEventForm ? (
-          <EventForm loggedUser={loggedUser} setDisplayEventForm={setDisplayEventForm} getLoggedUser={getLoggedUser}/>
+          <EventForm
+            loggedUser={loggedUser}
+            setDisplayEventForm={setDisplayEventForm}
+            getLoggedUser={getLoggedUser}
+            setDimmed={setDimmed}
+          />
         ) : (
-          <EventList setDisplayEvent={setDisplayEvent} setProfile={setProfile} setDisplayEventForm={setDisplayEventForm}/>
+          <EventList
+            setDisplayEvent={setDisplayEvent}
+            setProfile={setProfile}
+            setDisplayEventForm={setDisplayEventForm}
+          />
         )}
 
         <UserList setReceiver={setReceiver} setProfile={setProfile} />
