@@ -48,7 +48,7 @@ export default function EventList({ setDisplayEvent, setDisplayEventForm, setPro
       </div>
       <div className="eventListHeader">
         <SearchBar setPagination={setPagination} setSearchTerm={setSearchTerm} adaptable={false} />
-        <button onClick={() => setDisplayEventForm(true)}>Create your own</button>
+        <button onClick={() => setDisplayEventForm({display: true, event: null, action: "create"})}>Create your own</button>
       </div>
 
       {events.map((e) => (

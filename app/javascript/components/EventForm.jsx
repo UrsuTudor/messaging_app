@@ -5,7 +5,14 @@ import { sendOrganiserInvites } from "../assets/helpers";
 import UserListForm from "./UserListForm";
 import { updateEventDetails } from "../assets/helpers";
 
-export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUser, setDimmed }) {
+export default function EventForm({
+  event,
+  loggedUser,
+  setDisplayEventForm,
+  getLoggedUser,
+  setDimmed,
+  action,
+}) {
   let [eventDetails, setEventDetails] = useState({
     organisers: [loggedUser],
     title: "",
@@ -14,6 +21,21 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
     location: "",
     coverImage: null,
   });
+
+  useEffect(() => {
+    if (event) {
+      setEventDetails({
+        organisers: event.organisers,
+        title: event.title,
+        description: event.description,
+        date: event.date,
+        location: event.location,
+      });
+
+      setImagePreviewUrl(event.cover_image_url);
+    }
+  }, [event]);
+
   const [locationSearchFocus, setLocationSearchFocus] = useState(false);
   const [locations, setLocations] = useState([]);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
@@ -36,10 +58,11 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
     formData.append("event[description]", eventDetails.description);
     formData.append("event[date]", eventDetails.date);
     formData.append("event[location]", eventDetails.location);
-    formData.append("event[cover_image]", eventDetails.coverImage);
+    if (eventDetails.coverImage) formData.append("event[cover_image]", eventDetails.coverImage);
+    if (event) formData.append("event[id]", event.id);
 
     try {
-      const res = await fetch(`/api/v1/events/create`, {
+      const res = await fetch(`/api/v1/events/${action}`, {
         method: "POST",
         headers: {
           "X-CSRF-Token": csrfToken,
@@ -48,11 +71,11 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
       });
 
       if (!res.ok) {
-        throw new Error(`We couldn't create the event.`);
+        throw new Error(`We couldn't ${action} the event.`);
       }
 
       const data = await res.json();
-      sendOrganiserInvites(data.event_id, eventDetails.organisers, csrfToken);
+      sendOrganiserInvites(e, eventDetails.organisers, data.event_id, csrfToken);
       getLoggedUser();
     } catch (error) {
       console.error(error.message);
@@ -109,7 +132,7 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
         className="eventForm"
         onSubmit={(e) => {
           createEvent(e);
-          setDisplayEventForm(false);
+          setDisplayEventForm({ display: false, event: null });
         }}
       >
         <div className="organiserSearchContainer">
@@ -130,27 +153,6 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
               args={[setEventDetails, loggedUser]}
             />
           )}
-          {chats.map((user, i) => (
-            <button
-              type="button"
-              key={user[0].uuid}
-              className="userContainer"
-              onClick={() => {
-                setEventDetails((prev) => ({ ...prev, organisers: [...prev.organisers, user] }));
-                setChats((prev) => prev.filter((_, index) => i != index));
-              }}
-              data-testid="groupFormUserBtn"
-            >
-              <div className="userHeader">
-                <img
-                  className="smallAvatar"
-                  src={user[0].avatar ? user[0].avatar : "user_dark.svg"}
-                  alt={user[0].name + "'s profile picture"}
-                />
-                <h4 className="userName">{user[0].name}</h4>
-              </div>
-            </button>
-          ))}
         </div>
         <label>
           <input

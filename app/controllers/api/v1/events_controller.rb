@@ -66,8 +66,8 @@ class Api::V1::EventsController < ApplicationController
     return head :not_found unless event
     return head :forbidden unless event.organisers.include?(current_user)
 
-    if event.update(event_params.slice(:title, :description))
-      render json: "Update successful"
+    if event.update(event_params)
+      render json: { event_id: event.id, message: "Update successful" }
     else
       render json: { errors: event.errors.full_messages }, status: :unprocessable_entity
     end
@@ -119,7 +119,7 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def user_data(user)
-    {
+    [ {
       name: user.name,
       uuid: user.uuid,
       avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
@@ -127,7 +127,7 @@ class Api::V1::EventsController < ApplicationController
       events: user.events.map do |event|
         event_data(event)
       end
-    }
+    } ]
   end
 
    def event_data(e)

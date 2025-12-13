@@ -75,12 +75,14 @@ export default function DesktopLayout({
             setDisplayEventForm={setDisplayEventForm}
             setDimmed={setDimmed}
           />
-        ) : displayEventForm ? (
+        ) : displayEventForm["display"] ? (
           <EventForm
             loggedUser={loggedUser}
             setDisplayEventForm={setDisplayEventForm}
             getLoggedUser={getLoggedUser}
             setDimmed={setDimmed}
+            event={displayEventForm["event"]}
+            action={displayEventForm["action"]}
           />
         ) : (
           <EventList

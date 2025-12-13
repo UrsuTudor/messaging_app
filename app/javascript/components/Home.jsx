@@ -10,7 +10,7 @@ export default function Home() {
   const [displayChat, setDisplayChat] = useState({ chat: false, chatList: true });
   const [displayEvent, setDisplayEvent] = useState({ display: false, event: null });
   const [chatList, setChatList] = useState([]);
-  const [displayEventForm, setDisplayEventForm] = useState(false)
+  const [displayEventForm, setDisplayEventForm] = useState({ display: false, event: null, action: "create"});
   const isMobile = window.innerWidth < 700;
 
   useEffect(() => {

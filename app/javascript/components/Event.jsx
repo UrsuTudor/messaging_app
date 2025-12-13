@@ -7,6 +7,7 @@ export default function Event({
   event,
   setProfile,
   setDisplayEvent,
+  setDisplayEventForm,
   hereFrom,
   loggedUser,
   getLoggedUser,
@@ -109,23 +110,33 @@ export default function Event({
       >
         Back
       </button>
+
       <div>
         <img src={event.cover_image_url} alt="" />
         <div className="orgContainer">
           {eventDetails.organisers.map((org) => (
             <img
-              key={org.uuid}
+              key={org[0].uuid}
               className="smallAvatar"
-              src={org.avatar ? org.avatar : "user_dark.svg"}
-              alt={org.name + "'s profile picture"}
+              src={org[0].avatar ? org[0].avatar : "user_dark.svg"}
+              alt={org[0].name + "'s profile picture"}
               onClick={() => {
                 setDisplayEvent((prev) => ({ display: false, event: null }));
-                setProfile((prev) => ({ display: true, user: [org] }));
+                setProfile((prev) => ({ display: true, user: org }));
               }}
             />
           ))}
-          {eventDetails.organisers.map((org) => org.uuid).includes(loggedUser[0].uuid) && (
-            <div className="organiserSearchContainer">
+          {eventDetails.organisers.map((org) => org[0].uuid).includes(loggedUser[0].uuid) && (
+            <div className="organiserBtnsContainer">
+              <button 
+                type="button"
+                onClick={() => {
+                  setDisplayEventForm({display: true, event: event, action: "update"})
+                  setDisplayEvent((prev) => ({ ...prev, display: false }));
+                }}
+              >
+                Change Event Details
+              </button>
               <button
                 type="button"
                 onClick={() => {
@@ -149,8 +160,8 @@ export default function Event({
           <p>{event.date}</p>
           <p>{event.location}</p>
           {[
-            ...eventDetails.participants.map((part) => part.uuid),
-            ...eventDetails.organisers.map((org) => org.uuid),
+            ...eventDetails.participants.map((part) => part[0].uuid),
+            ...eventDetails.organisers.map((org) => org[0].uuid),
           ].includes(loggedUser[0].uuid) ? (
             <button onClick={() => leaveEvent()}>Leave Event</button>
           ) : (
@@ -158,20 +169,20 @@ export default function Event({
           )}
 
           {event.organisers.length == 1 &&
-            eventDetails.organisers.map((org) => org.uuid).includes(loggedUser[0].uuid) && (
+            eventDetails.organisers.map((org) => org[0].uuid).includes(loggedUser[0].uuid) && (
               <button onClick={() => deleteEvent()}>Delete Event</button>
             )}
           <p>{event.description}</p>
 
           {eventDetails.participants.map((part) => (
             <img
-              key={part.uuid}
+              key={part[0].uuid}
               className="smallAvatar"
-              src={part.avatar ? part.avatar : "user_dark.svg"}
-              alt={part.name + "'s profile picture"}
+              src={part[0].avatar ? part[0].avatar : "user_dark.svg"}
+              alt={part[0].name + "'s profile picture"}
               onClick={() => {
                 setDisplayEvent({ display: false, event: null });
-                setProfile({ display: true, user: [part] });
+                setProfile({ display: true, user: part });
               }}
             />
           ))}
