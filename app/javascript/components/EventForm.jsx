@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { debounce } from "lodash";
 import "../assets/stylesheets/eventForm.css";
-import { setNewElements, sendOrganiserInvites } from "../assets/helpers";
+import { sendOrganiserInvites } from "../assets/helpers";
 import UserListForm from "./UserListForm";
+import { updateEventDetails } from "../assets/helpers";
 
 export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUser, setDimmed }) {
   let [eventDetails, setEventDetails] = useState({
@@ -18,7 +19,6 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [chats, setChats] = useState([]);
   const [displayUserListForm, setDisplayUserListForm] = useState(false);
-  let organiserUuids = eventDetails.organisers.map((org) => org[0].uuid);
 
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
   const textareaRef = useRef(null);
@@ -27,12 +27,6 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
   useEffect(() => {
     resizeTextArea();
   }, [eventDetails.description]);
-
-  function updateEventDetails(e, userList) {
-    e.preventDefault();
-    e.stopPropagation();
-    setEventDetails((prev) => ({ ...prev, organisers: [loggedUser, ...userList] }));
-  }
 
   async function createEvent(e) {
     e.preventDefault();
@@ -58,7 +52,7 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
       }
 
       const data = await res.json();
-      sendOrganiserInvites(data.event_id, organiserUuids, csrfToken);
+      sendOrganiserInvites(data.event_id, eventDetails.organisers, csrfToken);
       getLoggedUser();
     } catch (error) {
       console.error(error.message);
@@ -133,6 +127,7 @@ export default function EventForm({ loggedUser, setDisplayEventForm, getLoggedUs
               setDimmed={setDimmed}
               setDisplayUserListForm={setDisplayUserListForm}
               callback={updateEventDetails}
+              args={[setEventDetails, loggedUser]}
             />
           )}
           {chats.map((user, i) => (

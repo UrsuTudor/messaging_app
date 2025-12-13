@@ -72,6 +72,8 @@ export default function DesktopLayout({
             hereFrom={displayEvent.from}
             loggedUser={loggedUser}
             getLoggedUser={getLoggedUser}
+            setDisplayEventForm={setDisplayEventForm}
+            setDimmed={setDimmed}
           />
         ) : displayEventForm ? (
           <EventForm

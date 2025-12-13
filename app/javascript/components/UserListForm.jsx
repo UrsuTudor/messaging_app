@@ -8,7 +8,8 @@ export default function UserListForm({
   setDimmed,
   setDisplayUserListForm,
   setPagination = null,
-  callback
+  callback,
+  args,
 }) {
   const [chats, setChats] = useState([]);
   const [userList, setUserList] = useState([]);
@@ -25,7 +26,7 @@ export default function UserListForm({
         <form
           className="groupForm"
           onSubmit={(e) => {
-            callback(e, userList);
+            callback(e, userList, ...args);
             setDimmed(false);
             setDisplayUserListForm(false);
           }}

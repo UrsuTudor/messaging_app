@@ -1,7 +1,19 @@
 import React, { useState } from "react";
+import UserListForm from "./UserListForm";
+import { updateEventDetails } from "../assets/helpers";
+import { sendOrganiserInvites } from "../assets/helpers";
 
-export default function Event({ event, setProfile, setDisplayEvent, hereFrom, loggedUser, getLoggedUser }) {
+export default function Event({
+  event,
+  setProfile,
+  setDisplayEvent,
+  hereFrom,
+  loggedUser,
+  getLoggedUser,
+  setDimmed,
+}) {
   const [eventDetails, setEventDetails] = useState(event);
+  const [displayUserListForm, setDisplayUserListForm] = useState(false);
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
   async function joinEvent() {
@@ -55,7 +67,6 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom, lo
       }
 
       getLoggedUser();
-      
     } catch (error) {
       console.error(error.message);
     }
@@ -113,37 +124,58 @@ export default function Event({ event, setProfile, setDisplayEvent, hereFrom, lo
               }}
             />
           ))}
-        </div>
-        <h2>{event.title}</h2>
-        <p>{event.date}</p>
-        <p>{event.location}</p>
-        {[
-          ...eventDetails.participants.map((part) => part.uuid),
-          ...eventDetails.organisers.map((org) => org.uuid),
-        ].includes(loggedUser[0].uuid) ? (
-          <button onClick={() => leaveEvent()}>Leave Event</button>
-        ) : (
-          <button onClick={() => joinEvent()}>Join Event</button>
-        )}
-
-        {event.organisers.length == 1 &&
-          eventDetails.organisers.map((org) => org.uuid).includes(loggedUser[0].uuid) && (
-            <button onClick={() => deleteEvent()}>Delete Event</button>
+          {eventDetails.organisers.map((org) => org.uuid).includes(loggedUser[0].uuid) && (
+            <div className="organiserSearchContainer">
+              <button
+                type="button"
+                onClick={() => {
+                  setDimmed(true);
+                  setDisplayUserListForm(true);
+                }}
+              >
+                Invite other organisers
+              </button>
+              {displayUserListForm && (
+                <UserListForm
+                  setDimmed={setDimmed}
+                  setDisplayUserListForm={setDisplayUserListForm}
+                  callback={sendOrganiserInvites}
+                  args={[event.id, csrfToken]}
+                />
+              )}
+            </div>
           )}
-        <p>{event.description}</p>
+          <h2>{event.title}</h2>
+          <p>{event.date}</p>
+          <p>{event.location}</p>
+          {[
+            ...eventDetails.participants.map((part) => part.uuid),
+            ...eventDetails.organisers.map((org) => org.uuid),
+          ].includes(loggedUser[0].uuid) ? (
+            <button onClick={() => leaveEvent()}>Leave Event</button>
+          ) : (
+            <button onClick={() => joinEvent()}>Join Event</button>
+          )}
 
-        {eventDetails.participants.map((part) => (
-          <img
-            key={part.uuid}
-            className="smallAvatar"
-            src={part.avatar ? part.avatar : "user_dark.svg"}
-            alt={part.name + "'s profile picture"}
-            onClick={() => {
-              setDisplayEvent({ display: false, event: null });
-              setProfile({ display: true, user: [part] });
-            }}
-          />
-        ))}
+          {event.organisers.length == 1 &&
+            eventDetails.organisers.map((org) => org.uuid).includes(loggedUser[0].uuid) && (
+              <button onClick={() => deleteEvent()}>Delete Event</button>
+            )}
+          <p>{event.description}</p>
+
+          {eventDetails.participants.map((part) => (
+            <img
+              key={part.uuid}
+              className="smallAvatar"
+              src={part.avatar ? part.avatar : "user_dark.svg"}
+              alt={part.name + "'s profile picture"}
+              onClick={() => {
+                setDisplayEvent({ display: false, event: null });
+                setProfile({ display: true, user: [part] });
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

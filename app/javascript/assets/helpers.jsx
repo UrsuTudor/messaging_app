@@ -55,7 +55,11 @@ function updateScrollBottom(setScrollBottom, element) {
   setScrollBottom(element.scrollHeight - element.scrollTop - element.clientHeight);
 }
 
-async function sendOrganiserInvites(eventId, organiserUuids, csrf) {
+async function sendOrganiserInvites(e, organisers, eventId, csrf) {
+  e.preventDefault()
+  
+  let organiserUuids = organisers.map((org) => org[0].uuid);
+
   try {
     const res = await fetch(`/api/v1/events/participate`, {
       method: "POST",
@@ -76,4 +80,18 @@ async function sendOrganiserInvites(eventId, organiserUuids, csrf) {
   }
 }
 
-export { setNewElements, updateListEndMessage, updatePagination, updateScrollBottom, handleResize, sendOrganiserInvites };
+function updateEventDetails(e, userList, setter, loggedUser) {
+  e.preventDefault();
+  e.stopPropagation();
+  setter((prev) => ({ ...prev, organisers: [loggedUser, ...userList] }));
+}
+
+export {
+  setNewElements,
+  updateListEndMessage,
+  updatePagination,
+  updateScrollBottom,
+  handleResize,
+  sendOrganiserInvites,
+  updateEventDetails,
+};
