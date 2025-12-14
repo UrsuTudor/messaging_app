@@ -1,6 +1,48 @@
 .eventListContainer {
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   background-color: #f4f9f4;
+}
+
+.listHeader > h1 {
+  width: 100%;
+  text-align: center;
+}
+
+.eventListSearchBar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 1vw 0 1vw;
+  margin: 1vh 0 1vh 0;
+}
+
+.eventListSearchBar > .searchBar {
+  width: 50%;
+  background-color: #d9e6d9;
+  border: 1px solid #cfdccf;
+}
+
+.eventListSearchBar > .searchBar:focus {
+  border-color: #8fb58f;
+  background-color: #e6f0e6;
+  box-shadow: 0 0 0 2px rgba(143, 181, 143, 0.35);
+}
+
+.eventListSearchBar > .profileIconContainer {
+  margin-top: 0;
+  height: 28px;
+}
+
+.bannerListContainer {
+  overflow-y: scroll;
+  scrollbar-color: #5a7d5a #f4f9f4;
+  
+  padding: 1vh 0 1vh 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1vw;
+  justify-content: center;
+  border-top: 1px solid #5a7d5a;
 }

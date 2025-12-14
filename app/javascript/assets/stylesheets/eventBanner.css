@@ -1,0 +1,43 @@
+.eventBanner {
+  border-radius: 20px;
+  background-color: #d9e6d9;
+  border: 1px solid #b8d0b8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  height: 40vh;
+  width: 45%;
+    transform-origin: bottom center;
+}
+
+@keyframes cornerWiggle {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(1deg); }
+  50%  { transform: rotate(-1deg); }
+  75%  { transform: rotate(0.6deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.eventBanner:hover {
+  cursor: pointer;
+  animation: cornerWiggle 0.6s ease-in-out;
+}
+
+.eventBanner > img {
+  border-radius: 20px 20px 0 0;
+  height: 60%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.bannerText {
+  padding: 1vh 1vw 1vh 1vw;
+  height: 40%;
+  overflow: hidden;
+}
+
+.bannerText > h2 {
+  border-bottom: 1px solid #5a7d5a;
+}
+
+.eventDate {
+  padding-bottom: 1vh;
+}

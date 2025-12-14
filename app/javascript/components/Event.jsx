@@ -128,15 +128,6 @@ export default function Event({
           ))}
           {eventDetails.organisers.map((org) => org[0].uuid).includes(loggedUser[0].uuid) && (
             <div className="organiserBtnsContainer">
-              <button 
-                type="button"
-                onClick={() => {
-                  setDisplayEventForm({display: true, event: event, action: "update"})
-                  setDisplayEvent((prev) => ({ ...prev, display: false }));
-                }}
-              >
-                Change Event Details
-              </button>
               <button
                 type="button"
                 onClick={() => {
@@ -146,6 +137,19 @@ export default function Event({
               >
                 Invite other organisers
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setDisplayEventForm({ display: true, event: event, action: "update" });
+                  setDisplayEvent((prev) => ({ ...prev, display: false }));
+                }}
+              >
+                Change Event Details
+              </button>
+              {event.organisers.length == 1 &&
+                eventDetails.organisers.map((org) => org[0].uuid).includes(loggedUser[0].uuid) && (
+                  <button onClick={() => deleteEvent()}>Delete Event</button>
+                )}
               {displayUserListForm && (
                 <UserListForm
                   setDimmed={setDimmed}
@@ -168,10 +172,6 @@ export default function Event({
             <button onClick={() => joinEvent()}>Join Event</button>
           )}
 
-          {event.organisers.length == 1 &&
-            eventDetails.organisers.map((org) => org[0].uuid).includes(loggedUser[0].uuid) && (
-              <button onClick={() => deleteEvent()}>Delete Event</button>
-            )}
           <p>{event.description}</p>
 
           {eventDetails.participants.map((part) => (

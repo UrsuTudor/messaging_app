@@ -1,7 +1,8 @@
 import React from "react";
+import "../assets/stylesheets/eventBanner.css";
 
 export default function EventBanner({ event, setDisplayEvent, setProfile = () => {}, hereFrom }) {
-  async function displayEvent(){
+  async function displayEvent() {
     try {
       const res = await fetch(`/api/v1/events/${event.id}`, {
         method: "GET",
@@ -12,9 +13,8 @@ export default function EventBanner({ event, setDisplayEvent, setProfile = () =>
       }
 
       const data = await res.json();
-      setDisplayEvent({display: true, event: data, from: hereFrom})
-      setProfile((prev) => ({...prev, display: false}))
-
+      setDisplayEvent({ display: true, event: data, from: hereFrom });
+      setProfile((prev) => ({ ...prev, display: false }));
     } catch (error) {
       console.error(error.message);
     }
@@ -22,10 +22,12 @@ export default function EventBanner({ event, setDisplayEvent, setProfile = () =>
 
   return (
     <div className="eventBanner" onClick={() => displayEvent()}>
-      <img src={event.cover_image_url} alt="" />
-      <h2>{event.title}</h2>
-      <p>{event.date}</p>
-      <p>{event.location}</p>
+      <img src={event.cover_image_url} alt="Event cover image" />
+      <div className="bannerText">
+        <h2>{event.title}</h2>
+        <p className="eventDate">{event.date}</p>
+        <p>{event.location}</p>
+      </div>
     </div>
   );
 }

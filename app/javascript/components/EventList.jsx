@@ -46,20 +46,32 @@ export default function EventList({ setDisplayEvent, setDisplayEventForm, setPro
       <div className="listHeader">
         <h1>Events</h1>
       </div>
-      <div className="eventListHeader">
-        <SearchBar setPagination={setPagination} setSearchTerm={setSearchTerm} adaptable={false} />
-        <button onClick={() => setDisplayEventForm({display: true, event: null, action: "create"})}>Create your own</button>
+      <div className="eventListSearchBar">
+        <SearchBar
+          setPagination={setPagination}
+          setSearchTerm={setSearchTerm}
+          adaptable={false}
+          placeholder="Search by title or location"
+        />
+        <button
+          onClick={() => setDisplayEventForm({ display: true, event: null, action: "create" })}
+          className="iconContainer profileIconContainer"
+        >
+          Create your own
+        </button>
       </div>
 
-      {events.map((e) => (
-        <EventBanner
-          key={e.id}
-          event={e}
-          setDisplayEvent={setDisplayEvent}
-          setProfile={setProfile}
-          hereFrom={"home"}
-        />
-      ))}
+      <div className="bannerListContainer">
+        {events.map((e) => (
+          <EventBanner
+            key={e.id}
+            event={e}
+            setDisplayEvent={setDisplayEvent}
+            setProfile={setProfile}
+            hereFrom={"home"}
+          />
+        ))}
+      </div>
     </div>
   );
 }
