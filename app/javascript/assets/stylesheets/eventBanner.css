@@ -3,9 +3,12 @@
   background-color: #d9e6d9;
   border: 1px solid #b8d0b8;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+
   height: 40vh;
   width: 45%;
-    transform-origin: bottom center;
+  padding-bottom: 1vh;
+  
+  transform-origin: bottom center;
 }
 
 @keyframes cornerWiggle {

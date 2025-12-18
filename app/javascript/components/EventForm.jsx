@@ -4,6 +4,7 @@ import "../assets/stylesheets/eventForm.css";
 import { sendOrganiserInvites } from "../assets/helpers";
 import UserListForm from "./UserListForm";
 import { updateEventDetails } from "../assets/helpers";
+import "../assets/stylesheets/event.css";
 
 export default function EventForm({
   event,
@@ -108,133 +109,159 @@ export default function EventForm({
 
   return (
     <div className="eventFormContainer">
-      <div className="eventPreview">
-        {imagePreviewUrl && <img src={imagePreviewUrl} alt="The cover image of your project." />}
-        {eventDetails.title.length > 1 && <h2 className="eventPageTitle"> {eventDetails.title} </h2>}
-        {eventDetails.organisers.map((organiser) => {
-          return (
-            <div className="organiserContainer" key={organiser[0].uuid}>
-              <img
-                className="smallAvatar"
-                src={organiser[0].avatar ? organiser[0].avatar : "user_dark.svg"}
-                alt={organiser[0].name + "'s profile picture"}
-              />
-              <p>{organiser[0].name}</p>
-            </div>
-          );
-        })}
-        <p>{eventDetails.date}</p>
-        <p>{eventDetails.location}</p>
-        <p>{eventDetails.description}</p>
+      <div className="listHeader">
+        <div
+          className="chatIconContainer"
+          onClick={() => {
+            setDisplayEventForm((prev) => ({ display: false, event: null, action: "create" }));
+            hereFrom == "profile"
+              ? setProfile((prev) => ({ ...prev, display: true }))
+              : setDisplayEventForm((prev) => ({ ...prev, display: false }));
+          }}
+          data-testid="chatBackArrow"
+        >
+          <img className="icon" src="arrow-left.svg" />
+        </div>
+        <h1></h1>
       </div>
-
-      <form
-        className="eventForm"
-        onSubmit={(e) => {
-          createEvent(e);
-          setDisplayEventForm({ display: false, event: null });
-        }}
-      >
-        <div className="organiserSearchContainer">
-          <button
-            type="button"
-            onClick={() => {
-              setDimmed(true);
-              setDisplayUserListForm(true);
-            }}
-          >
-            Invite other organisers
-          </button>
-          {displayUserListForm && (
-            <UserListForm
-              setDimmed={setDimmed}
-              setDisplayUserListForm={setDisplayUserListForm}
-              callback={updateEventDetails}
-              args={[setEventDetails, loggedUser]}
-            />
+      <div className="scrollable">
+        <div className="eventContainer">
+          {imagePreviewUrl && (
+            <div className="eventCoverContainer">
+              <img className="eventCover" src={imagePreviewUrl} alt="The cover image of your event" />
+            </div>
           )}
+          <div className="eventDetailsContainer">
+            <div className="eventHeader">
+              {eventDetails.title.length > 1 && <h2> {eventDetails.title} </h2>}
+              <p>{eventDetails.date}</p>
+              <p>{eventDetails.location}</p>
+              <div className="orgContainer">
+                <h3>Organised by:</h3>
+                {eventDetails.organisers.map((org) => (
+                  <img
+                    key={org[0].uuid}
+                    className="smallAvatar"
+                    src={org[0].avatar ? org[0].avatar : "user_dark.svg"}
+                    alt={org[0].name + "'s profile picture"}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <p className="eventDescription">{eventDetails.description}</p>
+          </div>
         </div>
-        <label>
-          <input
-            className="eventTitle"
-            type="text"
-            placeholder="Event Title"
-            onChange={(e) => {
-              setEventDetails((prev) => ({ ...prev, title: e.target.value }));
-            }}
-          />
-        </label>
-
-        <label>
-          Date:
-          <input
-            className="datePicker"
-            type="date"
-            onChange={(e) => setEventDetails((prev) => ({ ...prev, date: e.target.value }))}
-          />
-        </label>
-
-        <label>
-          <input
-            className="eventTitle"
-            type="text"
-            placeholder="Location"
-            onChange={(e) => {
-              debouncedSearch(e.target.value);
-              setLocationSearchFocus(true);
-            }}
-          />
-          {locationSearchFocus &&
-            locations.map((location) => (
-              <button
-                key={location.id}
-                onClick={() => {
-                  setLocationSearchFocus(false);
-                  setEventDetails((prev) => ({ ...prev, location: location.name }));
-                }}
-              >
-                {location.name}
-              </button>
-            ))}
-        </label>
-
-        <label>
-          <textarea
-            className="descriptionInput"
-            placeholder="Event Description"
-            onChange={(e) => {
-              setEventDetails((prev) => ({ ...prev, description: e.target.value }));
-            }}
-            ref={textareaRef}
-          />
-          <p className="descrLimitCounter">{2000 - eventDetails.description.length}</p>
-        </label>
-
-        <div className="eventImgFormContainer">
-          <input
-            type="file"
-            accept="image/*"
-            id="file"
-            style={{ display: "none" }}
-            onChange={(e) => {
-              setEventDetails((prev) => ({ ...prev, coverImage: e.target.files[0] }));
-              setImagePreviewUrl(URL.createObjectURL(e.target.files[0]));
-            }}
-          />
-          <label htmlFor="file" className="iconContainer profileIconContainer">
-            <p style={{ color: "white" }}>Upload Image</p>
-            <img className="icon" src="chevron-up.svg" alt="An icon of an arrow pointing up" />
+        <form
+          className="eventForm"
+          onSubmit={(e) => {
+            createEvent(e);
+            setDisplayEventForm({ display: false, event: null });
+          }}
+        >
+          <label>
+            Title:
+            <input
+              className="eventInput"
+              type="text"
+              placeholder="Event Title"
+              onChange={(e) => {
+                setEventDetails((prev) => ({ ...prev, title: e.target.value }));
+              }}
+            />
           </label>
-          <button type="button" className="iconContainer profileIconContainer">
-            Set event image
-            <img className="icon" src="save.svg" alt="An icon of a save file" />
-          </button>
-        </div>
 
-        <button className="iconContainer eventBtn" type="submit">
-          Post event
-        </button>
-      </form>
+          <label>
+            Date:
+            <input
+              className="eventInput"
+              type="date"
+              onChange={(e) => setEventDetails((prev) => ({ ...prev, date: e.target.value }))}
+            />
+          </label>
+
+          <label>
+            Location:
+            <input
+              className="eventInput"
+              type="text"
+              placeholder="Location"
+              onChange={(e) => {
+                debouncedSearch(e.target.value);
+                setLocationSearchFocus(true);
+              }}
+            />
+            {locationSearchFocus &&
+              locations.map((location) => (
+                <button
+                  key={location.id}
+                  onClick={() => {
+                    setLocationSearchFocus(false);
+                    setEventDetails((prev) => ({ ...prev, location: location.name }));
+                  }}
+                >
+                  {location.name}
+                </button>
+              ))}
+          </label>
+
+          <label>
+            <textarea
+              className="descriptionInput"
+              placeholder="Event Description"
+              onChange={(e) => {
+                setEventDetails((prev) => ({ ...prev, description: e.target.value }));
+              }}
+              ref={textareaRef}
+            />
+            <p className="descrLimitCounter">{2000 - eventDetails.description.length}</p>
+          </label>
+
+          <div className="organiserSearchContainer">
+            <button
+              className="iconContainer profileIconContainer"
+              type="button"
+              onClick={() => {
+                setDimmed(true);
+                setDisplayUserListForm(true);
+              }}
+            >
+              Invite other organisers
+            </button>
+            {displayUserListForm && (
+              <UserListForm
+                setDimmed={setDimmed}
+                setDisplayUserListForm={setDisplayUserListForm}
+                callback={updateEventDetails}
+                args={[setEventDetails, loggedUser]}
+              />
+            )}
+          </div>
+
+          <div className="formBtnsContainer">
+            <input
+              type="file"
+              accept="image/*"
+              id="file"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                setEventDetails((prev) => ({ ...prev, coverImage: e.target.files[0] }));
+                setImagePreviewUrl(URL.createObjectURL(e.target.files[0]));
+              }}
+            />
+            <label htmlFor="file" className="iconContainer profileIconContainer">
+              <p style={{ color: "white" }}>Upload Event Image</p>
+              <img className="icon" src="chevron-up.svg" alt="An icon of an arrow pointing up" />
+            </label>
+
+            <div className="submitEventBtn">
+              <button className="iconContainer profileIconContainer" type="submit">
+                Post event
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

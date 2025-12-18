@@ -1,0 +1,76 @@
+.eventContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f9f4;
+}
+
+.scrollable {
+  overflow-y: scroll;
+  scrollbar-color: #5a7d5a #f4f9f4;
+}
+
+.eventDetailsContainer {
+  padding: 1vh 1vw 0 1vw;
+}
+
+.eventCoverContainer {
+  background-color: #d9e6d9;
+  border-bottom: 1px solid #5a7d5a;
+}
+
+.eventCover {
+  justify-self: center;
+}
+
+.eventHeader {
+  display: flex;
+  flex-direction: column;
+}
+
+.eventHeader > h2 {
+  border-bottom: 1px solid #5a7d5a;
+  margin-bottom: 1vh;
+}
+
+.orgContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding-bottom: 1vh;
+}
+
+.smallAvatar:hover {
+  cursor: pointer;
+}
+
+.eventBtnsContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.organiserBtnsContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.organiserBtnsContainer > .iconContainer.profileIconContainer {
+  max-height: fit-content;
+}
+
+.iconContainer.profileIconContainer.deletionBtn {
+  background-color: red;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.iconContainer.profileIconContainer.deletionBtn:hover {
+  background-color: #d32f2f;
+}
+
+.iconContainer.profileIconContainer.deletionBtn:active {
+  background-color: #b71c1c;
+  transform: scale(0.96);
+}
+
+.eventDescription {
+  margin: 1vh 0 1vh 0;
+}

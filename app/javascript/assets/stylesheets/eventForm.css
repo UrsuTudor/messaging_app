@@ -1,7 +1,6 @@
 .eventFormContainer {
   display: flex;
   flex-direction: column;
-  padding: 10px;
   background-color: #f4f9f4;
 }
 
@@ -9,32 +8,44 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 1vh 1vw 0 1vw;
+  border-top: 1px solid #5a7d5a;;
 }
 
-.eventTitle, .datePicker {
-    border: 1px solid #5a7d5a;
-    border-radius: 20px;
-    outline: none;
-    padding: 0 10px 0 10px
-}
-
-.datePicker {
+.eventInput {
+  border: 1px solid #5a7d5a;
+  border-radius: 20px;
+  outline: none;
+  padding: 0 10px 0 10px;
   margin-left: 10px;
   height: 30px;
 }
 
-.eventTitle:focus, .datePicker:hover {
+.eventInput:focus {
   border: 2px solid #5a7d5a;
   outline: none;
 }
 
-.eventForm > .eventBtn {
-  width: 50%;
-  margin: auto;
+.organiserSearchContainer {
   display: flex;
   justify-content: center;
+    width: 100%;
 }
 
-.eventPageTitle {
-  border-bottom: #5a7d5a 1px solid;
+.formBtnsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.submitEventBtn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 3vh 0 3vh 0;
+}
+
+.submitEventBtn > .iconContainer {
+  width: 50%;
+  justify-content: center;
 }
