@@ -188,7 +188,7 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
             </form>
           ) : (
             <div>
-              {description.content && <p className="description">{user[0]?.description}</p>}
+              {description.length > 0 && <p className="description">{user[0]?.description}</p>}
               {loggedUser[0].uuid == user[0]?.uuid && (
                 <button
                   className="iconContainer profileIconContainer"
@@ -249,6 +249,10 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
                 />
               ))}
         </div>
+
+        {eventListDisplay === "upcoming"
+          ? upcomingEvents.length == 0 && <p className="emptyEventListMsg">{user[0].name} is not participanting in any upcoming events. </p>
+          : pastEvents.length == 0 && <p className="emptyEventListMsg">{user[0].name} has not participated in any past events. </p>}
       </div>
     </div>
   );

@@ -71,6 +71,10 @@ nav {
   height: 8%
 }
 
+nav > :nth-child(4) {
+  margin-left: 5px;
+}
+
 nav > .userHeader {
   width: fit-content;
   background-color: #5a7d5a;
