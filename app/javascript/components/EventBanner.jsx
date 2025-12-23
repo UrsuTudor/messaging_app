@@ -22,7 +22,7 @@ export default function EventBanner({ event, setDisplayEvent, setProfile = () =>
 
   return (
     <div className="eventBanner" onClick={() => displayEvent()}>
-      <img src={event.cover_image_url} alt="Event cover image" />
+      <img src={event.cover_image_url ? event.cover_image_url : "forest.jpg"} alt="Event cover image" />
       <div className="bannerText">
         <h2>{event.title}</h2>
         <p className="eventDate">{event.date}</p>

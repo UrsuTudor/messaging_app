@@ -40,9 +40,3 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 end
-
-# take the group form and make it into a component; you are using taht same structure in groups chats, for organisers and for inviting organisers to events
-# fetch the elements in the parent component and send them over together with the method that the form needs to call
-
-# allow organisers to invite other organisers after the event has been created
-# allow organisers to promote a participant to an organiser

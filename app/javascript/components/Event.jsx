@@ -202,25 +202,7 @@ export default function Event({
             )}
           </div>
 
-          <p className="eventDescription">
-            {event.description} Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio vero ad
-            delectus sit et perspiciatis praesentium veniam vitae expedita, porro ut, consectetur nam
-            repellendus nesciunt rerum assumenda voluptatem obcaecati quibusdam! Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Fuga voluptas corrupti aspernatur illum voluptatem tempora. Commodi
-            atque laboriosam nostrum aspernatur nisi optio illo minima, libero quaerat porro hic fugit
-            eum?Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatem odio perspiciatis
-            recusandae nisi suscipit ducimus, aliquam, velit provident quod quam id consequatur! Error soluta
-            iusto quos sapiente, quae quam dolorum!Lorem Lorem ipsum dolor sit amet, consectetur adipisicing
-            elit. Ad atque mollitia nulla sint culpa molestias dolore totam obcaecati eum quis aperiam
-            repudiandae, eius dolor non tenetur accusamus? Molestiae, magni Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Corporis perspiciatis eos, placeat ad vitae architecto, in animi
-            voluptatibus, enim id dolore officia maiores facilis dolores deleniti non atque! Ab, libero?
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Modi eius neque veniam quas temporibus,
-            ab, necessitatibus asperiores quo deserunt debitis possimus ea voluptas culpa doloremque nobis at
-            eveniet recusandae reprehenderit. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Corporis vero nihil voluptas commodi deserunt cupiditate dolorum libero omnis amet pariatur,
-            explicabo suscipit dolores placeat mollitia fuga blanditiis tempore. Labore, doloribus.
-          </p>
+          <p className="eventDescription">{event.description}</p>
 
           {eventDetails.participants.map((part) => (
             <img
@@ -239,5 +221,3 @@ export default function Event({
     </div>
   );
 }
-
-

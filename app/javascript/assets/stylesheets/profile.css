@@ -2,7 +2,9 @@
   display: flex;
   flex-direction: column;
   background-color: #f4f9f4;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-color: #5a7d5a #f4f9f4;
 }
 
 .generalInfoContainer {
@@ -22,8 +24,12 @@ h1 {
   height: fit-content;
 }
 
-.imageContainer h1 {
+.generalInfoContainer h1 {
     color: black;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #5a7d5a;
+    margin-bottom: 1vh;
 }
 
 .profileImage {
@@ -40,7 +46,6 @@ h1 {
 .description {
   background-color: #d9e6d9;
   border-radius: 20px;
-  margin-top: 10px;
   padding: 10px;
   white-space: pre-wrap;
 }
@@ -112,4 +117,31 @@ div[data-section="description"] {
 .userEvents {
   display: flex;
   flex-direction: column;
+
+  margin-top: 5vh;
+}
+
+.userEvents h1 {
+  text-align: center;
+  color: black;
+}
+
+.eventListBtnsContainer {
+  display: flex;
+  width: 100%;
+}
+
+.eventListBtn.iconContainer {
+  display: flex;
+  justify-content: center;
+  border-radius: 0px;
+  width: 50%;
+}
+
+.eventListBtnsContainer + div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1vw;
+  justify-content: center;
+  padding: 2vh 0 2vh 0;
 }

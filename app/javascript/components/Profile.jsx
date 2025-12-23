@@ -19,15 +19,16 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
   let pastEvents = [];
   let upcomingEvents = [];
 
-  if(user[0].events) user[0].events.forEach((e) => {
-    const eventDate = new Date(e.date);
+  if (user[0].events)
+    user[0].events.forEach((e) => {
+      const eventDate = new Date(e.date);
 
-    if (today > eventDate) {
-      pastEvents.push(e);
-    } else {
-      upcomingEvents.push(e);
-    }
-  });
+      if (today > eventDate) {
+        pastEvents.push(e);
+      } else {
+        upcomingEvents.push(e);
+      }
+    });
 
   useEffect(() => {
     resizeTextArea();
@@ -111,8 +112,8 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
   return (
     <div className="userProfile">
       <div className="generalInfoContainer">
+        <h1 data-testid="profileUserName">{user[0]?.name}</h1>
         <div className="imageContainer">
-          <h1 data-testid="profileUserName">{user[0]?.name}</h1>
           <img
             className="profileImage"
             src={user[0]?.avatar ? user[0]?.avatar : "user_dark.svg"}
@@ -211,18 +212,43 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
         )}
       </div>
       <div className="userEvents">
+        <h1>{loggedUser[0].name}'s Events</h1>
         <div className="eventListBtnsContainer">
-          <button className="eventListBtn" onClick={() => setEventListDisplay("upcoming")}>
+          <button
+            className="eventListBtn iconContainer profileIconContainer"
+            onClick={() => setEventListDisplay("upcoming")}
+          >
             Upcoming
           </button>
-          <button className="eventListBtn" onClick={() => setEventListDisplay("old")}>
+          <button
+            className="eventListBtn iconContainer profileIconContainer"
+            onClick={() => setEventListDisplay("old")}
+          >
             Old
           </button>
         </div>
 
-        {eventListDisplay === "upcoming"
-          ? upcomingEvents.map((e) => <EventBanner key={e.id} event={e} setDisplayEvent={setDisplayEvent} setProfile={setProfile} hereFrom={"profile"}/>)
-          : pastEvents.map((e) => <EventBanner key={e.id} event={e} setDisplayEvent={setDisplayEvent} setProfile={setProfile} hereFrom={"profile"}/>)}
+        <div>
+          {eventListDisplay === "upcoming"
+            ? upcomingEvents.map((e) => (
+                <EventBanner
+                  key={e.id}
+                  event={e}
+                  setDisplayEvent={setDisplayEvent}
+                  setProfile={setProfile}
+                  hereFrom={"profile"}
+                />
+              ))
+            : pastEvents.map((e) => (
+                <EventBanner
+                  key={e.id}
+                  event={e}
+                  setDisplayEvent={setDisplayEvent}
+                  setProfile={setProfile}
+                  hereFrom={"profile"}
+                />
+              ))}
+        </div>
       </div>
     </div>
   );
