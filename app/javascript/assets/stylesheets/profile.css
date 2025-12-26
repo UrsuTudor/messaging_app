@@ -10,6 +10,28 @@
 .generalInfoContainer {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid #5a7d5a;
+}
+
+.profileHeader > .chatIconContainer {
+  background-color: #f4f9f4;
+}
+
+.profileHeader > .chatIconContainer:hover {
+  background-color: #e0f0e0; 
+  cursor: pointer;
+}
+
+.profileHeader > .chatIconContainer:active {
+  background-color: #cfe3cf;
+  transform: scale(0.96);
 }
 
 h1 {
@@ -25,11 +47,10 @@ h1 {
 }
 
 .generalInfoContainer h1 {
-    color: black;
-    width: 100%;
-    text-align: center;
-    border-bottom: 1px solid #5a7d5a;
-    margin-bottom: 1vh;
+  color: black;
+  text-align: center;
+  width: 100%;
+  padding-right: 40px;   /*to compensate for the 40px of the backbutton and keep it centered*/
 }
 
 .profileImage {
@@ -37,7 +58,7 @@ h1 {
   height: auto;
 }
 
-.descriptionContainer{
+.descriptionContainer {
   width: 60%;
   padding: 0 1vw 0 1vw;
   height: fit-content;
@@ -50,7 +71,7 @@ h1 {
   white-space: pre-wrap;
 }
 
-.descriptionInput{
+.descriptionInput {
   border: 1px solid #5a7d5a;
   border-radius: 20px;
   outline: none;
@@ -58,7 +79,7 @@ h1 {
   margin-top: 10px;
   overflow: hidden;
   resize: none;
-  width: 100%
+  width: 100%;
 }
 
 .descriptionInput:focus {
@@ -83,7 +104,7 @@ h1 {
 
 .iconContainer.profileIconContainer:disabled {
   cursor: default;
-  opacity: 0.5
+  opacity: 0.5;
 }
 
 .iconContainer.profileIconContainer:hover:not(:disabled) {

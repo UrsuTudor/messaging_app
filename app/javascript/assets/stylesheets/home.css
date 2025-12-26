@@ -90,6 +90,7 @@ nav > .userHeader:hover {
 
 nav > .userHeader:active {
   background-color: #4e7b50;
+  transform: scale(0.96);
 }
 
 nav > h1 {
@@ -118,6 +119,7 @@ nav > h1 {
 
 .iconContainer:active {
   background-color: #4e7b50;
+  transform: scale(0.96);
 }
 
 .mainBodyContainer {
@@ -136,6 +138,7 @@ nav > h1 {
 /* general rules needed in the child components */
 .smallAvatar {
   height: 45px;
+  width: 45px;
   border-radius: 20px;
   margin-bottom: auto;
   background-color: #d9e6d9;
@@ -152,7 +155,7 @@ nav > h1 {
 .userContainer {
   background-color: #f4f9f4;
   border: none;
-  border-bottom: #464b37 1px solid; 
+  border-bottom: #5a7d5a 1px solid; 
   height: 6vh;
 }
 

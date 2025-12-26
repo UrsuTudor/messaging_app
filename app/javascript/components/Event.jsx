@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
+import SearchBar from "./SearchBar";
 import UserListForm from "./UserListForm";
-import { updateEventDetails } from "../assets/helpers";
 import { sendOrganiserInvites } from "../assets/helpers";
 import "../assets/stylesheets/event.css";
 
@@ -16,6 +17,9 @@ export default function Event({
 }) {
   const [eventDetails, setEventDetails] = useState(event);
   const [displayUserListForm, setDisplayUserListForm] = useState(false);
+  const [displayParticipantList, setDisplayParticipantList] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [feedback, setFeedback] = useState(null);
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
   async function joinEvent() {
@@ -42,6 +46,13 @@ export default function Event({
   }
 
   async function leaveEvent() {
+    if (event.organisers.length == 1) {
+      setFeedback(
+        "You are the only organiser of this event. Please use the 'Delete' button if you wish to delete the event."
+      );
+      return
+    }
+
     try {
       const res = await fetch(`/api/v1/events/leave_event`, {
         method: "DELETE",
@@ -119,7 +130,11 @@ export default function Event({
 
       <div className="scrollable">
         <div className="eventCoverContainer">
-          <img className="eventCover" src={event.cover_image_url} alt="" />
+          <img
+            className="eventCover"
+            src={event.cover_image_url ? event.cover_image_url : "forest.jpg"}
+            alt=""
+          />
         </div>
 
         <div className="eventDetailsContainer">
@@ -138,7 +153,7 @@ export default function Event({
                   alt={org[0].name + "'s profile picture"}
                   onClick={() => {
                     setDisplayEvent({ display: false, event: null });
-                    setProfile({ display: true, user: org });
+                    setProfile({ display: true, user: org, hereFrom: "event" });
                   }}
                 />
               ))}
@@ -202,22 +217,85 @@ export default function Event({
             )}
           </div>
 
+          {feedback && (
+            <p className="feedbackMsg" data-testid={"feedback"}>
+              {feedback}
+            </p>
+          )}
+
           <p className="eventDescription">{event.description}</p>
 
-          {eventDetails.participants.map((part) => (
-            <img
-              key={part[0].uuid}
-              className="smallAvatar"
-              src={part[0].avatar ? part[0].avatar : "user_dark.svg"}
-              alt={part[0].name + "'s profile picture"}
+          <div className="participantContainer">
+            <h3>Participants:</h3>
+            {eventDetails.participants.slice(0, 3).map((part) => (
+              <img
+                key={part[0].uuid}
+                className="smallAvatar"
+                src={part[0].avatar ? part[0].avatar : "user_dark.svg"}
+                alt={part[0].name + "'s profile picture"}
+                onClick={() => {
+                  setDisplayEvent({ display: false, event: null });
+                  setProfile({ display: true, user: part, hereFrom: "event" });
+                }}
+              />
+            ))}
+            {eventDetails.participants.length > 4 && <p>...and {event.participants.length} others!</p>}
+            <button
+              className="iconContainer profileIconContainer"
+              type="button"
               onClick={() => {
-                setDisplayEvent({ display: false, event: null });
-                setProfile({ display: true, user: part });
+                setDimmed(true);
+                setDisplayParticipantList(true);
               }}
-            />
-          ))}
+            >
+              See Full List
+            </button>
+
+            {displayParticipantList &&
+              createPortal(
+                <div className="groupForm">
+                  <div className="listHeader">
+                    <SearchBar adaptable={false} setSearchTerm={setSearchTerm} />
+                    <img
+                      className="chatIconContainer edgeBtn"
+                      src="xmark.svg"
+                      alt="Close group form"
+                      onClick={() => {
+                        setDisplayParticipantList(false);
+                        setDimmed(false);
+                      }}
+                    />
+                  </div>
+                  {eventDetails.participants
+                    .filter((part) => part[0].name.includes(searchTerm))
+                    .map((part) => (
+                      <button
+                        type="button"
+                        key={part[0].uuid}
+                        className="userContainer"
+                        onClick={() => {
+                          setDimmed(false);
+                          setProfile({ display: true, user: part, hereFrom: "event" });
+                        }}
+                        data-testid="groupFormUserBtn"
+                      >
+                        <div className="userHeader">
+                          <img
+                            className="smallAvatar"
+                            src={part[0].avatar ? part[0].avatar : "user_dark.svg"}
+                            alt={part[0].name + "'s profile picture"}
+                          />
+                          <h4 className="userName">{part[0].name}</h4>
+                        </div>
+                      </button>
+                    ))}
+                </div>,
+                document.body
+              )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+

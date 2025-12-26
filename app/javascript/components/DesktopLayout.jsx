@@ -54,6 +54,7 @@ export default function DesktopLayout({
             getLoggedUser={getLoggedUser}
             setDisplayEvent={setDisplayEvent}
             setProfile={setProfile}
+            hereFrom={profile["hereFrom"]}
           />
         ) : displayChat["chat"] ? (
           <Chat

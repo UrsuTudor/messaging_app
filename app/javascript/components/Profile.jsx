@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "../assets/stylesheets/profile.css";
 import EventBanner from "./EventBanner";
 
-export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEvent, setProfile }) {
+export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEvent, setProfile, hereFrom }) {
   const [renderDescriptionForm, setRenderDescriptionForm] = useState(false);
   const [description, setDescription] = useState({
     content: user[0]?.description,
@@ -112,7 +112,21 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
   return (
     <div className="userProfile">
       <div className="generalInfoContainer">
-        <h1 data-testid="profileUserName">{user[0]?.name}</h1>
+        <div className="profileHeader">
+          <div
+            className="chatIconContainer"
+            onClick={() => {
+              setProfile({ display: false, user: null });
+              hereFrom == "event"
+                ? setDisplayEvent((prev) => ({ ...prev, display: true }))
+                : setProfile((prev) => ({ ...prev, display: false }));
+            }}
+            data-testid="chatBackArrow"
+          >
+            <img className="icon" src="green-arrow-left.svg" />
+          </div>
+          <h1 data-testid="profileUserName">{user[0]?.name}</h1>
+        </div>
         <div className="imageContainer">
           <img
             className="profileImage"
@@ -251,8 +265,14 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
         </div>
 
         {eventListDisplay === "upcoming"
-          ? upcomingEvents.length == 0 && <p className="emptyEventListMsg">{user[0].name} is not participanting in any upcoming events. </p>
-          : pastEvents.length == 0 && <p className="emptyEventListMsg">{user[0].name} has not participated in any past events. </p>}
+          ? upcomingEvents.length == 0 && (
+              <p className="emptyEventListMsg">
+                {user[0].name} is not participanting in any upcoming events.{" "}
+              </p>
+            )
+          : pastEvents.length == 0 && (
+              <p className="emptyEventListMsg">{user[0].name} has not participated in any past events. </p>
+            )}
       </div>
     </div>
   );

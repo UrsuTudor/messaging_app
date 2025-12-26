@@ -214,7 +214,7 @@ export default function EventForm({
               }}
               ref={textareaRef}
             />
-            <p className="descrLimitCounter">{2000 - eventDetails.description.length}</p>
+            <p className="descrLimitCounter">{2000 - eventDetails.description?.length}</p>
           </label>
 
           <div className="organiserSearchContainer">
