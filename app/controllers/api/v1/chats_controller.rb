@@ -45,7 +45,13 @@ def update
 
   return head :forbidden unless chat.users.include?(current_user)
 
-  if chat.update(name: chat_params[:name])
+  new_users = find_receivers(chat_params[:receiver_uuids]) if chat_params[:receiver_uuids]
+
+  attrs = {}
+  attrs[:name] = chat_params[:name] if chat_params[:name].present?
+  attrs[:users] = (chat.users + new_users).uniq if new_users
+
+  if chat.update(attrs)
     render json: "update successful"
   else
     render json: { errors: chat.errors.full_messages }, status: :unprocessable_entity

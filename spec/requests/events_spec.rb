@@ -55,7 +55,7 @@ RSpec.describe "Event", type: :request do
       expect(event["title"]).to match("Bear Event")
       expect(event["description"]).to match("Cool bear event")
       expect(json_date.to_i).to eq(datetime.to_i)
-      expect(event["organisers"][0]["uuid"]).to match(user1.uuid)
+      expect(event["organisers"][0][0]["uuid"]).to match(user1.uuid)
     end
 
     it "doesn't create an event when the title is missing" do

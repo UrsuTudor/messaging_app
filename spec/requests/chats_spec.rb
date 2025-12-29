@@ -1,10 +1,14 @@
+require 'rails_helper'
+
 describe "ChatsController", type: :request do
   include ChatFinder
+
+  let(:current_user) { create(:user, email: "current@mail.com") }
 
   before do
     allow_any_instance_of(Api::V1::ChatsController)
       .to receive(:current_user)
-      .and_return(create(:user))
+      .and_return(current_user)
   end
 
   it "doesn't create a chat if receiver uuid is missing" do
@@ -13,6 +17,7 @@ describe "ChatsController", type: :request do
   end
 
   it "creates a chat if it doesn't exist already" do
+    # manually creating a user because the user factory would automatically create a chat too
     receiver = User.create(name: "test", email: "test@mail.com", password: "123123")
 
     expect {
@@ -23,7 +28,7 @@ describe "ChatsController", type: :request do
   end
 
   it "finds chat if it already exists and returns messages" do
-    receiver = User.create(name: "test", email: "test@mail.com", password: "123123")
+    receiver = create(:user, email: "test@mail.com")
 
     # creating a chat and assigning messages to it for verification
     post "/api/v1/chats/open", params: { chat: { receiver_uuids: [ receiver.uuid ] } }
@@ -39,9 +44,9 @@ describe "ChatsController", type: :request do
   end
 
   it "creates a group chat if multiple receivers are provided" do
-    receiver1 = User.create(name: "test", email: "test@mail.com", password: "123123")
-    receiver2 = User.create(name: "test", email: "test2@mail.com", password: "123123")
-    receiver3 = User.create(name: "test", email: "test3@mail.com", password: "123123")
+    receiver1 = create(:user, email: "test@mail.com")
+    receiver2 = create(:user, email: "test2@mail.com")
+    receiver3 = create(:user, email: "test3@mail.com")
 
     expect {
       post "/api/v1/chats/open", params: { chat: { receiver_uuids: [ receiver1.uuid, receiver2.uuid, receiver3.uuid ] } }
@@ -53,5 +58,30 @@ describe "ChatsController", type: :request do
     expect(newly_created_chat.users.second.uuid).to match(receiver1.uuid)
     expect(newly_created_chat.users.third.uuid).to match(receiver2.uuid)
     expect(newly_created_chat.users.fourth.uuid).to match(receiver3.uuid)
+  end
+
+  it "updates the chat's name" do
+    receiver = create(:user, email: "test@mail.com")
+
+    chat = create(:chat, users: [ current_user, receiver ])
+
+    post "/api/v1/chats/update", params: { chat: { chat_id: chat.id, name: "Test Name" } }
+
+    updated_chat = Chat.find(chat.id)
+    expect(updated_chat.name).to match("Test Name")
+  end
+
+  it "adds users to a chat" do
+    receiver = create(:user, email: "test@mail.com")
+
+    chat = create(:chat, users: [ current_user, receiver ])
+    expect(chat.users.count).to be(2)
+
+    new_user = create(:user, email: "test2@mail.com")
+
+    post "/api/v1/chats/update", params: { chat: { chat_id: chat.id, receiver_uuids: [ new_user.uuid ] } }
+
+    updated_chat = Chat.find(chat.id)
+    expect(updated_chat.users.count).to be(3)
   end
 end
