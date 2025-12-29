@@ -93,7 +93,7 @@ export default function DesktopLayout({
           />
         )}
 
-        <UserList setReceiver={setReceiver} setProfile={setProfile} />
+        <UserList setReceiver={setReceiver} setProfile={setProfile} setDisplayChat={setDisplayChat} />
       </div>
     </div>
   );

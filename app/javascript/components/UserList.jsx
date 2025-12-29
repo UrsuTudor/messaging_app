@@ -88,6 +88,8 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
 
               if (isMobile) {
                 setDisplayChat({ chat: true, chatList: false });
+              } else {
+                setDisplayChat({ chat: true, chatList: true });
               }
             }}
             onMouseEnter={() => {
