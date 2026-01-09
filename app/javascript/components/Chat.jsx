@@ -6,7 +6,6 @@ import useScrolling from "../assets/hooks/useScrolling";
 import { updateListEndMessage, updatePagination } from "../assets/helpers";
 import consumer from "../channels/consumer";
 import UserListForm from "./UserListForm";
-import { set } from "lodash";
 
 export default function Chat({
   receiver,
@@ -257,6 +256,31 @@ export default function Chat({
     return () => ref.removeEventListener("scroll", handleScroll);
   }, []);
 
+  async function leaveChat(e) {
+    e.preventDefault();
+
+    try {
+      const res = await fetch(`/api/v1/chats/leave`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({ chat_membership: { chat_id: chat.chat_id } }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to leave the chat.");
+      }
+
+      setDisplayChat({ chat: false, chatList: true });
+      setChatList((prev) => prev.filter((chat) => chat[0].name != chat.name))
+
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
   return (
     <div className="chatContainer" data-testid="chatContainer">
       {receiver[0] && (
@@ -332,10 +356,12 @@ export default function Chat({
                 <img className="icon" src="page.svg" />
                 <p>Members</p>
               </button>
-              <button className="iconContainer" onClick={() => console.log("placeholder")}>
-                <img className="icon" src="walking.svg" />
-                <p>Leave</p>
-              </button>
+              {receiver.length > 1 && (
+                <button className="iconContainer" onClick={(e) => leaveChat(e)}>
+                  <img className="icon" src="walking.svg" />
+                  <p>Leave</p>
+                </button>
+              )}
             </div>
           )}
           {displayUserListForm && (
