@@ -40,23 +40,23 @@ class Api::V1::ChatsController < ApplicationController
     membership&.update(read: true)
   end
 
-def update
-  chat = Chat.find(chat_params[:chat_id])
+  def update
+    chat = Chat.find(chat_params[:chat_id])
 
-  return head :forbidden unless chat.users.include?(current_user)
+    return head :forbidden unless chat.users.include?(current_user)
 
-  new_users = find_receivers(chat_params[:receiver_uuids]) if chat_params[:receiver_uuids]
+    new_users = find_receivers(chat_params[:receiver_uuids]) if chat_params[:receiver_uuids]
 
-  attrs = {}
-  attrs[:name] = chat_params[:name] if chat_params[:name].present?
-  attrs[:users] = (chat.users + new_users).uniq if new_users
+    attrs = {}
+    attrs[:name] = chat_params[:name] if chat_params[:name].present?
+    attrs[:users] = (chat.users + new_users).uniq if new_users
 
-  if chat.update(attrs)
-    render json: "update successful"
-  else
-    render json: { errors: chat.errors.full_messages }, status: :unprocessable_entity
+    if chat.update(attrs)
+      render json: "update successful"
+    else
+      render json: { errors: chat.errors.full_messages }, status: :unprocessable_entity
+    end
   end
-end
 
   private
 

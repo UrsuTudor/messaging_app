@@ -15,7 +15,7 @@ describe "UsersController", type: :request do
       params: { user: { email: "test@mail.com", password: "123" } },
       headers: { "ACCEPT" => "application/json" }
 
-    expect(response).to have_http_status(:unprocessable_content)
+    expect(response).to have_http_status(:not_acceptable)
   end
 
   it "assigns a uuid when the user is created" do

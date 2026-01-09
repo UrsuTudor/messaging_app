@@ -6,7 +6,7 @@ describe "ChatsController", type: :request do
   let(:current_user) { create(:user, email: "current@mail.com") }
 
   before do
-    allow_any_instance_of(Api::V1::ChatsController)
+    allow_any_instance_of(ApplicationController)
       .to receive(:current_user)
       .and_return(current_user)
   end

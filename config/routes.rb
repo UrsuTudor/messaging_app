@@ -8,6 +8,8 @@ Rails.application.routes.draw do
       post "chats/update_read", to: "chats#update_read_status"
       post "chats/update", to: "chats#update"
 
+      delete "chats/leave", to: "chat_memberships#destroy"
+
       post "messages/send", to: "messages#create"
 
       get "users/list", to: "users#index"

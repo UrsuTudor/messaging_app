@@ -10,7 +10,7 @@ export default function UserListForm({
   setPagination = null,
   callback,
   args = [],
-  filter,
+  filter = [],
 }) {
   const [chats, setChats] = useState([]);
   const [userList, setUserList] = useState([]);
