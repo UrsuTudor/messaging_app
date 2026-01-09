@@ -5,8 +5,19 @@ import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { updateListEndMessage, updatePagination } from "../assets/helpers";
 import consumer from "../channels/consumer";
+import UserListForm from "./UserListForm";
+import { set } from "lodash";
 
-export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat, chatList, setChatList }) {
+export default function Chat({
+  receiver,
+  setReceiver,
+  loggedUser,
+  setProfile,
+  setDisplayChat,
+  chatList,
+  setChatList,
+  setDimmed,
+}) {
   const [chat, setChat] = useState({
     chat_id: receiver[0]?.chat_id || null,
     messages: [],
@@ -16,6 +27,8 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
   const [scrollTop, setScrollTop] = useScrolling();
   const [pagination, setPagination] = usePagination();
   const [displayChatNameForm, setDisplayChatNameForm] = useState(false);
+  const [displayUserListForm, setDisplayUserListForm] = useState(false);
+  const [displayMenu, setDisplayMenu] = useState(false);
   const chatRef = useRef(null);
   const subscriptionRef = useRef(null);
   const throttle = useThrottle();
@@ -196,6 +209,32 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
     }
   }
 
+  async function addUsers(e, users) {
+    e.preventDefault()
+    const user_uuids = users.map((u) => u[0].uuid)
+
+    try {
+      const res = await fetch("/api/v1/chats/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({
+          chat: { chat_id: chat.chat_id, receiver_uuids: user_uuids },
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`The users could not be added.`);
+      }
+
+      setReceiver((prev) => [...prev, ...users.flat()])
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
   function displayProfile() {
     if (receiver.length == 1) setProfile({ display: true, user: receiver });
 
@@ -222,16 +261,15 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
     <div className="chatContainer" data-testid="chatContainer">
       {receiver[0] && (
         <div className="userHeader">
-            <div
-              className="chatIconContainer"
-              onClick={() => {
-                setDisplayChat({ chat: false, chatList: true });
-              }}
-              data-testid="chatBackArrow"
-            >
-              <img className="icon" src="arrow-left.svg" />
-            </div>
-
+          <div
+            className="chatIconContainer"
+            onClick={() => {
+              setDisplayChat({ chat: false, chatList: true });
+            }}
+            data-testid="chatBackArrow"
+          >
+            <img className="icon" src="arrow-left.svg" />
+          </div>
           <div className="userHeaderPortal" data-testid="userChatHeader">
             <img
               className="bigAvatar"
@@ -263,14 +301,38 @@ export default function Chat({ receiver, loggedUser, setProfile, setDisplayChat,
                 <img
                   className="chatIconContainer "
                   src="edit-3.svg"
-                  alt="An icon of a pencil representing the button to edit the group's name."
+                  alt="Edit icon"
                   onClick={() => setDisplayChatNameForm(true)}
                 />
               </>
             )}
           </div>
+          <div
+            className="chatIconContainer"
+            onClick={() => {
+              setDisplayMenu(true);
+            }}
+          >
+            <img className="icon" src="menu.svg" />
+          </div>
+          {displayMenu && (
+            <div className="menu">
+              <button onClick={() => setDisplayUserListForm(true)}>Add User</button>
+              <button onClick={() => console.log("placeholder")}>Leave Chat</button>
+            </div>
+          )}
+          {displayUserListForm && (
+            <UserListForm
+              setDimmed={setDimmed}
+              setDisplayUserListForm={setDisplayUserListForm}
+              setPagination={setPagination}
+              callback={addUsers}
+              filter={receiver}
+            />
+          )}
         </div>
       )}
+
       <div ref={chatRef} className="msgContainer" data-testid="msgList">
         {chat.messages &&
           chat.messages.map((message, i) => {

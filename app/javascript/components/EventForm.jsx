@@ -221,10 +221,7 @@ export default function EventForm({
             <button
               className="iconContainer profileIconContainer"
               type="button"
-              onClick={() => {
-                setDimmed(true);
-                setDisplayUserListForm(true);
-              }}
+              onClick={() => setDisplayUserListForm(true)}
             >
               Invite other organisers
             </button>

@@ -134,10 +134,7 @@ export default function ChatList({
           className="chatIconContainer"
           src="group.svg"
           alt="Create a group"
-          onClick={() => {
-            setDisplayUserListForm(true);
-            setDimmed(true);
-          }}
+          onClick={() => setDisplayUserListForm(true)}
         />
         {displayUserListForm && (
           <UserListForm

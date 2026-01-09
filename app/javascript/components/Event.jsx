@@ -50,7 +50,7 @@ export default function Event({
       setFeedback(
         "You are the only organiser of this event. Please use the 'Delete' button if you wish to delete the event."
       );
-      return
+      return;
     }
 
     try {
@@ -166,10 +166,7 @@ export default function Event({
                 <button
                   className="iconContainer profileIconContainer"
                   type="button"
-                  onClick={() => {
-                    setDimmed(true);
-                    setDisplayUserListForm(true);
-                  }}
+                  onClick={() => setDisplayUserListForm(true)}
                 >
                   Invite other organisers
                 </button>
@@ -298,4 +295,3 @@ export default function Event({
     </div>
   );
 }
-

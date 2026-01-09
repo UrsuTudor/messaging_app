@@ -34,7 +34,7 @@ class Api::V1::UsersController < ApplicationController
     users_with_chat_array = users.filter_map do |chat|
       next if chat.users.count > 2
 
-      receivers = filter_users(chat, search_term)
+      receivers = filter_users(chat, search_term, params[:filters])
       next unless receivers.any?
 
       data_of_receivers = []
@@ -133,9 +133,11 @@ class Api::V1::UsersController < ApplicationController
     }
   end
 
-  def filter_users(chat, search_term)
+  def filter_users(chat, search_term, uuids_to_filter = [])
+    uuids_to_filter << current_user.uuid
+
     chat.users.select do |user|
-      user.uuid != current_user.uuid &&
+      uuids_to_filter.exclude?(user.uuid) &&
         (user.name.downcase.include?(search_term) ||
         chat.name&.downcase&.include?(search_term))
     end

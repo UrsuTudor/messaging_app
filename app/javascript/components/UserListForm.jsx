@@ -9,15 +9,26 @@ export default function UserListForm({
   setDisplayUserListForm,
   setPagination = null,
   callback,
-  args,
+  args = [],
+  filter,
 }) {
   const [chats, setChats] = useState([]);
   const [userList, setUserList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
+    setDimmed(true);
+  }, []);
+
+  useEffect(() => {
     setChats([]);
-    setNewElements(`/api/v1/users/group?search=${searchTerm}`, "chat_users", setChats);
+    const uuids = filter.map((f) => f.uuid);
+
+    setNewElements(
+      `/api/v1/users/group?search=${searchTerm}&filters[]=${uuids.join("&filters[]=")}`,
+      "chat_users",
+      setChats
+    );
   }, [searchTerm]);
 
   return (
@@ -32,11 +43,7 @@ export default function UserListForm({
           }}
         >
           <div className="listHeader">
-            <SearchBar
-              setPagination={setPagination}
-              adaptable={false}
-              setSearchTerm={setSearchTerm}
-            />
+            <SearchBar setPagination={setPagination} adaptable={false} setSearchTerm={setSearchTerm} />
             <button
               type="submit"
               disabled={!userList[0]}
@@ -44,7 +51,7 @@ export default function UserListForm({
                 userList[0] ? "iconContainer groupSubmitBtn visible" : "iconContainer groupSubmitBtn hidden"
               }
             >
-              Create
+              Submit
             </button>
             <img
               className="chatIconContainer edgeBtn"
@@ -74,6 +81,7 @@ export default function UserListForm({
               </button>
             ))}
           </div>
+
           {chats.map((user) => (
             <button
               type="button"

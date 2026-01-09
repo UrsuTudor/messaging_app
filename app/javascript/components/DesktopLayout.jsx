@@ -59,11 +59,13 @@ export default function DesktopLayout({
         ) : displayChat["chat"] ? (
           <Chat
             receiver={receiver}
+            setReceiver={setReceiver}
             loggedUser={loggedUser}
             setProfile={setProfile}
             chatList={chatList}
             setChatList={setChatList}
             setDisplayChat={setDisplayChat}
+            setDimmed={setDimmed}
           />
         ) : displayEvent["display"] ? (
           <Event
