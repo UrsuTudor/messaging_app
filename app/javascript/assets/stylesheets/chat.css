@@ -5,9 +5,11 @@
 }
 
 .chatContainer > .userHeader {
+  position: relative;
   background-color: #5a7d5a;
-  padding: 1vh;
+  padding: 0.5vh 1vw 0.5vh 1vw;
   border-bottom: #5a7d5a 1px solid;
+  overflow: visible;
 }
 
 .msgContainer {
@@ -21,7 +23,7 @@
   height: 100%;
   padding: 10px;
 
-  background-color: #f4f9f4;  
+  background-color: #f4f9f4;
 }
 
 .messageForm {
@@ -67,12 +69,12 @@
   border-radius: 50px;
 }
 
-.messageContent{
+.messageContent {
   display: flex;
   gap: 0.5vw;
   align-items: center;
   width: fit-content;
-  padding: 0 10px 0 0 ;
+  padding: 0 10px 0 0;
 
   background-color: #d9e6d9;
   border-radius: 50px;
@@ -116,6 +118,29 @@
 .unreadIcon {
   margin-left: auto;
   padding-right: 10px;
+}
+
+.menu {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  right: 0;
+  gap: 0.5vh;
+  top: 100%;
+  margin-top: 1px;
+  background-color: #d9e6d9;
+}
+
+.menu > .iconContainer {
+  border-radius: 0;
+}
+
+.menu > .iconContainer > .icon {
+  margin: 0
+}
+
+.menu > .iconContainer > .icon + .icon{
+  margin-left: -30px;
 }
 
 @media (max-width: 700px) {

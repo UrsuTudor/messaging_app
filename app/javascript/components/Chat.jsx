@@ -210,8 +210,8 @@ export default function Chat({
   }
 
   async function addUsers(e, users) {
-    e.preventDefault()
-    const user_uuids = users.map((u) => u[0].uuid)
+    e.preventDefault();
+    const user_uuids = users.map((u) => u[0].uuid);
 
     try {
       const res = await fetch("/api/v1/chats/update", {
@@ -229,7 +229,7 @@ export default function Chat({
         throw new Error(`The users could not be added.`);
       }
 
-      setReceiver((prev) => [...prev, ...users.flat()])
+      setReceiver((prev) => [...prev, ...users.flat()]);
     } catch (error) {
       console.error(error.message);
     }
@@ -310,15 +310,32 @@ export default function Chat({
           <div
             className="chatIconContainer"
             onClick={() => {
-              setDisplayMenu(true);
+              setDisplayMenu(!displayMenu);
             }}
           >
             <img className="icon" src="menu.svg" />
           </div>
           {displayMenu && (
             <div className="menu">
-              <button onClick={() => setDisplayUserListForm(true)}>Add User</button>
-              <button onClick={() => console.log("placeholder")}>Leave Chat</button>
+              <button
+                className="iconContainer"
+                onClick={() => {
+                  setDisplayMenu(false);
+                  setDisplayUserListForm(true);
+                }}
+              >
+                <img className="icon" src="trekking.svg" />
+                <img className="icon" src="trekking.svg" />
+                <p>Add User</p>
+              </button>
+              <button className="iconContainer" onClick={() => console.log("placeholder")}>
+                <img className="icon" src="page.svg" />
+                <p>Members</p>
+              </button>
+              <button className="iconContainer" onClick={() => console.log("placeholder")}>
+                <img className="icon" src="walking.svg" />
+                <p>Leave</p>
+              </button>
             </div>
           )}
           {displayUserListForm && (
