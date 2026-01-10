@@ -104,7 +104,7 @@
 
 .userHeaderPortal {
   display: flex;
-  width: 100%;
+  max-width: 85%;
   gap: 1vw;
   align-items: center;
   padding-right: 20px;
@@ -118,6 +118,10 @@
 .unreadIcon {
   margin-left: auto;
   padding-right: 10px;
+}
+
+.menuBtn {
+  margin-left: auto;
 }
 
 .menu {
@@ -141,6 +145,15 @@
 
 .menu > .iconContainer > .icon + .icon{
   margin-left: -30px;
+}
+
+.menu.memberList {
+  width: 50%;
+  border-bottom: #5a7d5a 1px solid;
+}
+
+.memberList > .userListContainer {
+  max-height: 50vh;
 }
 
 @media (max-width: 700px) {

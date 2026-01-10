@@ -6,6 +6,7 @@ import useScrolling from "../assets/hooks/useScrolling";
 import { updateListEndMessage, updatePagination } from "../assets/helpers";
 import consumer from "../channels/consumer";
 import UserListForm from "./UserListForm";
+import UserList from "./UserList";
 
 export default function Chat({
   receiver,
@@ -28,6 +29,7 @@ export default function Chat({
   const [displayChatNameForm, setDisplayChatNameForm] = useState(false);
   const [displayUserListForm, setDisplayUserListForm] = useState(false);
   const [displayMenu, setDisplayMenu] = useState(false);
+  const [displayMemberList, setDisplayMemberList] = useState(false);
   const chatRef = useRef(null);
   const subscriptionRef = useRef(null);
   const throttle = useThrottle();
@@ -58,6 +60,8 @@ export default function Chat({
     setPagination((prev) => ({ ...prev, page: 1 }));
     setChat({ chat_id: receiver[0]?.chat_id, messages: [] });
     setDisplayChatNameForm(false);
+    setDisplayMenu(false)
+    setDisplayMemberList(false)
     if (pagination.page > 1) getChat(1);
   }, [receiver]);
 
@@ -274,8 +278,7 @@ export default function Chat({
       }
 
       setDisplayChat({ chat: false, chatList: true });
-      setChatList((prev) => prev.filter((chat) => chat[0].name != chat.name))
-
+      setChatList((prev) => prev.filter((chat) => chat[0].name != chat.name));
     } catch (error) {
       console.error(error.message);
     }
@@ -332,9 +335,14 @@ export default function Chat({
             )}
           </div>
           <div
-            className="chatIconContainer"
+            className="chatIconContainer menuBtn"
             onClick={() => {
-              setDisplayMenu(!displayMenu);
+              setDisplayMenu(!displayMenu)
+
+              if(displayMemberList) {
+                setDisplayMenu(false)
+                setDisplayMemberList(false)
+              }
             }}
           >
             <img className="icon" src="menu.svg" />
@@ -352,9 +360,15 @@ export default function Chat({
                 <img className="icon" src="trekking.svg" />
                 <p>Add User</p>
               </button>
-              <button className="iconContainer" onClick={() => console.log("placeholder")}>
+              <button
+                className="iconContainer"
+                onClick={() => {
+                  setDisplayMemberList(true);
+                  setDisplayMenu(false);
+                }}
+              >
                 <img className="icon" src="page.svg" />
-                <p>Members</p>
+                <p>Members{'(' + (receiver.length + 1) + ')'}</p>
               </button>
               {receiver.length > 1 && (
                 <button className="iconContainer" onClick={(e) => leaveChat(e)}>
@@ -372,6 +386,16 @@ export default function Chat({
               callback={addUsers}
               filter={receiver}
             />
+          )}
+          {displayMemberList && (
+            <div className="menu memberList">
+              <UserList
+                setReceiver={setReceiver}
+                setProfile={() => null}
+                setDisplayChat={setDisplayChat}
+                listToShow={[...receiver, ...loggedUser]}
+              />
+            </div>
           )}
         </div>
       )}

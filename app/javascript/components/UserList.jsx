@@ -6,8 +6,8 @@ import useScrolling from "../assets/hooks/useScrolling";
 import { setNewElements, updateListEndMessage, updateScrollBottom, handleResize } from "../assets/helpers";
 import SearchBar from "./SearchBar";
 
-export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
-  const [userList, setUserList] = useState([]);
+export default function UserList({ setReceiver, setProfile, setDisplayChat, listToShow = [] }) {
+  const [userList, setUserList] = useState(listToShow);
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,6 +17,8 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
   const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
+    if (listToShow[0]) return;
+
     if (pagination.page > pagination.pages) {
       updateListEndMessage(setPagination);
       return;
@@ -56,18 +58,21 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat }) {
 
   return (
     <div className={isMobile ? "userListContainer mobileList" : "userListContainer"}>
-      <div className="listHeader">
-        <h1> Users</h1>
-        <SearchBar
-          route={`/api/v1/users/list?page=1`}
-          dataKey={"users"}
-          setPagination={setPagination}
-          listSetter={setUserList}
-          setSearchTerm={setSearchTerm}
-          displaySearchBar={displaySearchBar}
-          setDisplaySearchBar={setDisplaySearchBar}
-        />
-      </div>
+      {/* for now, if I'm giving a set list to UserList, I don't want it to be searchable */}
+      {!listToShow[0] && (
+        <div className="listHeader">
+          <h1> Users</h1>
+          <SearchBar
+            route={`/api/v1/users/list?page=1`}
+            dataKey={"users"}
+            setPagination={setPagination}
+            listSetter={setUserList}
+            setSearchTerm={setSearchTerm}
+            displaySearchBar={displaySearchBar}
+            setDisplaySearchBar={setDisplaySearchBar}
+          />
+        </div>
+      )}
 
       <div className="userList" ref={userListRef} data-testid="userList">
         {userList.map((user) => (

@@ -130,7 +130,7 @@ class Api::V1::EventsController < ApplicationController
     } ]
   end
 
-   def event_data(e)
+  def event_data(e)
     {
       id: e.id,
       title: e.title,
