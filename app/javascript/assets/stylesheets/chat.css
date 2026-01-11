@@ -131,7 +131,6 @@
   right: 0;
   gap: 0.5vh;
   top: 100%;
-  margin-top: 1px;
   background-color: #d9e6d9;
 }
 
@@ -153,7 +152,13 @@
 }
 
 .memberList > .userListContainer {
-  max-height: 50vh;
+  position: absolute;
+  padding: 0;
+  right: 0;
+}
+
+.memberList > .userListContainer > .userList {
+  right: 0;
 }
 
 @media (max-width: 700px) {
