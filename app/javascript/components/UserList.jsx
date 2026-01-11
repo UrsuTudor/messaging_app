@@ -17,7 +17,7 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat, list
   const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
-    if (listToShow[0]) return;
+    if (listToShow[0] || !searchTerm[0]) return;
 
     if (pagination.page > pagination.pages) {
       updateListEndMessage(setPagination);
@@ -27,7 +27,7 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat, list
     const scrollThreshold = userListRef.current.scrollHeight * 0.1;
     if (pagination.page <= 1) setUserList([]);
 
-    if (scrollBottom < scrollThreshold && !pagination.loading) {
+    if (searchTerm && scrollBottom < scrollThreshold && !pagination.loading) {
       setNewElements(
         `/api/v1/users/list?page=${pagination.page}&search=${searchTerm}`,
         "users",
@@ -60,8 +60,7 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat, list
     <div className={isMobile ? "userListContainer mobileList" : "userListContainer"}>
       {/* for now, if I'm giving a set list to UserList, I don't want it to be searchable */}
       {!listToShow[0] && (
-        <div className="listHeader">
-          <h1> Users</h1>
+        <div>
           <SearchBar
             route={`/api/v1/users/list?page=1`}
             dataKey={"users"}
@@ -70,11 +69,12 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat, list
             setSearchTerm={setSearchTerm}
             displaySearchBar={displaySearchBar}
             setDisplaySearchBar={setDisplaySearchBar}
+            adaptable={false}
           />
         </div>
       )}
 
-      <div className="userList" ref={userListRef} data-testid="userList">
+      <div className={searchTerm[0] || listToShow[0] ? "userList" : "userList hidden"} ref={userListRef} data-testid="userList">
         {userList.map((user) => (
           <button
             key={user.uuid}

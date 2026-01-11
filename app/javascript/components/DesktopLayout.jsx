@@ -35,6 +35,8 @@ export default function DesktopLayout({
         setProfile={setProfile}
         signOut={signOut}
         setDisplayEvent={setDisplayEvent}
+        setReceiver={setReceiver}
+        setDisplayChat={setDisplayChat}
       />
 
       <div className="mainBodyContainer">
@@ -94,8 +96,6 @@ export default function DesktopLayout({
             setDisplayEventForm={setDisplayEventForm}
           />
         )}
-
-        <UserList setReceiver={setReceiver} setProfile={setProfile} setDisplayChat={setDisplayChat} />
       </div>
     </div>
   );

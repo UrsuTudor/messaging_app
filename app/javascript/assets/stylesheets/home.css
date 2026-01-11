@@ -50,7 +50,7 @@ h1, h2, h3, h4, h5, h6 {
   transition: 0.5s;
 }
 
-h1, nav h4, button > p {
+h1, nav > .userHeader > h4, button > p {
   color: white;
 }
 
@@ -185,6 +185,7 @@ nav > h1 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: black;
 }
 
 .icon {

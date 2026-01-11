@@ -45,6 +45,7 @@ export default function SearchBar({
         id="searchBar"
         className="searchBar"
         type="text"
+        autoComplete="off"
         placeholder={placeholder}
         onChange={(e) => {
           debouncedSearch(e.target.value);
