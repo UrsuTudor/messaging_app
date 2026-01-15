@@ -1,7 +1,7 @@
 import React from "react";
 import "../assets/stylesheets/eventBanner.css";
 
-export default function EventBanner({ event, setDisplayEvent, setProfile = () => {}, hereFrom }) {
+export default function EventBanner({ setMainDisplay, event, hereFrom }) {
   async function displayEvent() {
     try {
       const res = await fetch(`/api/v1/events/${event.id}`, {
@@ -13,8 +13,7 @@ export default function EventBanner({ event, setDisplayEvent, setProfile = () =>
       }
 
       const data = await res.json();
-      setDisplayEvent({ display: true, event: data, from: hereFrom });
-      setProfile((prev) => ({ ...prev, display: false }));
+      setMainDisplay((prev) => [...prev, {type: "event", event: data}])
     } catch (error) {
       console.error(error.message);
     }

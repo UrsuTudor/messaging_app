@@ -4,19 +4,18 @@ import UserList from "./UserList";
 
 export default function NavBar({
   loggedUser,
-  profile,
-  setProfile,
+  setMainDisplay,
   signOut,
-  setDisplayEvent,
-  setReceiver,
-  setDisplayChat,
 }) {
   const [displayInviteList, setDisplayInviteList] = useState(false);
   const pendingRequests = loggedUser[0].pending_requests;
 
   return (
     <nav>
-      <button onClick={() => setProfile({ display: true })} className="userHeader" data-testid="profileBtn">
+      <button className="iconContainer homeBtn" onClick={() => setMainDisplay([])}>
+        <img className="icon" src="home.svg" alt="a home icon" />
+      </button>
+      <button onClick={() => setMainDisplay((prev) => [...prev, {type: "profile"}])} className="userHeader" data-testid="profileBtn">
         <img
           className="bigAvatar"
           src={loggedUser[0].avatar ? loggedUser[0].avatar : "user.svg"}
@@ -25,7 +24,7 @@ export default function NavBar({
         <h4 className="userName">{loggedUser[0].name}</h4>
       </button>
 
-      <UserList setReceiver={setReceiver} setProfile={setProfile} setDisplayChat={setDisplayChat} />
+      <UserList setMainDisplay={setMainDisplay} />
 
       <h1>Hiker's Hub</h1>
       <button
@@ -42,7 +41,7 @@ export default function NavBar({
         <img className="icon" src="log-out.svg" alt="A sign out icon" />
       </button>
 
-      {displayInviteList && <InviteList eventIds={pendingRequests} setDisplayEvent={setDisplayEvent} />}
+      {displayInviteList && <InviteList eventIds={pendingRequests} setMainDisplay={setMainDisplay}/>}
     </nav>
   );
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import EventBanner from "./EventBanner";
 import "../assets/stylesheets/inviteList.css";
 
-export default function InviteList({ eventIds, setDisplayEvent }) {
+export default function InviteList({ eventIds, setMainDisplay }) {
   const [eventsInvitedTo, setEventsInvitedTo] = useState([]);
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
@@ -52,7 +52,7 @@ export default function InviteList({ eventIds, setDisplayEvent }) {
       {eventsInvitedTo.map((e) => {
         return (
           <div className="inviteContainer">
-            <EventBanner key={e.id} event={e} setDisplayEvent={setDisplayEvent} hereFrom={"home"} />;
+            <EventBanner key={e.id} event={e} setMainDisplay={setMainDisplay} hereFrom={"home"} />;
             <div className="inviteMsg">
               <p>You have been invited to become an organiser of this event.</p>
               <button onClick={() => replyToInvite("accepted", e.id)}>Accept</button>

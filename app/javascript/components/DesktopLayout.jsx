@@ -11,19 +11,12 @@ import EventList from "./EventList";
 export default function DesktopLayout({
   loggedUser,
   getLoggedUser,
-  profile,
-  setProfile,
-  displayChat,
-  setDisplayChat,
-  displayEvent,
-  setDisplayEvent,
-  receiver,
-  setReceiver,
   signOut,
   chatList,
   setChatList,
-  displayEventForm,
-  setDisplayEventForm,
+
+  mainDisplay,
+  setMainDisplay,
 }) {
   const [dimmed, setDimmed] = useState(false);
 
@@ -31,71 +24,61 @@ export default function DesktopLayout({
     <div className={dimmed ? "appContainer dimmed" : "appContainer"}>
       <NavBar
         loggedUser={loggedUser}
-        profile={profile}
-        setProfile={setProfile}
+        setMainDisplay={setMainDisplay}
         signOut={signOut}
-        setDisplayEvent={setDisplayEvent}
-        setReceiver={setReceiver}
-        setDisplayChat={setDisplayChat}
       />
 
       <div className="mainBodyContainer">
         <ChatList
-          setReceiver={setReceiver}
-          setProfile={setProfile}
+          mainDisplay={mainDisplay}
+          setMainDisplay={setMainDisplay}
           chatList={chatList}
           setChatList={setChatList}
           setDimmed={setDimmed}
-          setDisplayChat={setDisplayChat}
         />
 
-        {profile["display"] ? (
+        {mainDisplay.at(-1)?.type == "profile" && (
           <Profile
             loggedUser={loggedUser}
-            user={profile["user"] ? profile["user"] : loggedUser}
+            user={mainDisplay.at(-1).user ? mainDisplay.at(-1).user : loggedUser}
             getLoggedUser={getLoggedUser}
-            setDisplayEvent={setDisplayEvent}
-            setProfile={setProfile}
-            hereFrom={profile["hereFrom"]}
-          />
-        ) : displayChat["chat"] ? (
-          <Chat
-            receiver={receiver}
-            setReceiver={setReceiver}
-            loggedUser={loggedUser}
-            setProfile={setProfile}
-            chatList={chatList}
-            setChatList={setChatList}
-            setDisplayChat={setDisplayChat}
-            setDimmed={setDimmed}
-          />
-        ) : displayEvent["display"] ? (
-          <Event
-            event={displayEvent["event"]}
-            setProfile={setProfile}
-            setDisplayEvent={setDisplayEvent}
-            hereFrom={displayEvent.from}
-            loggedUser={loggedUser}
-            getLoggedUser={getLoggedUser}
-            setDisplayEventForm={setDisplayEventForm}
-            setDimmed={setDimmed}
-          />
-        ) : displayEventForm["display"] ? (
-          <EventForm
-            loggedUser={loggedUser}
-            setDisplayEventForm={setDisplayEventForm}
-            getLoggedUser={getLoggedUser}
-            setDimmed={setDimmed}
-            event={displayEventForm["event"]}
-            action={displayEventForm["action"]}
-          />
-        ) : (
-          <EventList
-            setDisplayEvent={setDisplayEvent}
-            setProfile={setProfile}
-            setDisplayEventForm={setDisplayEventForm}
+            setMainDisplay={setMainDisplay}
           />
         )}
+
+        {mainDisplay.at(-1)?.type == "chat" && (
+          <Chat
+            setMainDisplay={setMainDisplay}
+            receivers={mainDisplay.at(-1).receivers}
+            loggedUser={loggedUser}
+            chatList={chatList}
+            setChatList={setChatList}
+            setDimmed={setDimmed}
+          />
+        )}
+
+        {mainDisplay.at(-1)?.type == "event" && (
+          <Event
+            setMainDisplay={setMainDisplay}
+            event={mainDisplay.at(-1).event}
+            loggedUser={loggedUser}
+            getLoggedUser={getLoggedUser}
+            setDimmed={setDimmed}
+          />
+        )}
+
+        {mainDisplay.at(-1)?.type == "eventForm" && (
+           <EventForm
+            setMainDisplay={setMainDisplay}
+            loggedUser={loggedUser}
+            getLoggedUser={getLoggedUser}
+            setDimmed={setDimmed}
+            event={mainDisplay.at(-1).event}
+            action={mainDisplay.at(-1).action}
+          />
+        )}
+
+        {!mainDisplay[0] && <EventList setMainDisplay={setMainDisplay} />}
       </div>
     </div>
   );

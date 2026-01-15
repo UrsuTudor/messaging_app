@@ -7,7 +7,7 @@ import useScrolling from "../assets/hooks/useScrolling";
 import useThrottle from "../assets/hooks/useThrottle";
 import "../assets/stylesheets/eventList.css";
 
-export default function EventList({ setDisplayEvent, setDisplayEventForm, setProfile }) {
+export default function EventList({ setMainDisplay }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [events, setEvents] = useState([]);
   const [pagination, setPagination] = usePagination();
@@ -54,7 +54,7 @@ export default function EventList({ setDisplayEvent, setDisplayEventForm, setPro
           placeholder="Search by title or location"
         />
         <button
-          onClick={() => setDisplayEventForm({ display: true, event: null, action: "create" })}
+          onClick={() => setMainDisplay((prev) => [...prev, {type: "eventForm", event: null, action: "create"}])}
           className="iconContainer profileIconContainer"
         >
           Create your own
@@ -66,8 +66,7 @@ export default function EventList({ setDisplayEvent, setDisplayEventForm, setPro
           <EventBanner
             key={e.id}
             event={e}
-            setDisplayEvent={setDisplayEvent}
-            setProfile={setProfile}
+            setMainDisplay={setMainDisplay}
             hereFrom={"home"}
           />
         ))}

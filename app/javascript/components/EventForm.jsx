@@ -6,14 +6,7 @@ import UserListForm from "./UserListForm";
 import { updateEventDetails } from "../assets/helpers";
 import "../assets/stylesheets/event.css";
 
-export default function EventForm({
-  event,
-  loggedUser,
-  setDisplayEventForm,
-  getLoggedUser,
-  setDimmed,
-  action,
-}) {
+export default function EventForm({ setMainDisplay, event, loggedUser, getLoggedUser, setDimmed, action }) {
   let [eventDetails, setEventDetails] = useState({
     organisers: [loggedUser],
     title: "",
@@ -112,12 +105,7 @@ export default function EventForm({
       <div className="listHeader">
         <div
           className="chatIconContainer"
-          onClick={() => {
-            setDisplayEventForm((prev) => ({ display: false, event: null, action: "create" }));
-            hereFrom == "profile"
-              ? setProfile((prev) => ({ ...prev, display: true }))
-              : setDisplayEventForm((prev) => ({ ...prev, display: false }));
-          }}
+          onClick={() => setMainDisplay((prev) => prev.slice(0, -1))}
           data-testid="chatBackArrow"
         >
           <img className="icon" src="arrow-left.svg" />
@@ -156,7 +144,7 @@ export default function EventForm({
           className="eventForm"
           onSubmit={(e) => {
             createEvent(e);
-            setDisplayEventForm({ display: false, event: null });
+            setMainDisplay((prev) => prev.slice(0, -1));
           }}
         >
           <label>

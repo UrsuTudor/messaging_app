@@ -7,10 +7,7 @@ import "../assets/stylesheets/event.css";
 
 export default function Event({
   event,
-  setProfile,
-  setDisplayEvent,
-  setDisplayEventForm,
-  hereFrom,
+  setMainDisplay,
   loggedUser,
   getLoggedUser,
   setDimmed,
@@ -101,10 +98,7 @@ export default function Event({
       }
 
       getLoggedUser();
-      setDisplayEvent({ display: false, event: null });
-      hereFrom == "profile"
-        ? setProfile((prev) => ({ ...prev, display: true }))
-        : setDisplayEvent((prev) => ({ ...prev, display: false }));
+      setMainDisplay((prev) => [...prev.slice(0, -1)])
     } catch (error) {
       console.error(error.message);
     }
@@ -116,10 +110,7 @@ export default function Event({
         <div
           className="chatIconContainer"
           onClick={() => {
-            setDisplayEvent({ display: false, event: null });
-            hereFrom == "profile"
-              ? setProfile((prev) => ({ ...prev, display: true }))
-              : setDisplayEvent((prev) => ({ ...prev, display: false }));
+            setMainDisplay((prev) => [...prev.slice(0, -1)])
           }}
           data-testid="chatBackArrow"
         >
@@ -152,8 +143,7 @@ export default function Event({
                   src={org[0].avatar ? org[0].avatar : "user_dark.svg"}
                   alt={org[0].name + "'s profile picture"}
                   onClick={() => {
-                    setDisplayEvent({ display: false, event: null });
-                    setProfile({ display: true, user: org, hereFrom: "event" });
+                    setMainDisplay((prev) => [...prev, {type: "profile", user: org}])
                   }}
                 />
               ))}
@@ -174,8 +164,7 @@ export default function Event({
                   className="iconContainer profileIconContainer"
                   type="button"
                   onClick={() => {
-                    setDisplayEventForm({ display: true, event: event, action: "update" });
-                    setDisplayEvent((prev) => ({ ...prev, display: false }));
+                    setMainDisplay((prev) => [...prev.slice(0, -1), {type: "eventForm", event: event, action: "update"}])
                   }}
                 >
                   Change Event Details
@@ -231,8 +220,7 @@ export default function Event({
                 src={part[0].avatar ? part[0].avatar : "user_dark.svg"}
                 alt={part[0].name + "'s profile picture"}
                 onClick={() => {
-                  setDisplayEvent({ display: false, event: null });
-                  setProfile({ display: true, user: part, hereFrom: "event" });
+                  setMainDisplay((prev) => [...prev, {type: "profile", user: part}])
                 }}
               />
             ))}
@@ -272,7 +260,7 @@ export default function Event({
                         className="userContainer"
                         onClick={() => {
                           setDimmed(false);
-                          setProfile({ display: true, user: part, hereFrom: "event" });
+                          setMainDisplay((prev) => [...prev, {type: "profile", user: part}])
                         }}
                         data-testid="groupFormUserBtn"
                       >

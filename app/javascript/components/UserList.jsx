@@ -6,7 +6,7 @@ import useScrolling from "../assets/hooks/useScrolling";
 import { setNewElements, updateListEndMessage, updateScrollBottom, handleResize } from "../assets/helpers";
 import SearchBar from "./SearchBar";
 
-export default function UserList({ setReceiver, setProfile, setDisplayChat, listToShow = [] }) {
+export default function UserList({ listToShow = [], setMainDisplay }) {
   const [userList, setUserList] = useState(listToShow);
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
@@ -74,36 +74,43 @@ export default function UserList({ setReceiver, setProfile, setDisplayChat, list
         </div>
       )}
 
-      <div className={searchTerm[0] || listToShow[0] ? "userList" : "userList hidden"} ref={userListRef} data-testid="userList">
+      <div
+        className={searchTerm[0] || listToShow[0] ? "userList" : "userList hidden"}
+        ref={userListRef}
+        data-testid="userList"
+      >
         {userList.map((user) => (
           <button
             key={user.uuid}
             className="userContainer"
             onClick={() => {
-              setReceiver([
+              setSearchTerm("");
+              setMainDisplay((prev) => [
+                ...prev.slice(0, -1),
                 {
-                  avatar: user.avatar,
-                  name: user.name,
-                  uuid: user.uuid,
-                  description: user.description,
-                  chat_id: user.chat_id,
+                  type: "chat",
+                  receivers: [
+                    {
+                      avatar: user.avatar,
+                      name: user.name,
+                      uuid: user.uuid,
+                      description: user.description,
+                      chat_id: user.chat_id,
+                    },
+                  ],
                 },
               ]);
-              setProfile({ display: false, user: null });
-
-              if (isMobile) {
-                setDisplayChat({ chat: true, chatList: false });
-              } else {
-                setDisplayChat({ chat: true, chatList: true });
-              }
             }}
             onMouseEnter={() => {
               if (!isMobile) {
-                setProfile({ display: true, user: [user] });
+                setMainDisplay((prev) => [...prev, { type: "profile", user: [user] }]);
               }
             }}
             onMouseLeave={() => {
-              setProfile({ display: false, user: null });
+              // I'm setting the search term to an empty string above and added this check to avoid removing the opened
+              // chat; without this check, the onMouseLeave would trigger when the searchTerm is reset and the chat
+              // added to the mainDisplay queue by the onClick action would be removed instead of the Profile
+              if (searchTerm[0]) setMainDisplay((prev) => prev.slice(0, -1));
             }}
             data-testid="userListBtn"
           >

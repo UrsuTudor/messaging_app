@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "../assets/stylesheets/profile.css";
 import EventBanner from "./EventBanner";
 
-export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEvent, setProfile, hereFrom }) {
+export default function Profile({ loggedUser, getLoggedUser, user, setMainDisplay }) {
   const [renderDescriptionForm, setRenderDescriptionForm] = useState(false);
   const [description, setDescription] = useState({
     content: user[0]?.description,
@@ -115,12 +115,7 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
         <div className="profileHeader">
           <div
             className="chatIconContainer"
-            onClick={() => {
-              setProfile({ display: false, user: null });
-              hereFrom == "event"
-                ? setDisplayEvent((prev) => ({ ...prev, display: true }))
-                : setProfile((prev) => ({ ...prev, display: false }));
-            }}
+            onClick={() => { setMainDisplay((prev) => [...prev.slice(0, -1)])}}
             data-testid="chatBackArrow"
           >
             <img className="icon" src="green-arrow-left.svg" />
@@ -248,18 +243,14 @@ export default function Profile({ loggedUser, getLoggedUser, user, setDisplayEve
                 <EventBanner
                   key={e.id}
                   event={e}
-                  setDisplayEvent={setDisplayEvent}
-                  setProfile={setProfile}
-                  hereFrom={"profile"}
+                  setMainDisplay={setMainDisplay}
                 />
               ))
             : pastEvents.map((e) => (
                 <EventBanner
                   key={e.id}
                   event={e}
-                  setDisplayEvent={setDisplayEvent}
-                  setProfile={setProfile}
-                  hereFrom={"profile"}
+                  setMainDisplay={setMainDisplay}
                 />
               ))}
         </div>

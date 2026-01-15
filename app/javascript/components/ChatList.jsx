@@ -8,15 +8,9 @@ import UserList from "./UserList";
 import SearchBar from "./SearchBar";
 import consumer from "../channels/consumer";
 import UserListForm from "./UserListForm";
+import { reverse } from "lodash";
 
-export default function ChatList({
-  setDisplayChat,
-  setReceiver,
-  setProfile,
-  chatList,
-  setChatList,
-  setDimmed,
-}) {
+export default function ChatList({ mainDisplay, setMainDisplay, chatList, setChatList, setDimmed }) {
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
   const [displayUserListForm, setDisplayUserListForm] = useState(false);
@@ -104,17 +98,21 @@ export default function ChatList({
 
       const data = await res.json();
 
-      setReceiver(
-        userList.map((user) => {
-          return {
-            avatar: user[0].avatar,
-            name: user[0].name,
-            uuid: user[0].uuid,
-            description: user[0].description,
-            chat_id: data.chat_id,
-          };
-        })
-      );
+      setMainDisplay((prev) => [
+        ...prev,
+        {
+          type: "chat",
+          receivers: userList.map((user) => {
+            return {
+              avatar: user[0].avatar,
+              name: user[0].name,
+              uuid: user[0].uuid,
+              description: user[0].description,
+              chat_id: data.chat_id,
+            };
+          }),
+        },
+      ]);
     } catch (error) {
       console.error(error.message);
     }
@@ -123,7 +121,7 @@ export default function ChatList({
   return (
     <div className={displaySearchBar ? "chatListContainer widen" : "chatListContainer"}>
       <div className="listHeader">
-        <h1>Chats</h1>
+        <h1 className="chatListTitle">Chats</h1>
         <SearchBar
           setPagination={setPagination}
           setSearchTerm={setSearchTerm}
@@ -152,19 +150,24 @@ export default function ChatList({
             key={user[0].chat_id}
             className="userContainer"
             onClick={() => {
-              setProfile({ display: false, user: null });
-              setReceiver(
-                user.map((user) => {
-                  return {
-                    avatar: user.avatar,
-                    name: user.name,
-                    uuid: user.uuid,
-                    description: user.description,
-                    chat_id: user.chat_id,
-                  };
-                })
-              );
-              setDisplayChat({ chat: true, chatList: true });
+              let receivers = user.map((user) => {
+                return {
+                  avatar: user.avatar,
+                  name: user.name,
+                  uuid: user.uuid,
+                  description: user.description,
+                  chat_id: user.chat_id,
+                };
+              });
+
+              // if the user was looking at another chat, I don't want multiple chats to pile in the queue and clog the 
+              // "back button" behavior, considering they can easily re-open a previous chat by clicking on it in the chat 
+              // list; but if the user was looking at something like a profile or an event, I want them to be able to 
+              // easily go back to that from a chat
+              mainDisplay.at(-1)?.type == "chat"
+                ? setMainDisplay((prev) => [...prev.slice(0, -1), { type: "chat", receivers: receivers }])
+                : setMainDisplay((prev) => [...prev, { type: "chat", receivers: receivers }]);
+
               setChatList((prev) => {
                 const index = prev.findIndex((u) => u[0].chat_id === user[0].chat_id);
                 const updated = [...prev];
@@ -173,9 +176,6 @@ export default function ChatList({
                 });
                 return updated;
               });
-              if (isMobile) {
-                setDisplayChat({ chat: true, chatList: false });
-              }
             }}
             data-testid="chatListBtn"
           >
@@ -199,7 +199,7 @@ export default function ChatList({
       </div>
       {isMobile && (
         <>
-          <UserList setReceiver={setReceiver} setProfile={setProfile} setDisplayChat={setDisplayChat} />
+          <UserList setMainDisplay={setMainDisplay} />
         </>
       )}
     </div>

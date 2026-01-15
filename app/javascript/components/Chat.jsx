@@ -8,18 +8,9 @@ import consumer from "../channels/consumer";
 import UserListForm from "./UserListForm";
 import UserList from "./UserList";
 
-export default function Chat({
-  receiver,
-  setReceiver,
-  loggedUser,
-  setProfile,
-  setDisplayChat,
-  chatList,
-  setChatList,
-  setDimmed,
-}) {
+export default function Chat({ receivers, loggedUser, setMainDisplay, chatList, setChatList, setDimmed }) {
   const [chat, setChat] = useState({
-    chat_id: receiver[0]?.chat_id || null,
+    chat_id: receivers[0]?.chat_id || null,
     messages: [],
     name: null,
   });
@@ -35,7 +26,7 @@ export default function Chat({
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-  const receiver_uuids = receiver.map((receiver) => receiver.uuid);
+  const receiver_uuids = receivers.map((receiver) => receiver.uuid);
 
   async function updateReadStatus(chat_id) {
     try {
@@ -58,12 +49,12 @@ export default function Chat({
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
-    setChat({ chat_id: receiver[0]?.chat_id, messages: [] });
+    setChat({ chat_id: receivers[0]?.chat_id, messages: [] });
     setDisplayChatNameForm(false);
-    setDisplayMenu(false)
-    setDisplayMemberList(false)
+    setDisplayMenu(false);
+    setDisplayMemberList(false);
     if (pagination.page > 1) getChat(1);
-  }, [receiver]);
+  }, [receivers]);
 
   useEffect(() => {
     if (pagination.page > pagination.pages) {
@@ -73,10 +64,10 @@ export default function Chat({
 
     const scrollThreshold = scrollTop + scrollTop * 0.1 - 0.1;
 
-    if (receiver[0] && scrollTop > scrollThreshold && !pagination.loading) {
+    if (receivers[0] && scrollTop > scrollThreshold && !pagination.loading) {
       getChat();
     }
-  }, [receiver[0], scrollTop]);
+  }, [receivers[0], scrollTop]);
 
   async function getChat(page = pagination.page) {
     if (page > pagination.pages) {
@@ -94,10 +85,10 @@ export default function Chat({
           "X-CSRF-Token": csrfToken,
         },
 
-        // using both receiver.chat_id and chat.chat_id, because for new chats receiver won't get automatically updated,
+        // using both receivers.chat_id and chat.chat_id, because for new chats receiver won't get automatically updated,
         // but the chat state will
         body: JSON.stringify({
-          chat: { receiver_uuids: receiver_uuids, chat_id: receiver[0].chat_id || chat.chat_id },
+          chat: { receiver_uuids: receiver_uuids, chat_id: receivers[0].chat_id || chat.chat_id },
         }),
       });
 
@@ -168,12 +159,12 @@ export default function Chat({
   }
 
   function updateChatList() {
-    if (isMobile || chatList[0][0].uuid == receiver[0].uuid) return;
+    if (isMobile || chatList[0][0].uuid == receivers[0].uuid) return;
 
     setChatList((prev) => {
-      const filtered = prev.filter((user) => user[0].uuid != receiver[0].uuid);
+      const filtered = prev.filter((user) => user[0].uuid != receivers[0].uuid);
       return [
-        receiver.map((user) => {
+        receivers.map((user) => {
           return {
             avatar: user.avatar,
             chat_id: chat.chat_id,
@@ -232,18 +223,25 @@ export default function Chat({
         throw new Error(`The users could not be added.`);
       }
 
-      setReceiver((prev) => [...prev, ...users.flat()]);
+      setMainDisplay((prev) => {
+        const last = prev.at(-1);
+
+        return [
+          ...prev.slice(0, -1),
+          {
+            ...last,
+            type: "chat",
+            receivers: [...last.receivers, ...users.flat()],
+          },
+        ];
+      });
     } catch (error) {
       console.error(error.message);
     }
   }
 
   function displayProfile() {
-    if (receiver.length == 1) setProfile({ display: true, user: receiver });
-
-    if (isMobile) {
-      setDisplayChat({ chat: false, chatList: true });
-    }
+    if (receivers.length == 1) setMainDisplay((prev) => [...prev, { type: "profile", user: receivers }]);
   }
 
   useEffect(() => {
@@ -277,7 +275,7 @@ export default function Chat({
         throw new Error("Failed to leave the chat.");
       }
 
-      setDisplayChat({ chat: false, chatList: true });
+      setMainDisplay((prev) => prev.slice(0, -1));
       setChatList((prev) => prev.filter((chat) => chat[0].name != chat.name));
     } catch (error) {
       console.error(error.message);
@@ -286,12 +284,12 @@ export default function Chat({
 
   return (
     <div className="chatContainer" data-testid="chatContainer">
-      {receiver[0] && (
+      {receivers[0] && (
         <div className="userHeader">
           <div
             className="chatIconContainer"
             onClick={() => {
-              setDisplayChat({ chat: false, chatList: true });
+              setMainDisplay((prev) => prev.slice(0, -1));
             }}
             data-testid="chatBackArrow"
           >
@@ -300,8 +298,8 @@ export default function Chat({
           <div className="userHeaderPortal" data-testid="userChatHeader">
             <img
               className="bigAvatar"
-              src={receiver.length > 1 ? "group.svg" : receiver[0].avatar || "user.svg"}
-              alt={receiver.name + "'s profile picture"}
+              src={receivers.length > 1 ? "group.svg" : receivers[0].avatar || "user.svg"}
+              alt={receivers.name + "'s profile picture"}
               data-testid="chatAvatar"
               onClick={() => displayProfile()}
             />
@@ -320,9 +318,9 @@ export default function Chat({
               <>
                 <h1 className="chatUserName" data-testid="chatUserName" onClick={() => displayProfile()}>
                   {chat.name ||
-                    receiver
+                    receivers
                       .slice(1)
-                      .reduce((result, receiver) => result + ", " + receiver.name, receiver[0].name)}
+                      .reduce((result, receiver) => result + ", " + receiver.name, receivers[0].name)}
                 </h1>
 
                 <img
@@ -337,11 +335,11 @@ export default function Chat({
           <div
             className="chatIconContainer menuBtn"
             onClick={() => {
-              setDisplayMenu(!displayMenu)
+              setDisplayMenu(!displayMenu);
 
-              if(displayMemberList) {
-                setDisplayMenu(false)
-                setDisplayMemberList(false)
+              if (displayMemberList) {
+                setDisplayMenu(false);
+                setDisplayMemberList(false);
               }
             }}
           >
@@ -368,9 +366,9 @@ export default function Chat({
                 }}
               >
                 <img className="icon" src="page.svg" />
-                <p>Members{'(' + (receiver.length + 1) + ')'}</p>
+                <p>Members{"(" + (receivers.length + 1) + ")"}</p>
               </button>
-              {receiver.length > 1 && (
+              {receivers.length > 1 && (
                 <button className="iconContainer" onClick={(e) => leaveChat(e)}>
                   <img className="icon" src="walking.svg" />
                   <p>Leave</p>
@@ -384,17 +382,12 @@ export default function Chat({
               setDisplayUserListForm={setDisplayUserListForm}
               setPagination={setPagination}
               callback={addUsers}
-              filter={receiver}
+              filter={receivers}
             />
           )}
           {displayMemberList && (
             <div className="menu memberList">
-              <UserList
-                setReceiver={setReceiver}
-                setProfile={() => null}
-                setDisplayChat={setDisplayChat}
-                listToShow={[...receiver, ...loggedUser]}
-              />
+              <UserList setMainDisplay={() => null} listToShow={[...receivers, ...loggedUser]} />
             </div>
           )}
         </div>
@@ -417,14 +410,14 @@ export default function Chat({
             } else {
               return (
                 <div className="message" key={i} data-testid="msg">
-                  {receiver.length > 1 && chat.messages[i + 1]?.user_uuid != message.user_uuid && (
+                  {receivers.length > 1 && chat.messages[i + 1]?.user_uuid != message.user_uuid && (
                     <h4 className="chatUserName">{message.user_name}</h4>
                   )}
                   <div className="messageContent">
                     <img
                       className="smallAvatar"
-                      src={receiver.avatar ? receiver.avatar : "user_dark.svg"}
-                      alt={receiver.name + "'s profile picture"}
+                      src={receivers.avatar ? receivers.avatar : "user_dark.svg"}
+                      alt={receivers.name + "'s profile picture"}
                     />
                     <p>{message.content}</p>
                   </div>
@@ -433,7 +426,7 @@ export default function Chat({
             }
           })}
       </div>
-      {receiver[0] && (
+      {receivers[0] && (
         <form
           className="messageForm"
           autoComplete="off"
@@ -468,3 +461,4 @@ export default function Chat({
     </div>
   );
 }
+

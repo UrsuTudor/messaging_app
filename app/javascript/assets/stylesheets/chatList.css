@@ -24,3 +24,7 @@
   transition: none;
   min-width: 375px;
 }
+
+.listHeader > .chatListTitle {
+  text-align: left;
+}

@@ -5,12 +5,8 @@ import DesktopLayout from "./DesktopLayout";
 
 export default function Home() {
   const [loggedUser, setLoggedUser] = useState(null);
-  const [receiver, setReceiver] = useState([]);
-  const [profile, setProfile] = useState({ display: false, user: null });
-  const [displayChat, setDisplayChat] = useState({ chat: false, chatList: true });
-  const [displayEvent, setDisplayEvent] = useState({ display: false, event: null });
+  const [mainDisplay, setMainDisplay] = useState([])
   const [chatList, setChatList] = useState([]);
-  const [displayEventForm, setDisplayEventForm] = useState({ display: false, event: null, action: "create"});
   const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
@@ -58,10 +54,6 @@ export default function Home() {
         <MobileLayout
           loggedUser={loggedUser}
           getLoggedUser={getLoggedUser}
-          profile={profile}
-          setProfile={setProfile}
-          receiver={receiver}
-          setReceiver={setReceiver}
           signOut={signOut}
           chatList={chatList}
           setChatList={setChatList}
@@ -70,19 +62,11 @@ export default function Home() {
         <DesktopLayout
           loggedUser={loggedUser}
           getLoggedUser={getLoggedUser}
-          profile={profile}
-          setProfile={setProfile}
-          displayChat={displayChat}
-          setDisplayChat={setDisplayChat}
-          displayEvent={displayEvent}
-          setDisplayEvent={setDisplayEvent}
-          receiver={receiver}
-          setReceiver={setReceiver}
+          mainDisplay={mainDisplay}
+          setMainDisplay={setMainDisplay}
           signOut={signOut}
           chatList={chatList}
           setChatList={setChatList}
-          displayEventForm={displayEventForm}
-          setDisplayEventForm={setDisplayEventForm}
         />
       )}
     </>
