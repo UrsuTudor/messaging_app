@@ -387,7 +387,7 @@ export default function Chat({ receivers, loggedUser, setMainDisplay, chatList, 
           )}
           {displayMemberList && (
             <div className="menu memberList">
-              <UserList setMainDisplay={() => null} listToShow={[...receivers, ...loggedUser]} />
+              <UserList setMainDisplay={setMainDisplay} listToShow={[...receivers, ...loggedUser]} />
             </div>
           )}
         </div>

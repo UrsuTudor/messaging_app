@@ -86,23 +86,13 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
             onClick={() => {
               setSearchTerm("");
               setMainDisplay((prev) => [
-                ...prev.slice(0, -1),
-                {
-                  type: "chat",
-                  receivers: [
-                    {
-                      avatar: user.avatar,
-                      name: user.name,
-                      uuid: user.uuid,
-                      description: user.description,
-                      chat_id: user.chat_id,
-                    },
-                  ],
-                },
+                ...prev,
+                { type: "profile", user: [user] },
               ]);
             }}
+
             onMouseEnter={() => {
-              if (!isMobile) {
+              if (!isMobile && !listToShow[0]) {
                 setMainDisplay((prev) => [...prev, { type: "profile", user: [user] }]);
               }
             }}

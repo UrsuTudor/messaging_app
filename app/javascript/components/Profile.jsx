@@ -115,7 +115,9 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
         <div className="profileHeader">
           <div
             className="chatIconContainer"
-            onClick={() => { setMainDisplay((prev) => [...prev.slice(0, -1)])}}
+            onClick={() => {
+              setMainDisplay((prev) => [...prev.slice(0, -1)]);
+            }}
             data-testid="chatBackArrow"
           >
             <img className="icon" src="green-arrow-left.svg" />
@@ -129,6 +131,31 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
             alt={user[0]?.name + "'s profile picture"}
             data-testid="userAvatar"
           />
+
+          {loggedUser[0].uuid !== user[0]?.uuid && (
+            <button
+              className="iconContainer profileIconContainer"
+              data-section="description"
+              onClick={() => {
+                setMainDisplay((prev) => [
+                  ...prev,
+                  {
+                    type: "chat",
+                    receivers: [
+                      {
+                        avatar: user[0].avatar,
+                        name: user[0].name,
+                        uuid: user[0].uuid,
+                      },
+                    ],
+                  },
+                ]);
+              }}
+            >
+              <img className="icon" src="bonfire-white.svg" alt="A bonfire icon" />
+              <p>Chat with {user[0].name}</p>
+            </button>
+          )}
 
           {renderAvatarForm ? (
             <form className="avatarForm">
@@ -239,20 +266,8 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
 
         <div>
           {eventListDisplay === "upcoming"
-            ? upcomingEvents.map((e) => (
-                <EventBanner
-                  key={e.id}
-                  event={e}
-                  setMainDisplay={setMainDisplay}
-                />
-              ))
-            : pastEvents.map((e) => (
-                <EventBanner
-                  key={e.id}
-                  event={e}
-                  setMainDisplay={setMainDisplay}
-                />
-              ))}
+            ? upcomingEvents.map((e) => <EventBanner key={e.id} event={e} setMainDisplay={setMainDisplay} />)
+            : pastEvents.map((e) => <EventBanner key={e.id} event={e} setMainDisplay={setMainDisplay} />)}
         </div>
 
         {eventListDisplay === "upcoming"
