@@ -49,14 +49,14 @@ export default function InviteList({ eventIds, setMainDisplay }) {
 
   return (
     <div className="inviteList">
+      <p className="inviteListHeader">You have been invited to join the following events:</p>
       {eventsInvitedTo.map((e) => {
         return (
           <div className="inviteContainer">
-            <EventBanner key={e.id} event={e} setMainDisplay={setMainDisplay} hereFrom={"home"} />;
-            <div className="inviteMsg">
-              <p>You have been invited to become an organiser of this event.</p>
-              <button onClick={() => replyToInvite("accepted", e.id)}>Accept</button>
-              <button onClick={() => replyToInvite("declined", e.id)}>Decline</button>
+            <EventBanner key={e.id} event={e} setMainDisplay={setMainDisplay} hereFrom={"home"} />
+            <div className="inviteBtnsContainer">
+              <button className="iconContainer profileIconContainer" onClick={() => replyToInvite("accepted", e.id)}>Accept</button>
+              <button className="iconContainer profileIconContainer" onClick={() => replyToInvite("declined", e.id)}>Decline</button>
             </div>
           </div>
         );

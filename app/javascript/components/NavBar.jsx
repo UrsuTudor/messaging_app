@@ -30,7 +30,7 @@ export default function NavBar({
       <button
         className="iconContainer"
         onClick={() => {
-          setDisplayInviteList(true);
+          setDisplayInviteList(!displayInviteList);
         }}
       >
         <img className="icon" src="trekking.svg" alt="View your invites" />

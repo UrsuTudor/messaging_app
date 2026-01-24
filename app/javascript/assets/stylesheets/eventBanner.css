@@ -4,9 +4,8 @@
   border: 1px solid #b8d0b8;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 
-  height: 40vh;
+  max-height: 40vh;
   width: 45%;
-  padding-bottom: 1vh;
   
   transform-origin: bottom center;
 }
@@ -26,7 +25,7 @@
 
 .eventBanner > img {
   border-radius: 20px 20px 0 0;
-  height: 60%;
+  max-height: 60%;
   width: 100%;
   object-fit: cover;
 }

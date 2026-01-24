@@ -1,3 +1,59 @@
 .inviteList {
+  position: absolute;
   z-index: 3;
+
+  width: 400px;
+  max-height: 75vh;
+  right: 10%;
+  top: 100%;
+
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-color: #5a7d5a #f4f9f4;
+  background-color: #264d36;
+}
+
+.inviteListHeader {
+  position: fixed;
+  z-index: 3;
+
+  width: 100%;
+  padding: 1vh 1vw 1vh 1vw;
+
+  background-color: #264d36;
+}
+
+.inviteContainer {
+  padding-bottom: 2vh;
+}
+
+.inviteContainer > .eventBanner {
+  width: 100%;
+  border-radius: 0;
+  color: black;
+  border: none;
+}
+
+.inviteContainer > .eventBanner > img {
+  border-radius: 0;
+}
+
+.inviteBtnsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 5%;
+  background-color: #d9e6d9;
+  padding-bottom: 1VH;
+}
+
+.inviteContainer > .eventBanner:hover {
+  animation: none;
+  filter: brightness(90%);
+  transition: ease-in, 0.2s;
+}
+
+.inviteContainer > .eventBanner:active {
+  filter: brightness(80%);
+  scale: 98%;
+  transition: none;
 }

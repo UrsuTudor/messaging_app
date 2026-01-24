@@ -65,6 +65,7 @@ p {
 nav {
   display: flex;
   align-items: center;
+  position: relative;
   padding: 10px;
   background-color: #264d36;
   color: white;
