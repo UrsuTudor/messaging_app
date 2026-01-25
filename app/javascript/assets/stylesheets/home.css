@@ -46,15 +46,16 @@ h1, h2, h3, h4, h5, h6 {
 .appContainer {
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
   height: 100vh;
   transition: 0.5s;
 }
 
-h1, nav > .userHeader > h4, button > p {
+h1, .navContainer > .userHeader > h4, button > p {
   color: white;
 }
 
-nav p{
+.navContainer p{
   color: inherit;
 }
 
@@ -64,20 +65,26 @@ p {
 
 nav {
   display: flex;
+  position: relative;
+  flex-direction: column;
+  height: fit-content;
+  background-color: #264d36;
+}
+
+.navContainer{
+  display: flex;
   align-items: center;
   position: relative;
   padding: 10px;
-  background-color: #264d36;
   color: white;
-  height: 8%;
   gap: 5px;
 }
 
-nav > :nth-child(4) {
+.navContainer > :nth-child(4) {
   margin-left: 5px;
 }
 
-nav > .userHeader {
+.navContainer > .userHeader {
   width: fit-content;
   background-color: #5a7d5a;
   border-radius: 40px;
@@ -85,20 +92,30 @@ nav > .userHeader {
   padding-right: 2vw;
 }
 
-nav > .userHeader:hover {
+.navContainer > .userHeader:hover {
   background-color: #6ba271;
   cursor: pointer;
 }
 
-nav > .userHeader:active {
+.navContainer > .userHeader:active {
   background-color: #4e7b50;
   transform: scale(0.96);
 }
 
-nav > h1 {
+.navContainer > h1 {
   flex: 2;
   text-align: center;
   align-content: center;
+}
+
+.navBtnsContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+.navBtnsContainer > .userListContainer {
+  flex: none;
+  height: 100%;
 }
 
 .iconContainer {
@@ -110,7 +127,7 @@ nav > h1 {
   color: #ffffff;
 
   padding: 1vh;
-  height: 100%;
+  max-height: 85%;
   border-radius: 20px;
 }
 
@@ -147,8 +164,8 @@ nav > h1 {
 }
 
 .bigAvatar {
-  height: 60px;
-  width: 60px;
+  height: 45px;
+  width: 45px;
   object-fit: cover;
   cursor: pointer;
   border-radius: 30px;
@@ -259,12 +276,23 @@ nav > h1 {
 }
 
 @media (max-width: 425px), (max-height: 900px) {
-  nav {
-    height: 15%;
+  .navContainer {
+    height: 110px;
+    /* align-items: baseline; */
+  }
+
+  .navContainer > * {
+    margin-bottom: 50px;
   }
 
   .mainBodyContainer {
     height: 85%;
+  }
+}
+
+@media (max-width: 700px) {
+  .iconContainer {
+    max-height: none;
   }
 }
 

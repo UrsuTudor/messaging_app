@@ -11,7 +11,7 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
   const [scrollBottom, setScrollBottom] = useScrolling();
   const [pagination, setPagination] = usePagination();
   const [searchTerm, setSearchTerm] = useState("");
-  const [displaySearchBar, setDisplaySearchBar] = useState(window.innerWidth > 1400);
+  const [displaySearchBar, setDisplaySearchBar] = useState(window.innerWidth > 700);
   const userListRef = useRef(null);
   const throttle = useThrottle();
   const isMobile = window.innerWidth < 700;
@@ -32,7 +32,7 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
         `/api/v1/users/list?page=${pagination.page}&search=${searchTerm}`,
         "users",
         setUserList,
-        setPagination
+        setPagination,
       );
     }
   }, [scrollBottom, searchTerm]);
@@ -50,16 +50,21 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
   }, []);
 
   useEffect(() => {
-    setDisplaySearchBar(window.innerWidth > 1400);
+    setDisplaySearchBar(window.innerWidth > 700);
 
-    const cleanup = handleResize(setDisplaySearchBar);
+    const cleanup = handleResize(setDisplaySearchBar, 700);
     return cleanup;
   }, []);
 
   return (
-    <div className={isMobile ? "userListContainer mobileList" : "userListContainer"}>
+    <div className="userListContainer">
+      {isMobile && !displaySearchBar && (
+        <button className="iconContainer homeBtn" onClick={() => setDisplaySearchBar(!displaySearchBar)}>
+          <img className="icon" src="search.svg" alt="a home icon" />
+        </button>
+      )}
       {/* for now, if I'm giving a set list to UserList, I don't want it to be searchable */}
-      {!listToShow[0] && (
+      {!listToShow[0] && displaySearchBar && (
         <div>
           <SearchBar
             route={`/api/v1/users/list?page=1`}
@@ -73,9 +78,9 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
           />
         </div>
       )}
-
+      
       <div
-        className={searchTerm[0] || listToShow[0] ? "userList" : "userList hidden"}
+        className={searchTerm[0] && displaySearchBar || listToShow[0] ? "userList" : "userList hidden"}
         ref={userListRef}
         data-testid="userList"
       >
@@ -85,12 +90,8 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
             className="userContainer"
             onClick={() => {
               setSearchTerm("");
-              setMainDisplay((prev) => [
-                ...prev,
-                { type: "profile", user: [user] },
-              ]);
+              setMainDisplay((prev) => [...prev, { type: "profile", user: [user] }]);
             }}
-
             onMouseEnter={() => {
               if (!isMobile && !listToShow[0]) {
                 setMainDisplay((prev) => [...prev, { type: "profile", user: [user] }]);

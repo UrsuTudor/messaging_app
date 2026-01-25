@@ -57,6 +57,8 @@ export default function Home() {
           signOut={signOut}
           chatList={chatList}
           setChatList={setChatList}
+          mainDisplay={mainDisplay}
+          setMainDisplay={setMainDisplay}
         />
       ) : (
         <DesktopLayout

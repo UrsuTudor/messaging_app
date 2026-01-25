@@ -16,9 +16,9 @@ function updatePagination(setPagination, totalPages) {
   }));
 }
 
-function handleResize(setDisplaySearchBar) {
+function handleResize(setDisplaySearchBar, width) {
   const debouncedResize = debounce(() => {
-    setDisplaySearchBar(window.innerWidth > 1400);
+    setDisplaySearchBar(window.innerWidth > width);
   }, 100);
 
   window.addEventListener("resize", debouncedResize);

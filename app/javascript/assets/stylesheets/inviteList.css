@@ -8,19 +8,21 @@
   top: 100%;
 
   overflow-x: hidden;
-  overflow-y: scroll;
-  scrollbar-color: #5a7d5a #f4f9f4;
-  background-color: #264d36;
 }
 
 .inviteListHeader {
+  display: flex;
   position: fixed;
+  align-items: center;
   z-index: 3;
 
   width: 100%;
-  padding: 1vh 1vw 1vh 1vw;
 
   background-color: #264d36;
+}
+
+.inviteListHeader > p {
+  color: white;
 }
 
 .inviteContainer {
@@ -56,4 +58,31 @@
   filter: brightness(80%);
   scale: 98%;
   transition: none;
+}
+
+.listContainer {
+  max-height: 75vh;
+  overflow-y: scroll;
+  scrollbar-color: #5a7d5a #f4f9f4;
+  background-color: #264d36;
+}
+
+/* for mobile */
+
+.appContainer > .inviteList {
+  position: relative;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-height: 100vh;
+}
+
+.appContainer > .inviteList > .inviteContainer > .eventBanner {
+  max-height: none;
+}
+
+@media (max-width: 700px) {
+  .listContainer{
+    max-height: 100%;
+  }
 }

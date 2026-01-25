@@ -47,7 +47,6 @@
   background-color: #5a7d5a;
   border: none;
   border-radius: 10px;
-  color: white;
 }
 
 .groupListUser:hover {
@@ -63,4 +62,8 @@
   outline: 2px white solid;
   height: 60%;
   transition: opacity 0.2s;
+}
+
+.groupListUser > .userHeader > .userName {
+  color: white;
 }

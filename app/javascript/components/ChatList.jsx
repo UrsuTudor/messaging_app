@@ -33,10 +33,10 @@ export default function ChatList({ mainDisplay, setMainDisplay, chatList, setCha
           "chat_users",
           setChatList,
           setPagination,
-          pagination.page
+          pagination.page,
         );
       },
-    }
+    },
   );
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function ChatList({ mainDisplay, setMainDisplay, chatList, setCha
         `/api/v1/users/chats?page=${pagination.page}&search=${searchTerm}`,
         "chat_users",
         setChatList,
-        setPagination
+        setPagination,
       );
     }
   }, [scrollBottom, searchTerm]);
@@ -74,7 +74,7 @@ export default function ChatList({ mainDisplay, setMainDisplay, chatList, setCha
   useEffect(() => {
     setDisplaySearchBar(window.innerWidth > 1400);
 
-    const cleanup = handleResize(setDisplaySearchBar);
+    const cleanup = handleResize(setDisplaySearchBar, 1400);
     return cleanup;
   }, []);
 
@@ -121,6 +121,17 @@ export default function ChatList({ mainDisplay, setMainDisplay, chatList, setCha
   return (
     <div className={displaySearchBar ? "chatListContainer widen" : "chatListContainer"}>
       <div className="listHeader">
+        {isMobile && (
+          <div
+            className="chatIconContainer"
+            onClick={() => {
+              setMainDisplay((prev) => prev.slice(0, -1));
+            }}
+            data-testid="chatBackArrow"
+          >
+            <img className="icon" src="arrow-left.svg" />
+          </div>
+        )}
         <h1 className="chatListTitle">Chats</h1>
         <SearchBar
           setPagination={setPagination}
@@ -160,9 +171,9 @@ export default function ChatList({ mainDisplay, setMainDisplay, chatList, setCha
                 };
               });
 
-              // if the user was looking at another chat, I don't want multiple chats to pile in the queue and clog the 
-              // "back button" behavior, considering they can easily re-open a previous chat by clicking on it in the chat 
-              // list; but if the user was looking at something like a profile or an event, I want them to be able to 
+              // if the user was looking at another chat, I don't want multiple chats to pile in the queue and clog the
+              // "back button" behavior, considering they can easily re-open a previous chat by clicking on it in the chat
+              // list; but if the user was looking at something like a profile or an event, I want them to be able to
               // easily go back to that from a chat
               mainDisplay.at(-1)?.type == "chat"
                 ? setMainDisplay((prev) => [...prev.slice(0, -1), { type: "chat", receivers: receivers }])
@@ -197,11 +208,6 @@ export default function ChatList({ mainDisplay, setMainDisplay, chatList, setCha
           </button>
         ))}
       </div>
-      {isMobile && (
-        <>
-          <UserList setMainDisplay={setMainDisplay} />
-        </>
-      )}
     </div>
   );
 }
