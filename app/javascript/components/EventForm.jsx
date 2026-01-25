@@ -16,6 +16,9 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
     coverImage: null,
   });
 
+  let formatted
+  if(event) formatted = new Date(event?.date).toISOString().split("T")[0];
+
   useEffect(() => {
     if (event) {
       setEventDetails({
@@ -112,6 +115,7 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
         </div>
         <h1></h1>
       </div>
+
       <div className="scrollable">
         <div className="eventContainer">
           {imagePreviewUrl && (
@@ -140,6 +144,7 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
             <p className="eventDescription">{eventDetails.description}</p>
           </div>
         </div>
+
         <form
           className="eventForm"
           onSubmit={(e) => {
@@ -153,6 +158,7 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
               className="eventInput"
               type="text"
               placeholder="Event Title"
+              value={eventDetails.title}
               onChange={(e) => {
                 setEventDetails((prev) => ({ ...prev, title: e.target.value }));
               }}
@@ -164,6 +170,7 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
             <input
               className="eventInput"
               type="date"
+              value={formatted}
               onChange={(e) => setEventDetails((prev) => ({ ...prev, date: e.target.value }))}
             />
           </label>
@@ -174,6 +181,7 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
               className="eventInput"
               type="text"
               placeholder="Location"
+              value={event?.location}
               onChange={(e) => {
                 debouncedSearch(e.target.value);
                 setLocationSearchFocus(true);
@@ -197,6 +205,7 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
             <textarea
               className="descriptionInput"
               placeholder="Event Description"
+              value={eventDetails.description}
               onChange={(e) => {
                 setEventDetails((prev) => ({ ...prev, description: e.target.value }));
               }}
@@ -222,6 +231,8 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
               />
             )}
           </div>
+
+          {console.log(event)}
 
           <div className="formBtnsContainer">
             <input
