@@ -56,6 +56,8 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
     return cleanup;
   }, []);
 
+  console.log(displaySearchBar)
+
   return (
     <div className="userListContainer">
       {isMobile && !displaySearchBar && (
@@ -73,7 +75,7 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
             listSetter={setUserList}
             setSearchTerm={setSearchTerm}
             displaySearchBar={displaySearchBar}
-            setDisplaySearchBar={setDisplaySearchBar}
+            setDisplaySearchBar={isMobile ? setDisplaySearchBar : () => {}}
             adaptable={false}
           />
         </div>
