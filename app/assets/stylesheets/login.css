@@ -79,10 +79,10 @@ h1, h2, a {
   transition: height 0.2s, width 0.2s;
 }
 
-.field input:focus {
+.field:not(.rememberBtn) input:focus {
   height: 30px;
   width: 250px;
-  outline: none
+  outline: none;
 }
 
 @media (max-width: 900px) {
