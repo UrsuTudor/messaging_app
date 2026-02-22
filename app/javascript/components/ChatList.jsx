@@ -4,11 +4,10 @@ import useThrottle from "../assets/hooks/useThrottle";
 import usePagination from "../assets/hooks/usePagination";
 import useScrolling from "../assets/hooks/useScrolling";
 import { setNewElements, updateListEndMessage, updateScrollBottom, handleResize } from "../assets/helpers";
-import UserList from "./UserList";
 import SearchBar from "./SearchBar";
 import consumer from "../channels/consumer";
 import UserListForm from "./UserListForm";
-import { reverse } from "lodash";
+import { createChat } from "../assets/helpers";
 
 export default function ChatList({ mainDisplay, setMainDisplay, chatList, setChatList, setDimmed }) {
   const [scrollBottom, setScrollBottom] = useScrolling();
@@ -78,46 +77,6 @@ export default function ChatList({ mainDisplay, setMainDisplay, chatList, setCha
     return cleanup;
   }, []);
 
-  async function createGroup(e, userList) {
-    e.preventDefault();
-    let receiver_uuids = userList.map((user) => user[0].uuid);
-
-    try {
-      const res = await fetch(`/api/v1//chats/open?`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken,
-        },
-        body: JSON.stringify({ chat: { receiver_uuids: receiver_uuids } }),
-      });
-
-      if (!res.ok) {
-        throw new Error("The group could not be created.");
-      }
-
-      const data = await res.json();
-
-      setMainDisplay((prev) => [
-        ...prev,
-        {
-          type: "chat",
-          receivers: userList.map((user) => {
-            return {
-              avatar: user[0].avatar,
-              name: user[0].name,
-              uuid: user[0].uuid,
-              description: user[0].description,
-              chat_id: data.chat_id,
-            };
-          }),
-        },
-      ]);
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
-
   return (
     <div className={displaySearchBar ? "chatListContainer widen" : "chatListContainer"}>
       <div className="listHeader">
@@ -150,7 +109,8 @@ export default function ChatList({ mainDisplay, setMainDisplay, chatList, setCha
             setDimmed={setDimmed}
             setDisplayUserListForm={setDisplayUserListForm}
             setPagination={setPagination}
-            callback={createGroup}
+            callback={createChat}
+            args={[csrfToken, setMainDisplay]}
           />
         )}
       </div>

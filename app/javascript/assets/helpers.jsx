@@ -86,6 +86,46 @@ function updateEventDetails(e, userList, setter, loggedUser) {
   setter((prev) => ({ ...prev, organisers: [loggedUser, ...userList] }));
 }
 
+async function createChat(e, userList, csrfToken, setMainDisplay) {
+    e.preventDefault();
+    let receiver_uuids = userList.map((user) => user[0].uuid);
+
+    try {
+      const res = await fetch(`/api/v1//chats/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({ chat: { receiver_uuids: receiver_uuids } }),
+      });
+
+      if (!res.ok) {
+        throw new Error("The group could not be created.");
+      }
+
+      const data = await res.json();
+
+      setMainDisplay((prev) => [
+        ...prev,
+        {
+          type: "chat",
+          receivers: userList.map((user) => {
+            return {
+              avatar: user[0].avatar,
+              name: user[0].name,
+              uuid: user[0].uuid,
+              description: user[0].description,
+              chat_id: data.chat_id,
+            };
+          }),
+        },
+      ]);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
 export {
   setNewElements,
   updateListEndMessage,
@@ -94,4 +134,5 @@ export {
   handleResize,
   sendOrganiserInvites,
   updateEventDetails,
+  createChat
 };

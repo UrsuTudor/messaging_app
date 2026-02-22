@@ -18,7 +18,7 @@ RSpec.describe "Messages", type: :request do
     receiver = User.create(name: "test", email: "test@mail.com", password: "123123")
 
     # create a chat between the two users
-    post "/api/v1/chats/open", params: { chat: { receiver_uuids: [ receiver.uuid ] } }
+    post "/api/v1/chats/create", params: { chat: { receiver_uuids: [ receiver.uuid ] } }
 
     post "/api/v1/messages/send", params: { message: { content: "hello", receiver_uuids: nil } }
 
@@ -37,7 +37,7 @@ RSpec.describe "Messages", type: :request do
     receiver = User.create(name: "test", email: "test@mail.com", password: "123123")
 
     # create a chat between the two users
-    post "/api/v1/chats/open", params: { chat: { receiver_uuids: [ receiver.uuid ] } }
+    post "/api/v1/chats/create", params: { chat: { receiver_uuids: [ receiver.uuid ] } }
     chat = find_private_chat(User.first.id, receiver.id)
 
     post "/api/v1/messages/send", params: { message: { content: nil, receiver_uuids: [ receiver.uuid ], chat_id: chat.id } }
@@ -48,7 +48,7 @@ RSpec.describe "Messages", type: :request do
   it "creates a message when params are provided" do
     receiver = User.create(name: "test", email: "test@mail.com", password: "123123")
 
-    post "/api/v1/chats/open", params: { chat: { receiver_uuids: [ receiver.uuid ] } }
+    post "/api/v1/chats/create", params: { chat: { receiver_uuids: [ receiver.uuid ] } }
     chat = find_private_chat(receiver.id, User.first.id)
 
     post "/api/v1/messages/send", params: { message: { content: "Hello", receiver_uuids: [ receiver.uuid ], chat_id: chat.id } }
@@ -63,7 +63,7 @@ RSpec.describe "Messages", type: :request do
       receiver3 = User.create(name: "test", email: "test3@mail.com", password: "123123")
 
       expect {
-        post "/api/v1/chats/open", params: { chat: { receiver_uuids: [ receiver1.uuid, receiver2.uuid, receiver3.uuid ] } }
+        post "/api/v1/chats/create", params: { chat: { receiver_uuids: [ receiver1.uuid, receiver2.uuid, receiver3.uuid ] } }
       }.to change(Chat, :count).by(1)
     end
     it "sends messages to group chat" do
@@ -84,7 +84,7 @@ RSpec.describe "Messages", type: :request do
       chat_users = newly_created_chat.users
 
       expect {
-        post "/api/v1/chats/open", params: { chat: { receiver_uuids: [ chat_users[1].uuid ] } }
+        post "/api/v1/chats/create", params: { chat: { receiver_uuids: [ chat_users[1].uuid ] } }
       }.to change(Chat, :count).by(1)
 
       private_chat = Chat.last

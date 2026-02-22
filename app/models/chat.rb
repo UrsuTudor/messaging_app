@@ -18,6 +18,10 @@ class Chat < ApplicationRecord
     membership.destroy!
   end
 
+  def recent_messages
+    messages.order(created_at: :desc)
+  end
+
   class NotEnoughMembersError < StandardError; end
   class NotParticipantError < StandardError; end
 end

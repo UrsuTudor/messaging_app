@@ -232,8 +232,6 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
             )}
           </div>
 
-          {console.log(event)}
-
           <div className="formBtnsContainer">
             <input
               type="file"

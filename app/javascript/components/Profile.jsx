@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../assets/stylesheets/profile.css";
 import EventBanner from "./EventBanner";
+import { createChat } from "../assets/helpers";
 
 export default function Profile({ loggedUser, getLoggedUser, user, setMainDisplay }) {
   const [renderDescriptionForm, setRenderDescriptionForm] = useState(false);
@@ -136,21 +137,7 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
             <button
               className="iconContainer profileIconContainer"
               data-section="description"
-              onClick={() => {
-                setMainDisplay((prev) => [
-                  ...prev,
-                  {
-                    type: "chat",
-                    receivers: [
-                      {
-                        avatar: user[0].avatar,
-                        name: user[0].name,
-                        uuid: user[0].uuid,
-                      },
-                    ],
-                  },
-                ]);
-              }}
+              onClick={(e) => createChat(e, [user], csrfToken, setMainDisplay)}
             >
               <img className="icon" src="bonfire-white.svg" alt="A bonfire icon" />
               <p>Chat with {user[0].name}</p>
@@ -272,13 +259,13 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
 
         {eventListDisplay === "upcoming"
           ? upcomingEvents.length == 0 && (
-              <p className="emptyEventListMsg">
-                {user[0].name} is not participanting in any upcoming events.{" "}
-              </p>
-            )
+            <p className="emptyEventListMsg">
+              {user[0].name} is not participanting in any upcoming events.{" "}
+            </p>
+          )
           : pastEvents.length == 0 && (
-              <p className="emptyEventListMsg">{user[0].name} has not participated in any past events. </p>
-            )}
+            <p className="emptyEventListMsg">{user[0].name} has not participated in any past events. </p>
+          )}
       </div>
     </div>
   );

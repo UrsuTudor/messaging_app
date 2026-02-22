@@ -56,8 +56,6 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
     return cleanup;
   }, []);
 
-  console.log(displaySearchBar)
-
   return (
     <div className="userListContainer">
       {isMobile && !displaySearchBar && (

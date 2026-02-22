@@ -2,34 +2,46 @@ class Api::V1::ChatsController < ApplicationController
   include Pagy::Backend
 
   include ChatFinder
-  def find_or_create
-    return render(json: { error: "No receivers provided" }, status: :unprocessable_entity) unless chat_params["receiver_uuids"]
+  def show
+    return render(json: { error: "No chat id provided" }, status: :unprocessable_entity) unless params[:chat_id]
 
-    receivers = find_receivers(chat_params[:receiver_uuids])
-    chat = receivers.length == 1 ? find_private_chat(current_user.id, receivers[0].id) : nil
+    chat = Chat.find(params[:chat_id])
+    return head :not_found unless chat
+    return head :forbidden unless chat.users.include?(current_user)
 
-    if chat.nil? && chat_params[:chat_id]
-      chat = Chat.find(chat_params[:chat_id])
-    elsif chat.nil?
-      chat = Chat.new(users: [ current_user, *receivers ])
-      unless chat.save
-        return render json: chat.errors
-      end
-
-      ActionCable.server.broadcast("chatList_#{current_user.id}", { signal: "refresh" })
-      receivers.each do |receiver_id|
-        ActionCable.server.broadcast("chatList_#{receiver_id}", { signal: "refresh" })
-      end
-    end
-    return unless chat.users.include?(current_user)
-
-    @pagy, @messages = pagy(chat.messages.order(created_at: :desc), page: params[:page], limit: 20)
+    @pagy, @messages = pagy(chat.recent_messages, page: params[:page], limit: 20)
 
     message_data = @messages.map do |message|
       { content: message.content, user_uuid: message.user.uuid, user_name: message.user.name }
     end
 
-    render json: { chat_id: chat.id, messages: message_data, name: chat.name, metadata: pagy_metadata(@pagy) }
+    render json: { 
+      chat_id: chat.id, 
+      messages: message_data, 
+      name: chat.name, 
+      metadata: pagy_metadata(@pagy) 
+    }
+  end
+
+  def create
+    return render(json: { error: "No receivers provided" }, status: :unprocessable_entity) unless chat_params["receiver_uuids"]
+
+    receivers = find_receivers(chat_params[:receiver_uuids])
+
+    # check needed to distinguish between the user trying to create a private or group chat;
+    # duplicate private chats are rejected, duplicate group chats are not
+    chat = receivers.length == 1 ? find_private_chat(current_user.id, receivers[0].id) : nil
+    return render json: { error: "Private chat already exists" }, status: :conflict if chat
+
+    chat = Chat.new(users: [ current_user, *receivers ])
+    return render json: chat.errors unless chat.save 
+
+    ActionCable.server.broadcast("chatList_#{current_user.id}", { signal: "refresh" })
+    receivers.each do |receiver_id|
+      ActionCable.server.broadcast("chatList_#{receiver_id}", { signal: "refresh" })
+    end
+
+    render json: { chat_id: chat.id, messages: [], name: chat.name }
   end
 
   def update_read_status

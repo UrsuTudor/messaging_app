@@ -68,15 +68,21 @@ The webpage can be viewed here: https://hikers-hub.fly.dev. It uses posrgresql a
 ## API Endpoints
 
 ### Chats
-#### `POST /api/v1/chats/open?page=1`
-
-- return a chat between the currently logged user and another user based on their uuid
-- if a chat between the two does not exist, it creates and returns a new one
-- uses pagination
+#### `GET /api/v1/chats/:chat_id?page=1`
+- returns a chat between the currently logged user and another user based on a chat id
+- uses pagination to return message data
 - parameters:
-  - chat: root paramater
-  - receiver_uuid: type: string, required: yes, description: the uuid of the user that the logged user wants to chat with
-  - page, type: int, required: yes (query param), description: page number for paginated messages
+  - chat_id, type: int, required: yes (path param), description: the id of the chat the user wants displayed
+  - page, type: int, required: no (query param), description: page number for paginated messages
+
+
+#### `POST /api/v1/chats/create`
+  - when 1 receiver_uuid is provided, it creates a private chat is one does not exist already
+  - when more uuids are provided, it creates a group chat
+  - if a chat between the two does not exist, it creates and returns a new one
+  - parameters:
+    - chat: root paramater
+    - receiver_uuid: type: string, required: yes, description: the uuid of the user that the logged user wants to chat with
 
 #### `POST /api/v1/chats/update_read`
 

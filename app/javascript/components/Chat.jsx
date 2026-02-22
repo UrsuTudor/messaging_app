@@ -78,19 +78,9 @@ export default function Chat({ receivers, loggedUser, setMainDisplay, chatList, 
     try {
       setPagination((prev) => ({ ...prev, loading: true }));
 
-      const res = await fetch(`/api/v1/chats/open?page=${page}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken,
-        },
-
-        // using both receivers.chat_id and chat.chat_id, because for new chats receiver won't get automatically updated,
-        // but the chat state will
-        body: JSON.stringify({
-          chat: { receiver_uuids: receiver_uuids, chat_id: receivers[0].chat_id || chat.chat_id },
-        }),
-      });
+      const res = await fetch(`/api/v1/chats/${receivers[0].chat_id}?page=${page}`, {
+        method: "GET"
+      })
 
       if (!res.ok) {
         throw new Error(`The chat could not be opened.`);
