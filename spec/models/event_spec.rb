@@ -18,7 +18,7 @@ RSpec.describe Event, type: :model do
     end
 
     it "adds an error about file size when the image is too large" do
-      large_data = "0" * (6 * 1024 * 1024)
+      large_data = "0" * (16 * 1024 * 1024)
       event.cover_image.attach(
         io: StringIO.new(large_data),
         filename: "large.jpg",
@@ -27,7 +27,7 @@ RSpec.describe Event, type: :model do
 
       event.validate
       expect(event.errors[:cover_image]).to include(
-        "Image size is too large. The avatar needs to be under 5 MB in size."
+        "Image size is too large. The avatar needs to be under 15 MB in size."
       )
     end
 

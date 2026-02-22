@@ -12,6 +12,17 @@ The webpage can be viewed here: https://hikers-hub.fly.dev. It uses posrgresql a
 - Backend: Ruby on Rails
 - Database PostgreSQL
 
+## What I would have done differently
+
+- I would be more aware of the need for a mobile layout from the start and structure my components in a way that would make them less bloated with state. A fair amount of the state they share is state needed to display or hide child components during mobile rendering. (I have refactored my components into a setup that is cleaner since writing this.)
+- I would have paid closer attention to MVC principles. Currently, my controllers are bloated with bussiness logic that should belong to the Models
+
+## To do
+
+- Refactor backend code to make the controllers more slim
+- Write frontend tests
+- Add the ability for users to be invited to events as participants, not just as organisers
+
 ## Getting Started
 
 1. Clone the repo
@@ -253,14 +264,3 @@ The webpage can be viewed here: https://hikers-hub.fly.dev. It uses posrgresql a
 - Parameters:
   - event: root parameter
   - id: type: string, required: yes, description: the ID of the event to delete
-
-## What I would have done differently
-
-- I would be more aware of the need for a mobile layout from the start and structure my components in a way that would make them less bloated with state. A fair amount of the state they share is state needed to display or hide child components during mobile rendering. (I have refactored my components into a setup that is cleaner since writing this.)
-- I would have paid closer attention to MVC principles. Currently, my controllers are bloated with bussiness logic that should belong to the Models
-
-## To do
-
-- Refactor backend code to make the controllers more slim
-- Write frontend tests
-- Add the ability for users to be invited to events as participants, not just as organisers

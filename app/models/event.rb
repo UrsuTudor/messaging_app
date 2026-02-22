@@ -25,6 +25,6 @@ class Event < ApplicationRecord
 
     errors.add(:cover_image, "Not a valid image type. The avatar needs to be in jpeg/png format.") unless valid_types.include?(cover_image.blob.content_type)
 
-    errors.add(:cover_image, "Image size is too large. The avatar needs to be under 5 MB in size.") unless cover_image.blob.byte_size <= max_size
+    errors.add(:cover_image, "Image size is too large. The avatar needs to be under 15 MB in size.") unless cover_image.blob.byte_size <= max_size
   end
 end
