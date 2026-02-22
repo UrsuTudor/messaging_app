@@ -2,9 +2,6 @@ Rails.application.routes.draw do
   devise_for :users
   root "api/v1/homepage#index"
 
-  # fix chat create
-  # make open a get route
-
   namespace :api do
     namespace :v1 do
       get "chats/:chat_id", to: "chats#show"

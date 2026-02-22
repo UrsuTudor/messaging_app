@@ -27,4 +27,30 @@ class Event < ApplicationRecord
 
     errors.add(:cover_image, "Image size is too large. The avatar needs to be under 15 MB in size.") unless cover_image.blob.byte_size <= max_size
   end
+
+  def add_participant(current_user)
+    event_memberships.create!(
+      user_id: current_user.id, 
+      role: "participant", 
+      status: "accepted"
+    )
+  end
+
+  def add_organisers(user_list)
+    user_list.each do |org|
+      user = User.find_by(uuid: org)
+      next unless user
+
+      membership = EventMembership.find_or_initialize_by(
+        user_id: user.id, 
+        event_id: self.id
+      )
+
+      next if membership.role == "organiser"
+
+      membership.role = "organiser"
+      membership.status = "pending"
+      membership.save!
+    end
+  end
 end

@@ -7,7 +7,7 @@ class Api::V1::EventMembershipsController < ApplicationController
 
     @pagy, @memberships = pagy(
       event.event_memberships
-          .where(role: EventMembership.roles[params[:search]])
+          .where(role: EventMembership.roles[params[:search]]) # either organisers or participants
           .distinct,
       page: params[:page],
       limit: 20
@@ -31,21 +31,10 @@ class Api::V1::EventMembershipsController < ApplicationController
 
     if event_membership_params[:role] == "participant"
       return render json: { error: "User is already a participant" }, status: :unprocessable_content  if event.event_memberships.exists?(user_id: current_user.id)
-      event.event_memberships.create!(user_id: current_user.id, role: "participant", status: "accepted")
+      event.add_participant(current_user)
     elsif event_membership_params[:role] == "organiser"
       return head :forbidden unless event.organisers.exists?(current_user.id)
-
-      event_membership_params[:user_uuids].each do |org|
-        user = User.find_by(uuid: org)
-        next unless user
-
-        membership = EventMembership.find_or_initialize_by(user_id: user.id, event_id: event.id)
-        next if membership.role == "organiser"
-
-        membership.role = "organiser"
-        membership.status = "pending"
-        membership.save!
-      end
+      event.add_organisers(event_membership_params[:user_uuids])
     end
 
     render json: { message: "Membership created successfully" }, status: :ok
