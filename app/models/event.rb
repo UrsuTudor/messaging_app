@@ -17,6 +17,18 @@ class Event < ApplicationRecord
   validates :description, length: { maximum: 2000 }
   validate :validate_cover_image
 
+  scope :upcoming, -> { where("date >= ?", Date.today) }
+  scope :search, ->(term) {
+    where("title ILIKE :search OR location ILIKE :search", search: "%#{term}")
+  }
+  scope :excluding_user_already_member, ->(user) {
+    where.not(
+      id: EventMembership
+              .where(user_id: user.id, status: "accepted")
+              .select(:event_id)
+    )
+  }
+
   def validate_cover_image
     return unless cover_image.attached?
 
@@ -26,6 +38,18 @@ class Event < ApplicationRecord
     errors.add(:cover_image, "Not a valid image type. The avatar needs to be in jpeg/png format.") unless valid_types.include?(cover_image.blob.content_type)
 
     errors.add(:cover_image, "Image size is too large. The avatar needs to be under 15 MB in size.") unless cover_image.blob.byte_size <= max_size
+  end
+
+  def self.create_with_organiser!(params, user)
+    transaction do
+      event = create!(params)
+      event.event_memberships.create!(
+        user: user,
+        role: "organiser",
+        status: "accepted"
+      )
+      event
+    end
   end
 
   def add_participant(current_user)
@@ -53,4 +77,13 @@ class Event < ApplicationRecord
       membership.save!
     end
   end
+
+  def organised_by?(user)
+    organisers.exists?(user.id)
+  end
+
+  def one_organiser?
+    organisers.count == 1
+  end
+
 end

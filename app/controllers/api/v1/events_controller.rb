@@ -2,15 +2,11 @@ class Api::V1::EventsController < ApplicationController
   include Pagy::Backend
 
   def index
-    search = "%#{params[:search]}%"
-
     events = Event
-        .where.not(
-          id: EventMembership.where(user_id: current_user.id, status: "accepted").select(:event_id)
-        )
-        .where("title ILIKE :search OR location ILIKE :search", search: search)
-        .where("date >= ?", Date.today)
-        .distinct
+                .upcoming
+                .search(params[:search])
+                .excluding_user_already_member(current_user)
+                .distinct
 
     @pagy, @events = pagy(events, page: params[:page], limit: 20)
 
@@ -21,8 +17,7 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def show
-    event = Event.find_by(id: params[:id])
-    return "The event could not be found.", status: :not_found unless event
+    event = Event.includes(:organisers, :participants).find(params[:id])
 
     render json: {
       id: event.id,
@@ -39,32 +34,24 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def create
-    event = Event.new(title: event_params[:title],
-                      description: event_params[:description],
-                      date: event_params[:date],
-                      location: event_params[:location],
-                      cover_image: event_params[:cover_image]
-    )
+    event = Event.create_with_organiser!(event_params, current_user)
 
-    if event.save
-      event.event_memberships.create!(user_id: current_user.id, role: "organiser", status: "accepted")
+    render json: { 
+      event_id: event.id, 
+      title: event.title, 
+      description: event.description, 
+      organisers: [ user_data(current_user) ], 
+      date: event.date 
+    }, status: :created
 
-      render json: { event_id: event.id,
-                     title: event.title,
-                     description: event.description,
-                     organisers: [ user_data(current_user) ],
-                     date: event.date
-                    }
-    else
-      render json: event.errors, status: :unprocessable_entity
-    end
+  rescue ActiveRecord::RecordInvalid => event
+    render json: event.record.errors, status: :unprocessable_entity
   end
 
   def update
-    event = Event.find_by(id: event_params[:id])
+    event = Event.find(event_params[:id])
 
-    return head :not_found unless event
-    return head :forbidden unless event.organisers.include?(current_user)
+    return head :forbidden unless event.organised_by?(current_user)
 
     if event.update(event_params)
       render json: { event_id: event.id, message: "Update successful" }
@@ -74,10 +61,9 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def destroy
-    event = Event.find_by(id: event_params[:id])
-    return head :not_found unless event
+    event = Event.find(event_params[:id])
 
-    authorised = event.organisers.include?(current_user) && event.organisers.count == 1
+    authorised = event.organised_by?(current_user) && event.one_organiser?
     return head :forbidden unless authorised
 
     event.destroy!
@@ -85,30 +71,7 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def locations
-    api_key = ENV["PLACES_API_KEY"]
-
-    response = HTTParty.post(
-      "https://places.googleapis.com/v1/places:searchText",
-      headers: {
-        "Content-Type" => "application/json",
-        "X-Goog-Api-Key" => api_key,
-        "X-Goog-FieldMask" => "places.displayName,places.formattedAddress,places.id"
-      },
-      body: {
-        textQuery: params[:search]
-      }.to_json
-    )
-
-    # normalized for simplicity on the frontend
-    return render json: { locations: [ { name: "No location found", id: "fakekey" } ] } unless response["places"]
-
-    locations = response["places"].map do |location|
-      {
-        name: location["displayName"]["text"] + ", " + location["formattedAddress"],
-        id: location["id"]
-      }
-    end
-
+    locations = PlacesApiService.new.search(params[:search])
     render json: { locations: locations }
   end
 
