@@ -7,24 +7,14 @@ class Api::V1::MessagesController < ApplicationController
     receivers = find_receivers(message_params[:receiver_uuids]).map(&:id)
 
     chat = Chat.find(message_params[:chat_id])
-    return render json: { error: "Chat not found" }, status: :not_found unless chat
-    return unless chat.users.include?(current_user)
+    return unless chat.user_is_member?(current_user)
 
     message = Message.new(chat: chat, user: current_user, content: message_params[:content])
 
     if message.save
-      ActionCable.server.broadcast("chat_#{chat.id}", {
-        content: message.content,
-        user_uuid: message.user.uuid,
-        user_name: message.user.name
-      })
+      ChatNotifierService.new.call(chat, message, receivers)
 
-      receivers.each do |receiver_id|
-        membership = chat.chat_memberships.find_by(user_id: receiver_id)
-        membership.update(read: false) if membership
-
-        ActionCable.server.broadcast("chatList_#{receiver_id}", { signal: "refresh" })
-      end
+      render json: {message:"Message created"}, status: :created
     else
       render json: message.errors, status: :unprocessable_entity
     end

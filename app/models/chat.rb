@@ -22,6 +22,14 @@ class Chat < ApplicationRecord
     messages.order(created_at: :desc)
   end
 
+  def user_is_member?(user)
+    users.exists?(user.id)
+  end
+
+  def get_membership(user_id)
+    chat_memberships.find_by(user_id: user_id)
+  end
+
   class NotEnoughMembersError < StandardError; end
   class NotParticipantError < StandardError; end
 end
