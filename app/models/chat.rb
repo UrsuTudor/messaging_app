@@ -30,6 +30,15 @@ class Chat < ApplicationRecord
     chat_memberships.find_by(user_id: user_id)
   end
 
+  # returns an array of users, filtering them based on the search_term and a uuid array
+  def filter_users(search_term, uuids_to_filter)
+    self.users.select do |user|
+      uuids_to_filter.exclude?(user.uuid) &&
+        (user.name.downcase.include?(search_term) ||
+        self.name&.downcase&.include?(search_term))
+    end
+  end
+
   class NotEnoughMembersError < StandardError; end
   class NotParticipantError < StandardError; end
 end

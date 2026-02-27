@@ -25,6 +25,39 @@ class User < ApplicationRecord
     errors.add(:avatar, "Image size is too large. The avatar needs to be under 5 MB in size.") unless avatar.blob.byte_size <= max_size
   end
 
+  # returns a list of users that have a private chat with the user
+  def users_with_private_chat(search_term = "")
+    private_chats = Chat.joins(:users)
+      .where(users: { id: self.id })
+      .group("chats.id")
+      .having("COUNT(users.id) = 2")
+
+    pattern = "%#{search_term}%"
+    
+    User.joins(:chats)
+        .where(chats: { id: private_chats.select(:id) })
+        .where.not(id: self.id)
+        .where(
+          "users.name ILIKE :pattern OR chats.name ILIKE :pattern",
+          pattern: pattern
+        )
+  end
+
+  # returns a list of chats, ordered by most recent messages
+  def recent_chats(search_term = "")
+    pattern = "%#{search_term}%"
+
+    self.chats
+      .left_joins(:messages, :users)
+      .includes(:messages, :users)
+      .where(
+          "users.name ILIKE :pattern OR chats.name ILIKE :pattern",
+          pattern: pattern
+      )
+      .group("chats.id")
+      .order(Arel.sql("MAX(messages.created_at) DESC NULLS LAST"))
+  end
+
   private
 
   def assign_uuid
