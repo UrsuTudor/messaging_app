@@ -23,8 +23,10 @@ dave2 = User.create(name: "Dave2", email: "dave2@mail.com", password: "dave2123"
 User.create(name: "Ash", email: "ash@mail.com", password: "ash123")
 
 (3..25).each do |i|
-  FactoryBot.create(:chat, users: [ dave1, User.find(i) ])
+  chat = Chat.create!(name: "Chat #{i}")
+  chat.users << dave1
+  chat.users << User.find(i)
 end
 
-chat = FactoryBot.create(:chat, users: [ dave1, dave2 ], name: "Test Chat")
+chat = Chat.create!(name: "Test Chat", users: [dave1, dave2])
 FactoryBot.create_list(:message, 25, chat: chat, user: User.second)
