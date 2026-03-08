@@ -27,20 +27,45 @@ class User < ApplicationRecord
 
   # returns a list of users that have a private chat with the user
   def users_with_private_chat(search_term = "")
-    private_chats = Chat.joins(:users)
-      .where(users: { id: self.id })
-      .group("chats.id")
-      .having("COUNT(users.id) = 2")
-
-    pattern = "%#{search_term}%"
+    private_chats = chats 
+        .joins(:users) 
+        .group("chats.id") 
+        .having("COUNT(users.id) = 2")
     
-    User.joins(:chats)
+    users = User.joins(:chats)
         .where(chats: { id: private_chats.select(:id) })
         .where.not(id: self.id)
-        .where(
-          "users.name ILIKE :pattern OR chats.name ILIKE :pattern",
-          pattern: pattern
-        )
+
+    unless search_term.blank?
+      pattern = "%#{search_term}%"
+      users = users.where(
+        "users.name ILIKE :pattern OR chats.name ILIKE :pattern",
+        pattern: pattern
+      )
+    end
+
+    users
+  end
+
+  def users_without_private_chat(search_term = "")
+    private_chats = chats 
+      .joins(:users) 
+      .group("chats.id") 
+      .having("COUNT(users.id) = 2")
+    
+    users = User.left_outer_joins(:chats)
+        .where("chats.id IS NULL OR chats.id NOT IN (?)", private_chats.select(:id))
+        .where.not(id: self.id)
+    
+    unless search_term.blank?
+      pattern = "%#{search_term}%"
+      users = users.where(
+        "users.name ILIKE :pattern",
+        pattern: pattern
+      )
+    end
+
+    users
   end
 
   # returns a list of chats, ordered by most recent messages

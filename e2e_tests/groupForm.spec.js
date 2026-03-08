@@ -3,6 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("groupForm tests", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:3001");
+    await expect(page.getByRole("button", { name: "Test Chat" })).toHaveCount(1);
     await page.getByRole("img", { name: "Create a group" }).click();
     await expect(page.getByRole("img", { name: "close group form" })).toBeVisible();
   });
@@ -23,15 +24,15 @@ test.describe("groupForm tests", () => {
 
     test("displays the create button when a user is added to staging", async ({ page }) => {
       await page.getByTestId("groupFormUserBtn").first().click();
-      await expect(page.getByRole("button", { name: "create" })).not.toHaveClass(/hidden/);
+      await expect(page.getByRole("button", { name: "submit" })).not.toHaveClass(/hidden/);
     });
 
     test("hides the create button when all users are removed from staging", async ({ page }) => {
       await page.getByTestId("groupFormUserBtn").first().click();
-      await expect(page.getByRole("button", { name: "create" })).toBeVisible();
+      await expect(page.getByRole("button", { name: "submit" })).toBeVisible();
 
       await page.getByRole("img", { name: "remove user from group" }).first().click()
-      await expect(page.getByRole("button", { name: "Create", exact: true })).toHaveClass(/hidden/);
+      await expect(page.getByRole("button", { name: "Submit", exact: true})).toHaveClass(/hidden/);
     })
   });
 
@@ -44,8 +45,8 @@ test.describe("groupForm tests", () => {
 
     test("sends a request to create a group with the selected users", async ({ page }) => {
       const [request] = await Promise.all([
-        page.waitForRequest((req) => req.url().includes("api/v1/chats/open") && req.method() === "POST"),
-        page.getByRole("button", { name: "Create" }).click(),
+        page.waitForRequest((req) => req.url().includes("/api/v1//chats/create") && req.method() === "POST"),
+        page.getByRole("button", { name: "Submit" }).click(),
       ]);
 
       expect(request.postDataJSON()['chat']['receiver_uuids'].length).toBe(4)
@@ -55,8 +56,8 @@ test.describe("groupForm tests", () => {
       await page.getByRole("img", { name: "remove user from group" }).first().click()
 
       const [request] = await Promise.all([
-        page.waitForRequest((req) => req.url().includes("api/v1/chats/open") && req.method() === "POST"),
-        page.getByRole("button", { name: "Create" }).click(),
+        page.waitForRequest((req) => req.url().includes("/api/v1//chats/create") && req.method() === "POST"),
+        page.getByRole("button", { name: "Submit" }).click(),
       ]);
 
       expect(request.postDataJSON()['chat']['receiver_uuids'].length).toBe(3)

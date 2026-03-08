@@ -67,10 +67,7 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
       {!listToShow[0] && displaySearchBar && (
         <div>
           <SearchBar
-            route={`/api/v1/users/list?page=1`}
-            dataKey={"users"}
             setPagination={setPagination}
-            listSetter={setUserList}
             setSearchTerm={setSearchTerm}
             displaySearchBar={displaySearchBar}
             setDisplaySearchBar={isMobile ? setDisplaySearchBar : () => {}}

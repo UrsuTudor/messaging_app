@@ -73,6 +73,7 @@ export default function UserListForm({
                   setUserList((prev) => prev.filter((u) => u[0].uuid !== user[0].uuid));
                   setChats((prev) => [user, ...prev]);
                 }}
+                testid="groupFormUser"
               >
                 <div className="userHeader">
                   <h4 className="userName">{user[0].name}</h4>

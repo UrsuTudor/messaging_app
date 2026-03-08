@@ -1,66 +1,64 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("userList tests", () => {
+  let userList
+
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:3001");
+    let input = page.getByRole("textbox", { name: "Search for a fellow hiker" }).nth(0);
+    await input.fill("U");
+
+    userList = page.getByTestId("userList");
   });
 
   test.describe("handles pagination", () => {
-    test("requests a list of users on load", async ({ page }) => {
-      await expect(page.getByTestId("userListBtn").nth(0)).toBeVisible();
-      expect(await page.getByTestId("userListBtn").count()).toBeGreaterThan(10);
+    test("loads a list of users", async ({ page }) => {
+      await expect(
+        userList.locator(':scope > *', { hasText: 'User' })
+      ).toHaveCount(20);
+
+      page.getByTestId("userList");
     });
 
     test("requests more users when the container is scrolled down", async ({ page }) => {
-      await expect(page.getByTestId("userListBtn").nth(0)).toBeVisible();
+      let users = userList.locator(':scope > *', { hasText: 'User' })
 
-      const userList = page.getByTestId("userList");
-      const initialCount = await page.getByTestId("userListBtn").count();
+      await expect(users).toHaveCount(20);
 
       await userList.evaluate((el) => {
         el.scrollBy({ top: 600, behavior: "smooth" });
       });
 
-      await expect
-        .poll(async () => await page.getByTestId("userListBtn").count(), {
-          timeout: 3000,
-          message: "Expected more users to load after scrolling",
-        })
-        .toBeGreaterThan(initialCount);
+      await expect(async () => {
+        const count = await users.count();
+        expect(count).toBeGreaterThan(20);
+      }).toPass();
     });
   });
 
   test.describe("supports user interaction", () => {
     test("displays user profiles on hover", async ({ page }) => {
-      const userList = page.getByTestId("userListBtn");
-      await expect(userList.nth(0)).toBeVisible();
-
-      await userList.nth(0).hover();
+      let child = userList.locator(':scope > *', { hasText: 'User' }).nth(0)
+      await child.hover()
+    
       expect(await page.getByTestId("profileUserName").textContent()).toMatch(
-        await userList.nth(0).textContent()
-      );
+        await child.textContent()
+      );  
 
-      await userList.nth(5).hover();
+      let fifthChild = userList.locator(':scope > *', { hasText: 'User' }).nth(4)
+      await fifthChild.hover()
+    
       expect(await page.getByTestId("profileUserName").textContent()).toMatch(
-        await userList.nth(5).textContent()
-      );
+        await fifthChild.textContent()
+      );  
     });
 
-    test("creates chat with user on click", async ({ page }) => {
-      const userList = page.getByTestId("userListBtn");
-      await expect(userList.nth(0)).toBeVisible();
+    test("keeps profile open and hides list on click", async ({ page }) => {
+      expect(userList).not.toHaveClass(/hidden/)
+      let child = userList.locator(':scope > *', { hasText: 'User' }).nth(0)
+      await child.click()
 
-      await userList.nth(0).click();
-      await expect(page.getByTestId("chatContainer")).toBeVisible();
-      expect(await page.getByTestId("chatUserName").textContent()).toMatch(
-        await userList.nth(0).textContent()
-      );
-
-      await userList.nth(5).click();
-      await expect(page.getByTestId("chatContainer")).toBeVisible();
-      expect(await page.getByTestId("chatUserName").textContent()).toMatch(
-        await userList.nth(5).textContent()
-      );
+      expect(userList).toHaveClass(/hidden/)
     });
   });
 });

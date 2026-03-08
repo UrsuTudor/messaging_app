@@ -2,13 +2,15 @@ class Api::V1::UsersController < ApplicationController
   include Pagy::Backend
   def index
     @pagy, @users = pagy(
-      User.where.not(id: current_user.users_with_private_chat(params[:search]).select(:id)),
+      User.where(id: current_user.users_without_private_chat(params[:search]).select(:id)),
       page: params[:page],
       limit: 20
     )
 
+    user_data = @users.map { |user| UserSerializer.new(user).safe_data }
+
     render json: {
-      users: @users.map { |user| UserSerializer.new(user).safe_data },
+      users: user_data,
       metadata: pagy_metadata(@pagy)
     }
   end
@@ -16,7 +18,7 @@ class Api::V1::UsersController < ApplicationController
   def users_with_private_chat
     users = current_user.users_with_private_chat(params[:search])
 
-    render json: { chat_users: users.map { |u| UserSerializer.new(u).safe_data} }
+    render json: { chat_users: users.map { |u| [UserSerializer.new(u).safe_data]} }
   end
 
   def paginated_users_with_chat
