@@ -89,4 +89,40 @@ test.describe("chatList tests", () => {
       await expect(page.getByRole("img", { name: "message notification" })).toHaveCount(0);
     });
   });
+
+  test("opens group form", async({page}) => {
+    await page.getByAltText("Create a group").click()
+
+    expect(page.locator(".dimmed")).toBeVisible()
+  })
+
+  test.describe("search bar display", () => {
+    test("displays search button on smaller screens", async({page}) => {
+      page.setViewportSize({width: 1300, height: 900})
+
+      expect(page.getByAltText("search")).toBeVisible()
+    })
+
+    test("shows search bar when button is clicked on smaller screens", async({page}) => {
+      page.setViewportSize({width: 1300, height: 900})
+
+      const searchBtn = page.getByAltText("search")
+      await searchBtn.click()
+
+      expect(searchBtn).not.toBeVisible()
+      expect(page.getByRole('textbox', { name: 'Search for a fellow hiker' }).nth(1)).toBeVisible()
+    })
+
+    test("hides search bar when focus is lost", async({page}) => {
+      page.setViewportSize({width: 1300, height: 900})
+      await page.getByAltText("search").click()
+
+      const searchBar = page.getByRole('textbox', { name: 'Search for a fellow hiker' }).nth(1)
+
+      await searchBar.blur()
+
+      expect(searchBar).not.toBeVisible()
+      expect(page.getByAltText("search")).toBeVisible()
+    })
+  })
 });
