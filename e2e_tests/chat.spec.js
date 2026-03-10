@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import { before } from "lodash";
 
 test.describe("chat tests", () => {
   test.beforeEach(async ({ page }) => {
@@ -102,5 +101,51 @@ test.describe("chat tests", () => {
       const msgLocator = user2Page.getByTestId("msg");
       await expect(msgLocator).toHaveCount(msgNumberCount + 1);
     });
+
+    test("allows the user to open a menu list", async({page}) => {
+      const menu = page.locator(".menuBtn")
+      await menu.click();
+
+      expect(page.getByRole("button", {name:"Add User"})).toBeVisible()
+      expect(page.getByRole("button", {name:/Members/})).toBeVisible()
+    })
+
+    test("displays member list from menu", async({page}) => {
+      await page.locator(".menuBtn").click()
+      await page.getByText(/Members/).click()
+      
+      expect(page.locator(".memberList")).toBeVisible()
+    })
+
+    test("displays group form from menu", async({page}) => {
+      await page.locator(".menuBtn").click()
+      await page.getByText(/Add User/).click()
+      
+      // using dimmed as a sign the group form has been rendered
+      // multiple group forms may be rendered on the screen in the future, for whatever reason, but
+      // dimming the page should be somehting only a single, central form does
+      expect(page.locator(".dimmed")).toBeVisible()
+    })
+
+    test("hides menu if it is already open and the user clicks the button again", async({page}) => {
+      const menu = page.locator(".menuBtn")
+      await menu.click();
+
+      expect(page.getByRole("button", {name:"Add User"})).toBeVisible()
+
+      await menu.click();
+      expect(page.getByRole("button", {name:"Add User"})).not.toBeVisible()
+    })
+
+    test("hides the menu user list when the menu button is clicked again", async({page}) => {
+      await page.locator(".menuBtn").click()
+      await page.getByText(/Members/).click()
+      
+      expect(page.locator(".memberList")).toBeVisible()
+
+      await page.locator(".menuBtn").click()
+    
+      expect(page.locator(".memberList")).not.toBeVisible()
+    })
   });
 });
