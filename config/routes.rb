@@ -30,6 +30,9 @@ Rails.application.routes.draw do
       post "events/create", to: "events#create"
       post "events/update", to: "events#update"
       delete "events/delete", to: "events#destroy"
+
+      post "test/event_membership", to: "test_helpers#create_event_invite"
+      post "test/future_event", to: "test_helpers#create_future_event"
     end
   end
 

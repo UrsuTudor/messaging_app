@@ -91,7 +91,7 @@ async function createChat(e, userList, csrfToken, setMainDisplay) {
     let receiver_uuids = userList.map((user) => user[0].uuid);
 
     try {
-      const res = await fetch(`/api/v1//chats/create`, {
+      let res = await fetch(`/api/v1//chats/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -101,10 +101,18 @@ async function createChat(e, userList, csrfToken, setMainDisplay) {
       });
 
       if (!res.ok) {
-        throw new Error("The group could not be created.");
+        console.log("The chat could not be created.");
       }
 
-      const data = await res.json();
+      let data = await res.json();
+
+      if (res.conflict) {
+        res = await fetch(`/api/v1/chats/${data.chat_id}`, {
+          method: "GET"
+        })
+
+        data = await res.json()
+      }
 
       setMainDisplay((prev) => [
         ...prev,

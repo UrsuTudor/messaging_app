@@ -31,7 +31,7 @@ class Api::V1::ChatsController < ApplicationController
     # check needed to distinguish between the user trying to create a private or group chat;
     # duplicate private chats are rejected, duplicate group chats are not
     chat = receivers.length == 1 ? find_private_chat(current_user.id, receivers[0].id) : nil
-    return render json: { error: "Private chat already exists" }, status: :conflict if chat
+    return render json: { chat_id: chat.id, error: "Private chat already exists" }, status: :conflict if chat
 
     chat = Chat.new(users: [ current_user, *receivers ])
     return render json: chat.errors unless chat.save 

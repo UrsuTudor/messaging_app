@@ -1,9 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test.describe("navbar tests", () => {
-  test('opens profile and returns home', async({page}) => {
-    await page.goto("http://localhost:3001")
+  test.beforeEach(async ({ page }) => {
+    await page.goto("http://localhost:3001");
+  });
 
+  test('opens profile and returns home', async({page}) => {
     const profileBtn = page.getByTestId("profileBtn")
     await profileBtn.click();
 
@@ -11,16 +13,23 @@ test.describe("navbar tests", () => {
     await expect(homeBtn).toBeInViewport();
     await homeBtn.click();
 
+
     await expect(profileBtn).toBeInViewport();
   });
 
   test('logs user out', async({page}) => {
-    await page.goto("http://localhost:3001")
-
     await page.getByRole("button", {name: "Log Out"}).click();
 
     await expect(page.getByRole("button", {name: "Log in"})).toBeInViewport();
   });
+
+  test('displays events that the user has been invited to', async({page, request}) => {
+    await request.post("/api/v1/test_helpers/create_event_invite")
+    await page.reload()
+    await page.getByAltText("View your invites").click()
+
+    await expect(page.getByRole("button", {name: "Accept"})).toBeVisible()
+  })
 })
 
 

@@ -89,4 +89,36 @@ test.describe("profile tests", () => {
       expect(requests.length).toBe(0);
     });
   });
+
+  test.describe("event display tests", () => {
+    test.beforeAll(async ({request}) => {
+      await request.post("/api/v1/test_helpers/create_event_invite")
+    })
+
+    test("displays future and past events", async({page}) => {
+      await expect(page.getByText("Future Test Event")).toBeVisible()
+
+      await page.getByText("Old").click()
+      await expect(page.getByText("Test Event")).toBeVisible()
+    })
+  })
+
+  test("opens existing chat with user", async({page}) => {
+    await page.getByText("Test Chat").click()
+    await page.getByTestId("chatUserName").click()
+
+    await page.getByText(/Chat with/).click()
+    await expect(page.getByTestId("chatUserName")).toBeVisible()
+  })
+
+  test("opens new chat with user", async({page}) => {
+    let input = page.getByRole("textbox", { name: "Search for a fellow hiker" }).first();
+
+    await input.fill("U");
+  
+    await page.getByText(/User/).first().click()
+
+    await page.getByText(/Chat with/).click()
+    await expect(page.getByTestId("chatUserName")).toBeVisible()
+  })
 });
