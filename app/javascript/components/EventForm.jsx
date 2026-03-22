@@ -23,6 +23,8 @@ export default function EventForm({
     coverImage: null,
   })
 
+  let [errorMsg, setErrorMsg] = useState(null)
+
   let formatted
   if (event) formatted = new Date(event?.date).toISOString().split("T")[0]
 
@@ -58,6 +60,7 @@ export default function EventForm({
   }, [eventDetails.description])
 
   async function createEvent(e) {
+    setErrorMsg(null)
     e.preventDefault()
 
     const formData = new FormData()
@@ -79,12 +82,20 @@ export default function EventForm({
       })
 
       if (!res.ok) {
+        setErrorMsg([
+          "Event must have a title (200 characters max).",
+          "Date must be selected.",
+          "Description cannot go over 2000 characters.",
+          "Image format must be jpg/png and not over 15MB.",
+        ])
+
         throw new Error(`We couldn't ${action} the event.`)
       }
 
       const data = await res.json()
       sendOrganiserInvites(e, eventDetails.organisers, data.event_id, csrfToken)
       getLoggedUser()
+      setMainDisplay((prev) => prev.slice(0, -1))
     } catch (error) {
       console.error(error.message)
     }
@@ -164,9 +175,15 @@ export default function EventForm({
           className="eventForm"
           onSubmit={(e) => {
             createEvent(e)
-            setMainDisplay((prev) => prev.slice(0, -1))
           }}
         >
+          {errorMsg && (
+            <ul>
+              {errorMsg.map((msg) => (
+                <li key={msg}>{msg}</li>
+              ))}
+            </ul>
+          )}
           <label>
             Title:
             <input
@@ -208,6 +225,7 @@ export default function EventForm({
               locations.map((location) => (
                 <button
                   key={location.id}
+                  type="button"
                   onClick={() => {
                     setLocationSearchFocus(false)
                     setEventDetails((prev) => ({

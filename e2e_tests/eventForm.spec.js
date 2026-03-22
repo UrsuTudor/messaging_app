@@ -12,7 +12,6 @@ test.describe("eventForm tests", () => {
     await expect(page.getByLabel("Title")).toBeVisible()
   })
 
-  // RETEST THIS MANUALLY TO SEE VALUE OF NTH
   test("renders current user as an organiser", async ({ page }) => {
     let count = await page.getByAltText("Dave's profile picture").count()
     expect(count).toBe(2)
@@ -66,5 +65,11 @@ test.describe("eventForm tests", () => {
       const request = await requestPromise
       expect(request.url()).toContain("search=London")
     })
+  })
+
+  test("displays error messages", async ({ page }) => {
+    await page.getByText("Post event").click()
+
+    await expect(page.getByText("15MB")).toBeVisible()
   })
 })
