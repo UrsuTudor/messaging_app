@@ -19,7 +19,7 @@ class Event < ApplicationRecord
 
   scope :upcoming, -> { where("date >= ?", Date.today) }
   scope :search, ->(term) {
-    where("title ILIKE :search OR location ILIKE :search", search: "%#{term}")
+    where("title ILIKE :search OR location ILIKE :search", search: "%#{term}%")
   }
   scope :excluding_user_already_member, ->(user) {
     where.not(

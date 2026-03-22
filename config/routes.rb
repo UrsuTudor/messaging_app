@@ -32,7 +32,12 @@ Rails.application.routes.draw do
       delete "events/delete", to: "events#destroy"
 
       post "test/event_membership", to: "test_helpers#create_event_invite"
+      post "test/delete_event_memberships", to: "test_helpers#delete_event_invites"
       post "test/future_event", to: "test_helpers#create_future_event"
+      post "test/past_event", to: "test_helpers#create_past_event"
+      post "test/future_events", to: "test_helpers#create_future_events"
+      post "test/past_events", to: "test_helpers#create_past_events"
+      delete "test/delete_events", to: "test_helpers#delete_test_events"
     end
   end
 

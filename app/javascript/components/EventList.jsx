@@ -1,48 +1,54 @@
-import React, { use, useEffect, useState, useRef } from "react";
-import EventBanner from "./EventBanner";
-import SearchBar from "./SearchBar";
-import { setNewElements, updateScrollBottom } from "../assets/helpers";
-import usePagination from "../assets/hooks/usePagination";
-import useScrolling from "../assets/hooks/useScrolling";
-import useThrottle from "../assets/hooks/useThrottle";
-import "../assets/stylesheets/eventList.css";
+import React, { use, useEffect, useState, useRef } from "react"
+import EventBanner from "./EventBanner"
+import SearchBar from "./SearchBar"
+import { setNewElements, updateScrollBottom } from "../assets/helpers"
+import usePagination from "../assets/hooks/usePagination"
+import useScrolling from "../assets/hooks/useScrolling"
+import useThrottle from "../assets/hooks/useThrottle"
+import "../assets/stylesheets/eventList.css"
 
 export default function EventList({ setMainDisplay }) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [events, setEvents] = useState([]);
-  const [pagination, setPagination] = usePagination();
-  const [scrollBottom, setScrollBottom] = useScrolling();
-  const eventListRef = useRef(null);
-  const throttle = useThrottle();
+  const [searchTerm, setSearchTerm] = useState("")
+  const [events, setEvents] = useState([])
+  const [pagination, setPagination] = usePagination()
+  const [scrollBottom, setScrollBottom] = useScrolling()
+  const eventListRef = useRef(null)
+  const throttle = useThrottle()
 
   useEffect(() => {
-    const scrollThreshold = eventListRef.current.scrollHeight * 0.1;
-    if (pagination.page <= 1) setEvents([]);
+    const scrollThreshold = eventListRef.current.scrollHeight * 0.1
+    if (pagination.page <= 1) setEvents([])
 
     if (scrollBottom < scrollThreshold && !pagination.loading) {
       setNewElements(
         `/api/v1/events/all?page=${pagination.page}&search=${searchTerm}`,
         "events",
         setEvents,
-        setPagination
-      );
+        setPagination,
+      )
     }
-  }, [scrollBottom, searchTerm]);
+  }, [scrollBottom, searchTerm])
 
   useEffect(() => {
     const throttledUpdateScrollBottom = () =>
-      throttle(() => updateScrollBottom(setScrollBottom, eventListRef.current), 50);
-    eventListRef.current.addEventListener("scroll", throttledUpdateScrollBottom);
+      throttle(
+        () => updateScrollBottom(setScrollBottom, eventListRef.current),
+        50,
+      )
+    eventListRef.current.addEventListener("scroll", throttledUpdateScrollBottom)
 
     return () => {
       if (eventListRef.current) {
-        eventListRef.current.removeEventListener("scroll", throttledUpdateScrollBottom);
+        eventListRef.current.removeEventListener(
+          "scroll",
+          throttledUpdateScrollBottom,
+        )
       }
-    };
-  }, []);
+    }
+  }, [])
 
   return (
-    <div className="eventListContainer" ref={eventListRef}>
+    <div className="eventListContainer">
       <div className="listHeader">
         <h1>Events</h1>
       </div>
@@ -54,14 +60,23 @@ export default function EventList({ setMainDisplay }) {
           placeholder="Search by title or location"
         />
         <button
-          onClick={() => setMainDisplay((prev) => [...prev, {type: "eventForm", event: null, action: "create"}])}
+          onClick={() =>
+            setMainDisplay((prev) => [
+              ...prev,
+              { type: "eventForm", event: null, action: "create" },
+            ])
+          }
           className="iconContainer profileIconContainer"
         >
           Create your own
         </button>
       </div>
 
-      <div className="bannerListContainer">
+      <div
+        className="bannerListContainer"
+        ref={eventListRef}
+        data-testid="banner-list"
+      >
         {events.map((e) => (
           <EventBanner
             key={e.id}
@@ -72,5 +87,5 @@ export default function EventList({ setMainDisplay }) {
         ))}
       </div>
     </div>
-  );
+  )
 }

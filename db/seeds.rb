@@ -18,7 +18,7 @@ dave1.avatar.attach(
   content_type: "image/png"
 )
 
-Event.create_with_organiser!({title: "Test Event", date: DateTime.now}, dave1)
+Event.create_with_organiser!({title: "Old Test Event", date: DateTime.yesterday}, dave1)
 
 100.times { create(:user) }
 dave2 = User.create(name: "Dave2", email: "dave2@mail.com", password: "dave2123")

@@ -1,12 +1,19 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
-import { debounce } from "lodash";
-import "../assets/stylesheets/eventForm.css";
-import { sendOrganiserInvites } from "../assets/helpers";
-import UserListForm from "./UserListForm";
-import { updateEventDetails } from "../assets/helpers";
-import "../assets/stylesheets/event.css";
+import React, { useState, useRef, useEffect, useMemo } from "react"
+import { debounce } from "lodash"
+import "../assets/stylesheets/eventForm.css"
+import { sendOrganiserInvites } from "../assets/helpers"
+import UserListForm from "./UserListForm"
+import { updateEventDetails } from "../assets/helpers"
+import "../assets/stylesheets/event.css"
 
-export default function EventForm({ setMainDisplay, event, loggedUser, getLoggedUser, setDimmed, action }) {
+export default function EventForm({
+  setMainDisplay,
+  event,
+  loggedUser,
+  getLoggedUser,
+  setDimmed,
+  action,
+}) {
   let [eventDetails, setEventDetails] = useState({
     organisers: [loggedUser],
     title: "",
@@ -14,10 +21,10 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
     date: "",
     location: "",
     coverImage: null,
-  });
+  })
 
   let formatted
-  if(event) formatted = new Date(event?.date).toISOString().split("T")[0];
+  if (event) formatted = new Date(event?.date).toISOString().split("T")[0]
 
   useEffect(() => {
     if (event) {
@@ -27,36 +34,40 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
         description: event.description,
         date: event.date,
         location: event.location,
-      });
+      })
 
-      setImagePreviewUrl(event.cover_image_url);
+      setImagePreviewUrl(event.cover_image_url)
     }
-  }, [event]);
+  }, [event])
 
-  const [locationSearchFocus, setLocationSearchFocus] = useState(false);
-  const [locations, setLocations] = useState([]);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
-  const [chats, setChats] = useState([]);
-  const [displayUserListForm, setDisplayUserListForm] = useState(false);
+  const [locationSearchFocus, setLocationSearchFocus] = useState(false)
+  const [locations, setLocations] = useState([])
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null)
+  const [displayUserListForm, setDisplayUserListForm] = useState(false)
 
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-  const textareaRef = useRef(null);
-  const debouncedSearch = useMemo(() => debounce((search) => getLocations(search), 200));
+  const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content")
+  const textareaRef = useRef(null)
+  const debouncedSearch = useMemo(() =>
+    debounce((search) => getLocations(search), 200),
+  )
 
   useEffect(() => {
-    resizeTextArea();
-  }, [eventDetails.description]);
+    resizeTextArea()
+  }, [eventDetails.description])
 
   async function createEvent(e) {
-    e.preventDefault();
+    e.preventDefault()
 
-    const formData = new FormData();
-    formData.append("event[title]", eventDetails.title);
-    formData.append("event[description]", eventDetails.description);
-    formData.append("event[date]", eventDetails.date);
-    formData.append("event[location]", eventDetails.location);
-    if (eventDetails.coverImage) formData.append("event[cover_image]", eventDetails.coverImage);
-    if (event) formData.append("event[id]", event.id);
+    const formData = new FormData()
+    formData.append("event[title]", eventDetails.title)
+    formData.append("event[description]", eventDetails.description)
+    formData.append("event[date]", eventDetails.date)
+    formData.append("event[location]", eventDetails.location)
+    if (eventDetails.coverImage)
+      formData.append("event[cover_image]", eventDetails.coverImage)
+    if (event) formData.append("event[id]", event.id)
 
     try {
       const res = await fetch(`/api/v1/events/${action}`, {
@@ -65,24 +76,24 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
           "X-CSRF-Token": csrfToken,
         },
         body: formData,
-      });
+      })
 
       if (!res.ok) {
-        throw new Error(`We couldn't ${action} the event.`);
+        throw new Error(`We couldn't ${action} the event.`)
       }
 
-      const data = await res.json();
-      sendOrganiserInvites(e, eventDetails.organisers, data.event_id, csrfToken);
-      getLoggedUser();
+      const data = await res.json()
+      sendOrganiserInvites(e, eventDetails.organisers, data.event_id, csrfToken)
+      getLoggedUser()
     } catch (error) {
-      console.error(error.message);
+      console.error(error.message)
     }
   }
 
   function resizeTextArea() {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+      textareaRef.current.style.height = "auto"
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px"
     }
   }
 
@@ -90,16 +101,16 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
     try {
       const res = await fetch(`/api/v1/events/locations?search=${search}`, {
         method: "GET",
-      });
+      })
 
       if (!res.ok) {
-        throw new Error(`We couldn't retrieve location data.`);
+        throw new Error(`We couldn't retrieve location data.`)
       }
 
-      const data = await res.json();
-      setLocations(data["locations"]);
+      const data = await res.json()
+      setLocations(data["locations"])
     } catch (error) {
-      console.error(error.message);
+      console.error(error.message)
     }
   }
 
@@ -120,7 +131,11 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
         <div className="eventContainer">
           {imagePreviewUrl && (
             <div className="eventCoverContainer">
-              <img className="eventCover" src={imagePreviewUrl} alt="The cover image of your event" />
+              <img
+                className="eventCover"
+                src={imagePreviewUrl}
+                alt="cover image preview"
+              />
             </div>
           )}
           <div className="eventDetailsContainer">
@@ -148,8 +163,8 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
         <form
           className="eventForm"
           onSubmit={(e) => {
-            createEvent(e);
-            setMainDisplay((prev) => prev.slice(0, -1));
+            createEvent(e)
+            setMainDisplay((prev) => prev.slice(0, -1))
           }}
         >
           <label>
@@ -160,7 +175,7 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
               placeholder="Event Title"
               value={eventDetails.title}
               onChange={(e) => {
-                setEventDetails((prev) => ({ ...prev, title: e.target.value }));
+                setEventDetails((prev) => ({ ...prev, title: e.target.value }))
               }}
             />
           </label>
@@ -171,7 +186,9 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
               className="eventInput"
               type="date"
               value={formatted}
-              onChange={(e) => setEventDetails((prev) => ({ ...prev, date: e.target.value }))}
+              onChange={(e) =>
+                setEventDetails((prev) => ({ ...prev, date: e.target.value }))
+              }
             />
           </label>
 
@@ -183,8 +200,8 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
               placeholder="Location"
               value={event?.location}
               onChange={(e) => {
-                debouncedSearch(e.target.value);
-                setLocationSearchFocus(true);
+                debouncedSearch(e.target.value)
+                setLocationSearchFocus(true)
               }}
             />
             {locationSearchFocus &&
@@ -192,8 +209,11 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
                 <button
                   key={location.id}
                   onClick={() => {
-                    setLocationSearchFocus(false);
-                    setEventDetails((prev) => ({ ...prev, location: location.name }));
+                    setLocationSearchFocus(false)
+                    setEventDetails((prev) => ({
+                      ...prev,
+                      location: location.name,
+                    }))
                   }}
                 >
                   {location.name}
@@ -207,11 +227,17 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
               placeholder="Event Description"
               value={eventDetails.description}
               onChange={(e) => {
-                setEventDetails((prev) => ({ ...prev, description: e.target.value }));
+                setEventDetails((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
               }}
               ref={textareaRef}
+              data-testid="descrInput"
             />
-            <p className="descrLimitCounter">{2000 - eventDetails.description?.length}</p>
+            <p className="descrLimitCounter">
+              {2000 - eventDetails.description?.length}
+            </p>
           </label>
 
           <div className="organiserSearchContainer">
@@ -239,17 +265,31 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
               id="file"
               style={{ display: "none" }}
               onChange={(e) => {
-                setEventDetails((prev) => ({ ...prev, coverImage: e.target.files[0] }));
-                setImagePreviewUrl(URL.createObjectURL(e.target.files[0]));
+                setEventDetails((prev) => ({
+                  ...prev,
+                  coverImage: e.target.files[0],
+                }))
+                setImagePreviewUrl(URL.createObjectURL(e.target.files[0]))
               }}
+              data-testid="imgInput"
             />
-            <label htmlFor="file" className="iconContainer profileIconContainer">
+            <label
+              htmlFor="file"
+              className="iconContainer profileIconContainer"
+            >
               <p style={{ color: "white" }}>Upload Event Image</p>
-              <img className="icon" src="chevron-up.svg" alt="An icon of an arrow pointing up" />
+              <img
+                className="icon"
+                src="chevron-up.svg"
+                alt="An icon of an arrow pointing up"
+              />
             </label>
 
             <div className="submitEventBtn">
-              <button className="iconContainer profileIconContainer" type="submit">
+              <button
+                className="iconContainer profileIconContainer"
+                type="submit"
+              >
                 Post event
               </button>
             </div>
@@ -257,5 +297,5 @@ export default function EventForm({ setMainDisplay, event, loggedUser, getLogged
         </form>
       </div>
     </div>
-  );
+  )
 }
