@@ -1,31 +1,38 @@
-import React, { useEffect, useState, useRef } from "react";
-import "../assets/stylesheets/userList.css";
-import useThrottle from "../assets/hooks/useThrottle";
-import usePagination from "../assets/hooks/usePagination";
-import useScrolling from "../assets/hooks/useScrolling";
-import { setNewElements, updateListEndMessage, updateScrollBottom, handleResize } from "../assets/helpers";
-import SearchBar from "./SearchBar";
+import React, { useEffect, useState, useRef } from "react"
+import "../assets/stylesheets/userList.css"
+import useThrottle from "../assets/hooks/useThrottle"
+import usePagination from "../assets/hooks/usePagination"
+import useScrolling from "../assets/hooks/useScrolling"
+import {
+  setNewElements,
+  updateListEndMessage,
+  updateScrollBottom,
+  handleResize,
+} from "../assets/helpers"
+import SearchBar from "./SearchBar"
 
 export default function UserList({ listToShow = [], setMainDisplay }) {
-  const [userList, setUserList] = useState(listToShow);
-  const [scrollBottom, setScrollBottom] = useScrolling();
-  const [pagination, setPagination] = usePagination();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [displaySearchBar, setDisplaySearchBar] = useState(window.innerWidth > 700);
-  const userListRef = useRef(null);
-  const throttle = useThrottle();
-  const isMobile = window.innerWidth < 700;
+  const [userList, setUserList] = useState(listToShow)
+  const [scrollBottom, setScrollBottom] = useScrolling()
+  const [pagination, setPagination] = usePagination()
+  const [searchTerm, setSearchTerm] = useState("")
+  const [displaySearchBar, setDisplaySearchBar] = useState(
+    window.innerWidth > 700,
+  )
+  const userListRef = useRef(null)
+  const throttle = useThrottle()
+  const isMobile = window.innerWidth < 700
 
   useEffect(() => {
-    if (listToShow[0] || !searchTerm[0]) return;
+    if (listToShow[0] || !searchTerm[0]) return
 
     if (pagination.page > pagination.pages) {
-      updateListEndMessage(setPagination);
-      return;
+      updateListEndMessage(setPagination)
+      return
     }
 
-    const scrollThreshold = userListRef.current.scrollHeight * 0.1;
-    if (pagination.page <= 1) setUserList([]);
+    const scrollThreshold = userListRef.current.scrollHeight * 0.1
+    if (pagination.page <= 1) setUserList([])
 
     if (searchTerm && scrollBottom < scrollThreshold && !pagination.loading) {
       setNewElements(
@@ -33,39 +40,49 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
         "users",
         setUserList,
         setPagination,
-      );
+      )
     }
-  }, [scrollBottom, searchTerm]);
+  }, [scrollBottom, searchTerm])
 
   useEffect(() => {
     const throttledUpdateScrollBottom = () =>
-      throttle(() => updateScrollBottom(setScrollBottom, userListRef.current), 50);
-    userListRef.current.addEventListener("scroll", throttledUpdateScrollBottom);
+      throttle(
+        () => updateScrollBottom(setScrollBottom, userListRef.current),
+        50,
+      )
+    userListRef.current.addEventListener("scroll", throttledUpdateScrollBottom)
 
     return () => {
       if (userListRef.current) {
-        userListRef.current.removeEventListener("scroll", throttledUpdateScrollBottom);
+        userListRef.current.removeEventListener(
+          "scroll",
+          throttledUpdateScrollBottom,
+        )
       }
-    };
-  }, []);
+    }
+  }, [])
 
   useEffect(() => {
-    setDisplaySearchBar(window.innerWidth > 700);
+    setDisplaySearchBar(window.innerWidth > 700)
 
-    const cleanup = handleResize(setDisplaySearchBar, 700);
-    return cleanup;
-  }, []);
+    const cleanup = handleResize(setDisplaySearchBar, 700)
+    return cleanup
+  }, [])
 
   return (
     <div className="userListContainer">
       {isMobile && !displaySearchBar && (
-        <button className="iconContainer homeBtn" onClick={() => setDisplaySearchBar(!displaySearchBar)}>
-          <img className="icon" src="search.svg" alt="a home icon" />
+        <button
+          data-testid="user list search icon"
+          className="iconContainer homeBtn"
+          onClick={() => setDisplaySearchBar(!displaySearchBar)}
+        >
+          <img className="icon" src="search.svg" alt="open user list button" />
         </button>
       )}
       {/* for now, if I'm giving a set list to UserList, I don't want it to be searchable */}
       {!listToShow[0] && displaySearchBar && (
-        <div>
+        <div data-testid="user list search bar">
           <SearchBar
             setPagination={setPagination}
             setSearchTerm={setSearchTerm}
@@ -75,9 +92,13 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
           />
         </div>
       )}
-      
+
       <div
-        className={searchTerm[0] && displaySearchBar || listToShow[0] ? "userList" : "userList hidden"}
+        className={
+          (searchTerm[0] && displaySearchBar) || listToShow[0]
+            ? "userList"
+            : "userList hidden"
+        }
         ref={userListRef}
         data-testid="userList"
       >
@@ -86,19 +107,26 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
             key={user.uuid}
             className="userContainer"
             onClick={() => {
-              setSearchTerm("");
-              setMainDisplay((prev) => [...prev, { type: "profile", user: [user] }]);
+              setSearchTerm("")
+              setMainDisplay((prev) => [
+                ...prev,
+                { type: "profile", user: [user] },
+              ])
+              setDisplaySearchBar(false)
             }}
             onMouseEnter={() => {
               if (!isMobile && !listToShow[0]) {
-                setMainDisplay((prev) => [...prev, { type: "profile", user: [user] }]);
+                setMainDisplay((prev) => [
+                  ...prev,
+                  { type: "profile", user: [user] },
+                ])
               }
             }}
             onMouseLeave={() => {
               // I'm setting the search term to an empty string above and added this check to avoid removing the opened
               // chat; without this check, the onMouseLeave would trigger when the searchTerm is reset and the chat
               // added to the mainDisplay queue by the onClick action would be removed instead of the Profile
-              if (searchTerm[0]) setMainDisplay((prev) => prev.slice(0, -1));
+              if (searchTerm[0]) setMainDisplay((prev) => prev.slice(0, -1))
             }}
             data-testid="userListBtn"
           >
@@ -115,5 +143,5 @@ export default function UserList({ listToShow = [], setMainDisplay }) {
         {pagination.endMessage && <p>{pagination.endMessage}</p>}
       </div>
     </div>
-  );
+  )
 }

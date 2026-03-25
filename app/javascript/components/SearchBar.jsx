@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from "react";
-import debounce from "lodash.debounce";
+import React, { useEffect, useMemo } from "react"
+import debounce from "lodash.debounce"
 
 export default function SearchBar({
   setPagination = null,
@@ -7,24 +7,26 @@ export default function SearchBar({
   adaptable = true,
   displaySearchBar,
   setDisplaySearchBar = () => {},
-  placeholder = "Search for a fellow hiker"
+  placeholder = "Search for a fellow hiker",
 }) {
   useEffect(() => {
-    if (displaySearchBar) triggerSearch("");
-  }, [displaySearchBar]);
+    if (displaySearchBar) triggerSearch("")
+  }, [displaySearchBar])
 
   function triggerSearch(search) {
     if (setPagination) {
       setPagination((prev) => ({
         ...prev,
         page: 1,
-      }));
+      }))
     }
 
-    setSearchTerm(search);
+    setSearchTerm(search)
   }
 
-  const debouncedSearch = useMemo(() => debounce((search) => triggerSearch(search), 300));
+  const debouncedSearch = useMemo(() =>
+    debounce((search) => triggerSearch(search), 300),
+  )
 
   return window.innerWidth < 1400 && !displaySearchBar && adaptable ? (
     <img
@@ -33,7 +35,7 @@ export default function SearchBar({
       id="searchIcon"
       alt="search"
       onClick={() => {
-        setDisplaySearchBar(true);
+        setDisplaySearchBar(true)
       }}
     />
   ) : (
@@ -48,13 +50,16 @@ export default function SearchBar({
         autoComplete="off"
         placeholder={placeholder}
         onChange={(e) => {
-          debouncedSearch(e.target.value);
+          debouncedSearch(e.target.value)
         }}
         onBlur={() => {
-          setDisplaySearchBar(false);
+          // on mobile layouts, there is a small race condition between a user being clicked
+          // and the searchbar with its list being hidden; without the timeout, the blur happens
+          // before the click can trigger the profile display
+          setTimeout(() => setDisplaySearchBar(false), 100)
         }}
         autoFocus
       />
     </>
-  );
+  )
 }

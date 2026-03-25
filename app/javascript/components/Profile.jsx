@@ -1,49 +1,56 @@
-import React, { useState, useRef, useEffect } from "react";
-import "../assets/stylesheets/profile.css";
-import EventBanner from "./EventBanner";
-import { createChat } from "../assets/helpers";
+import React, { useState, useRef, useEffect } from "react"
+import "../assets/stylesheets/profile.css"
+import EventBanner from "./EventBanner"
+import { createChat } from "../assets/helpers"
 
-export default function Profile({ loggedUser, getLoggedUser, user, setMainDisplay }) {
-  const [renderDescriptionForm, setRenderDescriptionForm] = useState(false);
+export default function Profile({
+  loggedUser,
+  getLoggedUser,
+  user,
+  setMainDisplay,
+}) {
+  const [renderDescriptionForm, setRenderDescriptionForm] = useState(false)
   const [description, setDescription] = useState({
     content: user[0]?.description,
     length: user[0]?.description ? user[0]?.description.length : 0,
-  });
-  const [renderAvatarForm, setRenderAvatarForm] = useState(false);
-  const [avatar, setAvatar] = useState(user[0]?.avatar);
-  const [feedback, setFeedback] = useState(null);
-  const [eventListDisplay, setEventListDisplay] = useState("upcoming");
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-  const textareaRef = useRef(null);
+  })
+  const [renderAvatarForm, setRenderAvatarForm] = useState(false)
+  const [avatar, setAvatar] = useState(user[0]?.avatar)
+  const [feedback, setFeedback] = useState(null)
+  const [eventListDisplay, setEventListDisplay] = useState("upcoming")
+  const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content")
+  const textareaRef = useRef(null)
 
-  const today = new Date();
-  let pastEvents = [];
-  let upcomingEvents = [];
+  const today = new Date()
+  let pastEvents = []
+  let upcomingEvents = []
 
   if (user[0].events)
     user[0].events.forEach((e) => {
-      const eventDate = new Date(e.date);
+      const eventDate = new Date(e.date)
 
       if (today > eventDate) {
-        pastEvents.push(e);
+        pastEvents.push(e)
       } else {
-        upcomingEvents.push(e);
+        upcomingEvents.push(e)
       }
-    });
+    })
 
   useEffect(() => {
-    resizeTextArea();
-  }, [description]);
+    resizeTextArea()
+  }, [description])
 
   function resizeTextArea() {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+      textareaRef.current.style.height = "auto"
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px"
     }
   }
 
   async function updateDescription(e) {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
       const res = await fetch("/api/v1/users/update", {
@@ -53,45 +60,45 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
           "X-CSRF-Token": csrfToken,
         },
         body: JSON.stringify({ user: { description: description.content } }),
-      });
+      })
 
-      setFeedback("Your description has been updated successfully!");
-      getLoggedUser();
-      setRenderDescriptionForm(false);
+      setFeedback("Your description has been updated successfully!")
+      getLoggedUser()
+      setRenderDescriptionForm(false)
     } catch (error) {
-      console.error(error.message);
+      console.error(error.message)
     }
   }
 
   function checkImage() {
-    const validTypes = ["image/jpeg", "image/png"];
-    const maxSize = 5 * 1024 * 1024;
+    const validTypes = ["image/jpeg", "image/png"]
+    const maxSize = 5 * 1024 * 1024
 
     if (!(avatar instanceof File)) {
-      setFeedback("Please upload a valid image type (jpeg/png).");
-      return false;
+      setFeedback("Please upload a valid image type (jpeg/png).")
+      return false
     }
     if (!validTypes.includes(avatar.type)) {
-      setFeedback("Please upload a valid image type (jpeg/png).");
-      return false;
+      setFeedback("Please upload a valid image type (jpeg/png).")
+      return false
     }
 
     if (avatar.size > maxSize) {
-      setFeedback("Please upload an image that is under 5MB in size.");
-      return false;
+      setFeedback("Please upload an image that is under 5MB in size.")
+      return false
     }
 
-    return true;
+    return true
   }
 
   async function updateProfilePicture(e) {
-    e.preventDefault();
-    const imageIsValid = checkImage();
+    e.preventDefault()
+    const imageIsValid = checkImage()
 
-    if (!imageIsValid) return;
+    if (!imageIsValid) return
 
-    const formData = new FormData();
-    formData.append("user[avatar]", avatar);
+    const formData = new FormData()
+    formData.append("user[avatar]", avatar)
 
     try {
       const res = await fetch("/api/v1/users/update", {
@@ -100,13 +107,13 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
           "X-CSRF-Token": csrfToken,
         },
         body: formData,
-      });
+      })
 
-      setFeedback("Your profile picture has been updated successfully!");
-      setRenderAvatarForm(false);
-      getLoggedUser();
+      setFeedback("Your profile picture has been updated successfully!")
+      setRenderAvatarForm(false)
+      getLoggedUser()
     } catch (error) {
-      console.error(error.message);
+      console.error(error.message)
     }
   }
 
@@ -117,7 +124,7 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
           <div
             className="chatIconContainer"
             onClick={() => {
-              setMainDisplay((prev) => [...prev.slice(0, -1)]);
+              setMainDisplay((prev) => [...prev.slice(0, -1)])
             }}
             data-testid="chatBackArrow"
           >
@@ -139,7 +146,11 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
               data-section="description"
               onClick={(e) => createChat(e, [user], csrfToken, setMainDisplay)}
             >
-              <img className="icon" src="bonfire-white.svg" alt="A bonfire icon" />
+              <img
+                className="icon"
+                src="bonfire-white.svg"
+                alt="A bonfire icon"
+              />
               <p>Chat with {user[0].name}</p>
             </button>
           )}
@@ -154,9 +165,16 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
                   style={{ display: "none" }}
                   onChange={(e) => setAvatar(e.target.files[0])}
                 />
-                <label htmlFor="file" className="iconContainer profileIconContainer">
+                <label
+                  htmlFor="file"
+                  className="iconContainer profileIconContainer"
+                >
                   <p style={{ color: "white" }}>Upload File</p>
-                  <img className="icon" src="chevron-up.svg" alt="An icon of an arrow pointing up" />
+                  <img
+                    className="icon"
+                    src="chevron-up.svg"
+                    alt="An icon of an arrow pointing up"
+                  />
                 </label>
                 <button
                   type="button"
@@ -164,7 +182,11 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
                   onClick={updateProfilePicture}
                 >
                   Update profile picture
-                  <img className="icon" src="save.svg" alt="An icon of a save file" />
+                  <img
+                    className="icon"
+                    src="save.svg"
+                    alt="An icon of a save file"
+                  />
                 </button>
               </div>
             </form>
@@ -192,9 +214,14 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
                   value={description.content}
                   onChange={(e) => {
                     description.length >= 500
-                      ? setFeedback("Your description cannot be longer than 500 characters.")
-                      : setFeedback("");
-                    setDescription({ content: e.target.value, length: e.target.value.length });
+                      ? setFeedback(
+                          "Your description cannot be longer than 500 characters.",
+                        )
+                      : setFeedback("")
+                    setDescription({
+                      content: e.target.value,
+                      length: e.target.value.length,
+                    })
                   }}
                 ></textarea>
                 <p className="descrLimitCounter">{500 - description.length}</p>
@@ -211,14 +238,16 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
             </form>
           ) : (
             <div>
-              {description.length > 0 && <p className="description">{user[0]?.description}</p>}
+              {description.length > 0 && (
+                <p className="description">{user[0]?.description}</p>
+              )}
               {loggedUser[0].uuid == user[0]?.uuid && (
                 <button
                   className="iconContainer profileIconContainer"
                   data-section="description"
                   onClick={() => {
-                    setRenderDescriptionForm(true);
-                    requestAnimationFrame(() => resizeTextArea());
+                    setRenderDescriptionForm(true)
+                    requestAnimationFrame(() => resizeTextArea())
                   }}
                 >
                   <p>Change description</p>
@@ -235,7 +264,7 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
         )}
       </div>
       <div className="userEvents">
-        <h1>{loggedUser[0].name}'s Events</h1>
+        <h1>{user[0].name}'s Events</h1>
         <div className="eventListBtnsContainer">
           <button
             className="eventListBtn iconContainer profileIconContainer"
@@ -253,20 +282,35 @@ export default function Profile({ loggedUser, getLoggedUser, user, setMainDispla
 
         <div>
           {eventListDisplay === "upcoming"
-            ? upcomingEvents.map((e) => <EventBanner key={e.id} event={e} setMainDisplay={setMainDisplay} />)
-            : pastEvents.map((e) => <EventBanner key={e.id} event={e} setMainDisplay={setMainDisplay} />)}
+            ? upcomingEvents.map((e) => (
+                <EventBanner
+                  key={e.id}
+                  event={e}
+                  setMainDisplay={setMainDisplay}
+                />
+              ))
+            : pastEvents.map((e) => (
+                <EventBanner
+                  key={e.id}
+                  event={e}
+                  setMainDisplay={setMainDisplay}
+                />
+              ))}
         </div>
 
         {eventListDisplay === "upcoming"
           ? upcomingEvents.length == 0 && (
-            <p className="emptyEventListMsg">
-              {user[0].name} is not participanting in any upcoming events.{" "}
-            </p>
-          )
+              <p className="emptyEventListMsg">
+                {user[0].name} is not participanting in any upcoming
+                events.{" "}
+              </p>
+            )
           : pastEvents.length == 0 && (
-            <p className="emptyEventListMsg">{user[0].name} has not participated in any past events. </p>
-          )}
+              <p className="emptyEventListMsg">
+                {user[0].name} has not participated in any past events.{" "}
+              </p>
+            )}
       </div>
     </div>
-  );
+  )
 }

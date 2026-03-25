@@ -1,22 +1,32 @@
-import React, { useState } from "react";
-import InviteList from "./InviteList";
-import UserList from "./UserList";
+import React, { useState } from "react"
+import InviteList from "./InviteList"
+import UserList from "./UserList"
 
-export default function NavBar({ loggedUser, setMainDisplay, signOut, setDimmed }) {
-  const [displayInviteList, setDisplayInviteList] = useState(false);
-  const isMobile = window.innerWidth < 700;
-  const pendingRequests = loggedUser[0].pending_requests;
+export default function NavBar({
+  loggedUser,
+  setMainDisplay,
+  signOut,
+  setDimmed,
+}) {
+  const [displayInviteList, setDisplayInviteList] = useState(false)
+  const isMobile = window.innerWidth < 700
+  const pendingRequests = loggedUser[0].pending_requests
 
   return (
     <nav>
       <div className="navContainer">
         {!isMobile && (
-          <button className="iconContainer homeBtn" onClick={() => setMainDisplay([])}>
+          <button
+            className="iconContainer homeBtn"
+            onClick={() => setMainDisplay([])}
+          >
             <img className="icon" src="home.svg" alt="a home icon" />
           </button>
         )}
         <button
-          onClick={() => setMainDisplay((prev) => [...prev, { type: "profile" }])}
+          onClick={() =>
+            setMainDisplay((prev) => [...prev, { type: "profile" }])
+          }
           className="userHeader"
           data-testid="profileBtn"
         >
@@ -35,7 +45,7 @@ export default function NavBar({ loggedUser, setMainDisplay, signOut, setDimmed 
           <button
             className="iconContainer"
             onClick={() => {
-              setDisplayInviteList(!displayInviteList);
+              setDisplayInviteList(!displayInviteList)
             }}
           >
             <img className="icon" src="trekking.svg" alt="View your invites" />
@@ -50,12 +60,20 @@ export default function NavBar({ loggedUser, setMainDisplay, signOut, setDimmed 
 
       {isMobile && (
         <div className="navBtnsContainer">
-          <button className="iconContainer homeBtn" onClick={() => setMainDisplay([])}>
+          <button
+            className="iconContainer homeBtn"
+            onClick={() => setMainDisplay([])}
+          >
             <img className="icon" src="home.svg" alt="a home icon" />
           </button>
 
-          <button className="iconContainer homeBtn" onClick={() => setMainDisplay((prev) => [...prev, {type: "chatList"}])}>
-            <img className="icon" src="chat-bubble.svg" alt="a home icon" />
+          <button
+            className="iconContainer homeBtn"
+            onClick={() =>
+              setMainDisplay((prev) => [...prev, { type: "chatList" }])
+            }
+          >
+            <img className="icon" src="chat-bubble.svg" alt="chat list icon" />
           </button>
 
           <UserList setMainDisplay={setMainDisplay} setDimmed={setDimmed} />
@@ -63,7 +81,10 @@ export default function NavBar({ loggedUser, setMainDisplay, signOut, setDimmed 
           <button
             className="iconContainer homeBtn"
             onClick={() => {
-              setMainDisplay((prev) => [...prev, {type: "inviteList", eventIds: pendingRequests}])
+              setMainDisplay((prev) => [
+                ...prev,
+                { type: "inviteList", eventIds: pendingRequests },
+              ])
             }}
           >
             <img className="icon" src="trekking.svg" alt="View your invites" />
@@ -72,7 +93,12 @@ export default function NavBar({ loggedUser, setMainDisplay, signOut, setDimmed 
         </div>
       )}
 
-      {displayInviteList && !isMobile && <InviteList eventIds={pendingRequests} setMainDisplay={setMainDisplay} />}
+      {displayInviteList && !isMobile && (
+        <InviteList
+          eventIds={pendingRequests}
+          setMainDisplay={setMainDisplay}
+        />
+      )}
     </nav>
-  );
+  )
 }
